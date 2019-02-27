@@ -18,11 +18,11 @@ python manage.py startapp AppName
 
 ` django/conf/global_settings.py `
 
-  - 在manage.py中设置使用哪个settings.py,其他脚本中如果需要引用设定项也可设置
+  * 在manage.py中设置使用哪个settings.py,其他脚本中如果需要引用设定项也可设置
 
   > ` os.environ.setdefault("DJANGO_SETTINGS_MODULE", "pydjango.settings") `
 
-  - 察看当前settings.py与默认设置的不同
+  * 察看当前settings.py与默认设置的不同
 
   > ` python manage.py diffsettings `
 
