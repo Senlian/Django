@@ -1,12 +1,17 @@
-创建django工程
-django-admin startproject prj_name
+## Django 项目练习 ##
+- 创建django工程
+''' django-admin startproject prj_name '''
 
-创建站点app
+- 创建站点app
+'''
 cd prj_name
 python manage.py startapp AppName
+'''
 
-启动站点
+- 启动站点
+'''
 python manage.py runserver 127.0.0.1:8000
+'''
 
 全局变量默认设置在文件
 django/conf/global_settings.py
