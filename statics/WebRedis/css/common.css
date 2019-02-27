@@ -1,0 +1,40 @@
+/*主体*/
+body {
+    font-family: "Times New Roman", Arial, 微软雅黑, 宋体;
+    font-size: 12px;
+    font-weight: normal;
+    background: #fff;
+    overflow: auto;
+    position: relative;
+}
+
+/*表单盒子*/
+.form-box {
+    width: 420px;
+    height: auto;
+    background: white;
+    padding: 0;
+    position: absolute;
+    display: none;
+    z-index: 9999;
+}
+
+/*遮罩*/
+.ui-mask {
+    background: #000;
+    opacity: 0.4;
+    filter: Alpha(opacity=40);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: none;
+}
+
+/*验证码*/
+#img-box-login-verify {
+    cursor: pointer;
+    padding: 0;
+    border: 1px solid #FFFAFA;
+    overflow: hidden;
+}
+

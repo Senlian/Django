@@ -1,0 +1,53 @@
+{% extends './base.html' %}
+{% load staticfiles %}
+{% block title-head %}登陆{% endblock title-head %}
+{% block css-head %}
+    <link type="text/css" rel="stylesheet" href="{% static 'WebRedis/css/login.css' %}">
+{% endblock css-head %}
+{% block container %}
+    <div id="form-box-login" class="panel panel-default col-md-3 center-block form-box" draggable="true">
+        <div class="panel-heading text-center">
+            <h5 class="panel-title input-lg">用户登录</h5>
+        </div>
+        <div class="panel-body">
+            <form id="form-login" role="form" method="post" onsubmit='return submitForm(this)'>
+                {% csrf_token %}
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-user" style="left: 0"></i></span>
+                    <input id="input-login-username" class="form-control " name="username" type="text"
+                           placeholder="用户名"  autocomplete="off">
+                </div>
+                <br>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input id="input-login-passwd" class="form-control" name="passwd" type="password"
+                           placeholder="密码"  autocomplete="off">
+                </div>
+                <br>
+                <div class="input-group input-group-lg">
+                    <input id="input-login-verify" class="form-control" name="verify" type="text" placeholder="验证码" autocomplete="off">
+                    <span class="input-group-btn" style="padding-left:5px">
+                        <img id="img-login-verify" class="img-rounded" src="{{ MEDIA_URL }}/WebRedis/verify/verify.png"
+                             title="点击刷新">
+                    </span>
+                </div>
+
+                <div class="checkbox">
+                    <label><input type="checkbox">下次自动登录</label>
+                </div>
+                <button class="btn btn-primary btn-lg btn-block" type="submit">登录</button>
+            </form>
+            <div class="container-fluid" style="margin-top: 15px">
+                <a href="#">忘记密码 ?</a>
+                <a class="pull-right" href="{% url 'WebRedis:register' %}">新用户注册</a>
+            </div>
+        </div>
+    </div>
+{% endblock container %}
+{% block js-bottom %}
+    {#    此处定义模板变量 #}
+    <script type="application/javascript">
+        var media_uri = {{ MEDIA_URL }};
+    </script>
+    <script type="application/javascript" src="{% static 'WebRedis/js/login.js' %}"></script>
+{% endblock js-bottom %}

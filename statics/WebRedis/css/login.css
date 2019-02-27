@@ -1,0 +1,13 @@
+.panel-heading {
+    cursor: move;
+}
+
+.verify {
+    padding: 0;
+}
+
+*[id*="input-error"] {
+    margin-left: 110px;
+    color: red;
+}
+
