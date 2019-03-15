@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}个人信息{% endblock %}
+{% block content %}
+<div class="row text-center vertical-md-sm"></div>
+<h1>我的信息</h1>
+<div class="row">
+    <div class="col-md-6">
+        <form class="form-horizontal" action="." method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4 text-right">用户名:</div>
+                <div class="col-md-8 text-left">{{ user.username }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-right">邮箱：</div>
+                <div class="col-md-8 text-left">{{ user_form.email }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-right">生日：</div>
+                <div class="col-md-8 text-left">{{ user_profile_form.birth }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-right">电话：</div>
+                <div class="col-md-8 text-left">{{ user_profile_form.phone }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-right">毕业院校：</div>
+                <div class="col-md-8 text-left">{{ userinfo_form.school }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-right">工作单位：</div>
+                <div class="col-md-8 text-left">{{ userinfo_form.company }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-right">职业：</div>
+                <div class="col-md-8 text-left">{{ userinfo_form.profession }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-right">地址：</div>
+                <div class="col-md-8 text-left">{{ userinfo_form.address }}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 text-right">个人介绍：</div>
+                <div class="col-md-8 text-left">{{ userinfo_form.aboutme }}</div>
+            </div>
+            <div class="row">
+                <input type="submit" class="btn btn-primary btn-lg" value="提交">
+            </div>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <img class="img-circle" src="{% static 'images/1.jpg' %}">
+    </div>
+</div>
+{% endblock %}

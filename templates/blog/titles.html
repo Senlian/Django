@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}博客列表{% endblock %}
+{% block content %}
+<div class="col-xs-12 col-md-8">
+    <ul>
+        {% for blog in blogs %}
+        <li>{{ forloop.counter }}. <a href="{{ blog.id }}">{{ blog.title }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block js%}
+    <script type="application/javascript" src="{% static '/js/jquery.min.js' %}"></script>
+    <script type="application/javascript" src="{% static '/js/bootstrap.min.js' %}"></script>
+{% endblock %}

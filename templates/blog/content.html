@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block content %}
+<div class="col-xs-12 col-md-8">
+    <p class="text-center">
+        <span>{{ article.author.username }}</span>
+        <span>{{ article.publish }}</span>
+    </p>
+    <div>
+        {{ article.body }}
+    </div>
+    <!--冒号后边不能有空格-->
+    <a href="{% url 'blog:blog_title' %}">返回标题列表</a>
+{% endblock %}
+
+
+{% block js%}
+    <script type="application/javascript" src="{% static '/js/jquery.min.js' %}"></script>
+    <script type="application/javascript" src="{% static '/js/bootstrap.min.js' %}"></script>
+{% endblock %}

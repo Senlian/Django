@@ -1,0 +1,35 @@
+{% load staticfiles %}
+{% load i18n static %}
+<div class="container">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="{% url 'blog:blog_title' %}">
+                    <img alt="Brand" src="{% static '/images/logo.png' %}" height="28" width="70">
+                </a>
+            </div>
+        </div>
+        <div class="navbar navbar-nav navbar-right" style="margin-right: 30px;margin-top: auto;margin-bottom: auto">
+            {% if user.is_authenticated %}
+                <div class="dropdown" style="margin-top: 8px">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenu"
+                            data-toggle="dropdown">
+                        {{ user.username }}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="{% url 'account:user_info' %}">个人信息</a></li>
+                        <li><a href="{% url 'article:article_column' %}">后台管理</a></li>
+                        <li><a href="{% url 'account:password_change' %}">更改密码</a></li>
+                        <hr>
+                        <li><a href="{% url 'account:user_logout' %}">退出</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <a href="{% url 'account:user_login' %}">login</a>
+                <a href="{% url 'account:user_register' %}">register</a>
+            {% endif %}
+        </div>
+    </nav>
+    <hr>
+</div>

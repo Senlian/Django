@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compati ble" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=l">
+    <title>{% block title%}{% endblock %}</title>
+    <link type="text/css" rel="stylesheet" href="{% static '/css/bootstrap.min.css' %}">
+    {% block cs %}{% endblock %}
+</head>
+<body>
+{% include "header.html" %}
+
+<div class="container">
+    <div class="row">
+        {% block content %}
+        {% endblock %}
+        <div class="col-xs-6 col-md-4">
+            <h2>广告</h2>
+            <p>django基础学习 www.itdiffer.com</p>
+            <!--<img src="http://a.hiphotos.baidu.com/zhidao/pic/item/6d81800a19d8bc3e21992111898ba61ea9d34553.jpg">-->
+            <img src="{% static '/images/1.jpg'%}">
+        </div>
+    </div>
+</div>
+{% include "footer.html" %}
+{% block js %}
+    <script type="application/javascript" src="{% static '/js/jquery.min.js' %}"></script>
+    <script type="application/javascript" src="{% static '/js/bootstrap.min.js' %}"></script>
+{% endblock %}
+</body>
+</html>
