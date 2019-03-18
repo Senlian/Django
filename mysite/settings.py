@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'blog',
     'account',
     'article',
+    'mdeditor',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +126,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'statics'),
 ]
+MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
+MEDIA_URL = '/media/'
 
 # 登录跳转页面
 LOGIN_REDIRECT_URL = 'blog:blog_title'
@@ -138,3 +141,5 @@ EMAIL_USE_TLS = False
 EMAIL_HOST_USER = "from_now_on820@qq.com"
 EMAIL_HOST_PASSWORD = "pmfrgzmkuznabdif"
 DEFAULT_FROM_EMAIL = "from_now_on820@qq.com"
+
+

@@ -1,0 +1,16 @@
+{% extends "article/base.html" %}
+{% load staticfiles %}
+{% block title %}文章列表{% endblock %}
+{% block content %}
+    <div class="col-xs-12 col-md-8">
+        <header class="text-center">
+            <h1>{{ article.title }}</h1>
+            <p>{{ article.author.username }}</p>
+            <p>{{ article.publish }}</p>
+        </header>
+        <div>
+            {{ body|safe }}
+        </div>
+        <!--冒号后边不能有空格-->
+        <a href="{% url 'article:article_list' %}">返回标题列表</a>
+{% endblock %}

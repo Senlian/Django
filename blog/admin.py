@@ -1,6 +1,8 @@
 from django.contrib import admin
 from .models import BlogArticles
-
+from django.db import models
+from mdeditor.fields import MDTextField
+from mdeditor.widgets import MDEditorWidget
 
 # Register your models here.
 @admin.register(BlogArticles)
@@ -13,3 +15,6 @@ class BlogArticlesHandler(admin.ModelAdmin):
     raw_id_fields = ["author"]
     date_hierarchy = "publish"
     list_per_page = 2
+    formfield_overrides = {
+        models.TextField: {'widget': MDEditorWidget}
+      }

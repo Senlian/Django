@@ -21,7 +21,8 @@
             </div>
             <div class="row" style="margin-top: 10px">
                 <div class="col-md-2 text-left"><span>内容：</span></div>
-                <div class="col-md-10 text-left">{{ article_post_form.body }}</div>
+                <div class="col-md-10 text-left">{{ article_post_form.media }}</div>
+                <div class="col-md-10 text-left" style="width: 1080px;height: 720px;">{{ article_post_form.body|safe }}</div>
             </div>
             <div class="row">
                 <input type="button" class="btn btn-primary btn-lg" value="发布" onclick="push_article()">
@@ -43,6 +44,7 @@
                 success: function (e) {
                     if (e == "1") {
                         layer.msg("发布成功");
+                        location.href = '{% url 'article:article_list' %}'
                     } else if (e == "2") {
                         layer.msg('发布失败');
                     } else {

@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.models import User
 from slugify import slugify
+from mdeditor.fields import MDTextField
 
 
 # Create your models here.
@@ -25,12 +26,15 @@ class ArticlePost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
     column = models.ForeignKey(ArticleColumn, on_delete=models.DO_NOTHING, related_name='article_column')
-    body = models.TextField()
+    # body = models.TextField()
+    body = MDTextField()
     created = models.DateTimeField(default=timezone.now())
     update = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['title']
+        verbose_name = '文章管理'
+        verbose_name_plural = verbose_name
+        ordering = ['-update']
         index_together = [('id', 'slug')]
 
     def __str__(self):

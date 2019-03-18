@@ -9,7 +9,7 @@
         <span>{{ article.publish }}</span>
     </p>
     <div>
-        {{ article.body }}
+        {{ body|safe }}
     </div>
     <!--冒号后边不能有空格-->
     <a href="{% url 'blog:blog_title' %}">返回标题列表</a>

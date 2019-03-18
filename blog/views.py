@@ -14,4 +14,11 @@ def blog_title(request):
 
 def blog_articles(request, article_id):
     article = get_object_or_404(BlogArticles, id=article_id)
-    return render(request, 'blog/content.html', {'article': article})
+    import markdown
+    body = markdown.markdown(article.body, extensions=[
+        'markdown.extensions.extra',
+        'markdown.extensions.codehilite',
+        'markdown.extensions.toc',
+    ])
+    print(article)
+    return render(request, 'blog/content.html', {'article': article,'body':body})
