@@ -1,16 +1,156 @@
 {% extends "article/base.html" %}
 {% load staticfiles %}
-{% block title %}文章列表{% endblock %}
+{% load article_tags %}
+{% block title %}{{ article.title }}{% endblock %}
 {% block content %}
-    <div class="col-xs-12 col-md-8">
-        <header class="text-center">
-            <h1>{{ article.title }}</h1>
-            <p>{{ article.author.username }}</p>
-            <p>{{ article.publish }}</p>
-        </header>
-        <div>
-            {{ body|safe }}
-        </div>
-        <!--冒号后边不能有空格-->
-        <a href="{% url 'article:article_list' %}">返回标题列表</a>
+    <div class="container">
+        {% with total_likes=article.user_like.count users=article.user_like.all %}
+            <div class="col-xs-10 col-md-9 col-lg-8">
+                <header class="text-center">
+                    <h1>{{ article.title }}</h1>
+                    <p>
+                        <span>
+                            <strong>栏目：</strong>
+                            {{ article.column }}
+                        </span>
+                        <span>
+                            {% if article.article_tag.all %}
+                                <strong>关键字：</strong>
+                                {% for tag in article.article_tag.all %}
+                                    <span>{{ tag.tag }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </span>
+                    </p>
+                    <p>
+                        <span></span>
+                    </p>
+                    <p>
+                        <span class="text-left" style="margin-right: 10px;">{{ article.created }}</span>
+                        <a href="{% url 'article:author_articles' article.author.username %}">{{ article.author.username }}</a>
+                        <a style="margin-left: 5px;text-decoration-line: none;" href="#"
+                           onclick="like_article({{ article.id }}, 'like')">
+                    <span class="glyphicon glyphicon-thumbs-up">
+                        {% if total_likes != 0 %}
+                            {#                            {{ total_likes|pluralize }}#}
+                            ({{ total_likes }})
+                        {% endif %}
+                    </span>
+                        </a>
+                        <a style="margin-left: 5px;text-decoration-line: none;" href="#"
+                           onclick="like_article({{ article.id }}, 'unlike')">
+                            <span class="glyphicon glyphicon-thumbs-down"></span>
+                        </a>
+                        <span class="text-right" style="margin-left: 10px;">阅读数：{{ total_views }}</span>
+                    </p>
+                    <p>{{ article.publish }}</p>
+                </header>
+                <div>
+                    {{ body|safe }}
+                </div>
+
+                <div>
+                    <span class="text-center">为文章点赞的读者：</span>
+                    {% for user in users %}
+                        <span class="text-center">
+                        <a href="{% url 'article:author_articles' user.username %}">
+                            <img src="{{ user.userinfo.photo|striptags }}" alt="{{ user.username }}"
+                                 title="{{ user.username }}" class="img-circle" width="15px" height="18px" id="my_photo"
+                                 name="user_face">
+                        </a></span>
+                        {% empty %}
+                        <span class="text-center">还没有人为该文章点赞</span>
+                    {% endfor %}
+                </div>
+                <hr>
+                <div id="comments">
+                    {% for comment in article_comments %}
+                        <p> 读者
+                            <a href="{% url 'article:author_articles' comment.author_id %}">{{ comment.author_id }}</a>说：
+                        </p>
+
+                        <p style="padding-left: 16px">{{ comment.body }}</p>
+                        {% empty %}
+                        还没有人对该文章进行评论，快抢占沙发吧!
+                    {% endfor %}
+                    <form class="form-horizontal" role="form" action="." method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">评论</label>
+                            <div class="col-sm-10">{{ article_comments_from.body }}</div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <input type="submit" class="btn btn-primary" value="发表评论">
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <!--冒号后边不能有空格-->
+                <a href="{% url 'article:article_list' %}">返回标题列表</a>
+            </div>
+
+            <div class="col-xs-2 col-md-3 col-lg-4">
+                {% if most_view_articles %}
+                    <p class="text-center"><h4> 热文榜单</h4></p>
+                    <ul>
+                        {% for article_rank in most_view_articles %}
+                            {% if article_rank.title != article.title %}
+                                <li><a href="{{ article_rank.get_absolute_url }}">{{ article_rank.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <p class="text-center"><h4> 最新文章</h4></p>
+                {% last_articles 2 %}
+                {% if most_view_articles %}
+                    <p class="text-center"><h4> 热评榜单</h4></p>
+                    <ul>
+                        {% for article_comment in most_view_articles %}
+                            {% if article_comment.title != article.title %}
+                                <li><a href="{{ article_comment.get_absolute_url }}">{{ article_comment.title }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if similar_articles %}
+                    <p class="text-center"><h4> 相似文章</h4></p>
+                    <ul>
+                        {% for similar_article in similar_articles %}
+                            {% if similar_article.title != article.title %}
+                                <li><a href="{{ similar_article.get_absolute_url }}">{{ similar_article.title }}</a>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+
+        {% endwith %}
+    </div>
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'layer/layer.js' %}"></script>
+    <script type="text/javascript">
+        function like_article(id, action) {
+            $.ajax({
+                url: '{% url "article:article_like" %}',
+                type: 'POST',
+                data: {'id': id, 'action': action},
+                success: function (e) {
+                    if (e == '1') {
+                        layer.msg('点赞成功，感谢支持！');
+                        window.location.reload();
+                    } else {
+                        layer.msg('我会继续努力的');
+                        window.location.reload();
+                    }
+                }
+
+            });
+        }
+    </script>
 {% endblock %}

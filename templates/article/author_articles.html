@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load article_tags %}
+{% block title %}文章列表2{% endblock %}
+{% block content %}
+    <div class="row text-center vertical-middle-sm">
+        <h1>阅读，丰富头脑，善化思维</h1>
+        <p>本站博文总数 {% author_article_count user %} 篇</p>
+    </div>
+    <div class="container">
+        <div class="col-md-8">
+            {% for article in articles %}
+                <div class="list-group">
+                    <a href="{{ article.get_absolute_url }}" class="list-group-item active">
+                        <h4 class="list-group-item-heading">{{ article.title }}</h4>
+                        <p class="list-grop-item-text">
+                            <a href="{% url 'article:author_articles' article.author.username %}">作者：{{ article.author.username }}</a>
+                        </p>
+                        <p class="list-grop-item-text">摘要：{{ article.body|slice:"40"|linebreaks }}......</p>
+                    </a>
+                </div>
+                {% empty %}
+                <p>作者太懒了，一篇文章都没有</p>
+            {% endfor %}
+            {% include 'paginator.html' %}
+        </div>
+        <div class="col-md-4">
+            <div>
+                {% if userinfo.photo %}
+                    <img src="{{ userinfo.photo|striptags }}" class="img-circle" width="160px" height="240px"
+                         id="my_photo" name="user_face">
+                {% else %}
+                    <img src="{% static 'ImgCrop/images/avatar.png' %}" width="160px" height="240px" class="img-circle"
+                         id="my_photo"
+                         name="user_face">
+                {% endif %}
+            </div>
+            <div>
+                <p>姓名：{{ user.username }}</p>
+                {% if userinfo %}
+                    <p>工作单位：{{ userinfo.company }}</p>
+                    <p>学校：{{ userinfo.school }}</p>
+                    <p>作者简介：{{ userinfo.aboutme }}</p>
+                {% else %}
+                    <p>这个作者太懒了，什么也没留下</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -10,11 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
-import os
+import os, sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
@@ -85,8 +85,22 @@ DATABASES = {
         'OPTIONS': {
             'timeout': 20,
         }
-    }
+    },
 }
+REDIS_HOST = '127.0.0.1'
+REDIS_PORT = 6379
+REDIS_DB = 0
+
+# The cache backends to use.
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django_redis.cache.RedisCache',
+#         'LOCATION': 'redis://127.0.0.1:6379/0',
+#         'OPTIONS': {
+#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+#         }
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -130,7 +144,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'uploads')
 MEDIA_URL = '/media/'
 
 # 登录跳转页面
-LOGIN_REDIRECT_URL = 'blog:blog_title'
+LOGIN_REDIRECT_URL = '/home/'
 
 #  DEBUG 模式 将邮件内容显示在控制台
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -141,5 +155,3 @@ EMAIL_USE_TLS = False
 EMAIL_HOST_USER = "from_now_on820@qq.com"
 EMAIL_HOST_PASSWORD = "pmfrgzmkuznabdif"
 DEFAULT_FROM_EMAIL = "from_now_on820@qq.com"
-
-

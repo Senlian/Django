@@ -1,0 +1,142 @@
+{% extends "article/base.html" %}
+{% load staticfiles %}
+{% block title %}文章栏目{% endblock %}
+{% block content %}
+    <div>
+        <p class="text-right">
+            <button class="btn btn-primary" onclick="add_tag()">添加关键字</button>
+        </p>
+        <table class="table table-hover">
+            <tr>
+                <td>标签名</td>
+                <td>作者</td>
+                <td>创建时间</td>
+                <td>操作</td>
+            </tr>
+            {% if article_tags %}
+                {% for article_tag in article_tags %}
+                    <tr>
+                        <td>{{ article_tag.tag }}</td>
+
+                        <td>{{ article_tag.author }}</td>
+
+                        <td>{{ article_tag.created }}</td>
+
+                        <td>
+                            <a name="edit" href="javascript:;" style="margin-right: 15px;" onclick="edit_tag(this, {{ article_tag.id }})"><span
+                                    class="glyphicon glyphicon-edit"></span></a>
+
+                            <a name="delete" href="{% url 'article:del_tag'  article_tag.id %}"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <p>您还没有添加关键字</p>
+                {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'layer/layer.js' %}"></script>
+    <script type="text/javascript">
+        function add_tag() {
+            var index = layer.open({
+                type: 1,
+                skin: "layui-layer-rim",
+                area: ["400px", "200px"],
+                title: "新增关键字",
+                content: '<div class="text-center" style="margin-top:20px;"><lable>请输入新的关键字:</lable><p>{{ article_tag_form.tag }}</p></div>',
+                btn: ["确认", "取消"],
+                yes: function (index, layero) {
+                    var tag = $('#id_tag').val();
+                    $.ajax({
+                        url: "{% url 'article:article_tag' %}",
+                        type: "POST",
+                        data: {"tag": tag},
+                        success: function (e) {
+                            if (e == '1') {
+                                parent.location.reload();
+                                layer.msg("创建成功！");
+                            } else if (e == '3') {
+                                layer.msg("关键字{{ tag }}已存在！");
+                            } else {
+                                layer.msg("创建失败！");
+                            }
+                        }
+                    });
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                }
+            });
+        };
+
+        function del_tag(el, column_id) {
+            var name = $(el).parents("tr").children("td").eq(1).text();
+            var index = layer.open({
+                type: 1,
+                skin: "layui-layer-rim",
+                area: ["400px", "200px"],
+                title: "编辑栏目",
+                content: '<div class="text-center" style="margin-top:20px;"><lable>请输入新的栏目名称:</lable><input type="text" id="new_name" value="' + name + '"></div>',
+                btn: ["确认", "取消"],
+                yes: function (index, layero) {
+                    var new_name = $('#new_name').val();
+                    $.ajax({
+                        url: "{% url 'article:del_column' %}",
+                        type: "POST",
+                        data: {
+                            "column_id": column_id,
+                        },
+                        success: function (e) {
+                            if (e == '1') {
+                                parent.location.reload();
+                                layer.msg("删除成功！");
+                            } else {
+                                layer.msg("删除失败！");
+                            }
+                        }
+                    });
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                }
+            })
+        }
+
+        function edit_tag(item, tag_id) {
+            var name = $(item).parents("tr").children("td").eq(0).text();
+            var index = layer.open({
+                type: 1,
+                skin: "layui-layer-rim",
+                area: ["400px", "200px"],
+                title: "编辑栏目",
+                content: '<div class="text-center" style="margin-top:20px;"><lable>请输入新的关键字:</lable><input type="text" id="new_tag" value="' + name + '"></div>',
+                btn: ["确认", "取消"],
+                yes: function (index, layero) {
+                    var new_tag = $('#new_tag').val();
+                    $.ajax({
+                        url: "{% url 'article:rename_tag' %}",
+                        type: "POST",
+                        data: {
+                            "tag_id": tag_id,
+                            "tag": new_tag
+                        },
+                        success: function (e) {
+                            if (e == '1') {
+                                parent.location.reload();
+                                layer.msg("修改成功！");
+                            } else if (e == '2') {
+                                layer.msg("该关键字已存在！");
+                            } else {
+                                layer.msg("修改失败！");
+                            }
+                        }
+                    });
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                }
+            })
+        }
+    </script>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load article_tags %}
+{% block title %}文章摘要{% endblock %}
+{% block content %}
+    <div class="row text-center vertical-middle-sm">
+        <h1>阅读，丰富头脑，善化思维</h1>
+        <p>本站博文总数 {% article_count %} 篇</p>
+    </div>
+    <div class="container">
+        {% for article in articles %}
+            <div class="list-group">
+                <a href="{{ article.get_absolute_url }}" class="list-group-item active">
+                    <h4 class="list-group-item-heading">{{ article.title }}</h4>
+                    <p class="list-grop-item-text">
+                        <a href="{% url 'article:author_articles' article.author.username %}">作者：{{ article.author.username }}</a>
+                    </p>
+                    <p class="list-grop-item-text">摘要：{{ article.body|slice:"40"|linebreaks }}......</p>
+                </a>
+            </div>
+        {% endfor %}
+        {% include 'paginator.html' %}
+    </div>
+{% endblock %}

@@ -1,0 +1,5 @@
+<ul>
+    {% for last_article in last_articles %}
+        <li><a href="{{ last_article.get_absolute_url }}">{{ last_article.title }}</a></li>
+    {% endfor %}
+</ul>
