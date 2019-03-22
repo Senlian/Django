@@ -29,6 +29,7 @@ urlpatterns = [
     re_path(r'^blog/', include('blog.urls', namespace='blog')),
     re_path(r'^account/', include('account.urls', namespace='account')),
     re_path(r'^article/', include('article.urls', namespace='article')),
+    re_path(r'^image/', include('image.urls', namespace='image')),
     re_path(r'^mdeditor/', include('mdeditor.urls')),
     # 设置浏览器图标
     # re_path(r'^favicon\.ico$', RedirectView.as_view(url=r'static/images/logo.png'))

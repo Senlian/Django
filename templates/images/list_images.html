@@ -1,0 +1,178 @@
+{% extends 'article/base.html' %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% block content %}
+    <div>
+        <p class="text-right">
+            <button name="btn_up" class="btn btn-primary" onclick="add_image()">添加图片</button>
+        </p>
+        <table class="table table-hover">
+            <tr>
+                <td>序号</td>
+                <td>标题</td>
+                <td>图片</td>
+                <td>作者</td>
+                <td>创建日期</td>
+                <td>操作</td>
+            </tr>
+            {% for image in imags %}
+                <tr>
+                    <td>{{ image.id }}</td>
+                    <td>{{ image.title }}</td>
+                    {% thumbnail image.image '100x100' as im %}
+                        <td>
+                            <a href="javascript:;"
+                               onclick="description_layer('{{ image.title }}','{{ image.image.url }}','{{ image.author }}', '{{ image.description }}')">
+                                <img src="{{ im.url }}" title="{{ image.title }}" alt="{{ im }}" width="100px"
+                                     height="100px"></a>
+                        </td>
+                    {% endthumbnail %}
+                    <td>{{ image.author }}</td>
+                    <td>{{ image.created }}</td>
+                    <td>
+                        {#                        <a name="edit" href="javascript:;" onclick="edit_picture(this, {{ image.id }})">#}
+                        {#                            <span class="glyphicon glyphicon-edit" style="margin-right: 5px;"></span>#}
+                        {#                        </a>#}
+                        <a name="delete" href="javascript:;" onclick="del_picture(this, {{ image.id }})">
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">还没有图片，点击 <a href="javascript:;" onclick="add_image()">添加图片</a></td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'layer/layer.js' %}"></script>
+    <script type="text/javascript">
+        function add_image() {
+            var index = layer.open({
+                type: 1,
+                skin: 'layui-layer-demo',
+                closeBtn: 1,
+                shift: 2,
+                shadeClose: true,
+                title: '添加图片',
+                area: ['720px', '420px'],
+                content: '<div style="padding: 20px">\n' +
+                    '    <p style="color: red;" class="col-sm-offset-2">请添加扩展名为jpg,jpge,png格式的图片</p>\n' +
+                    '    <form class="form form-horizontal">\n' +
+                    '        <div class="form-group">\n' +
+                    '            <label class="col-sm-2 control-label" for="phototitle">标题</label>\n' +
+                    '            <div class="col-sm-10">\n' +
+                    '                <input id="phototitle" type="text" class="form-control" style="margin-bottom: 5px;">\n' +
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '        <div class="form-group">\n' +
+                    '            <label class="col-sm-2 control-label" for="photourl">地址</label>\n' +
+                    '            <div class="col-sm-10">\n' +
+                    '                <input id="photourl" type="text" class="form-control" style="margin-bottom: 5px;">\n' +
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '        <div class="form-group">\n' +
+                    '            <label class="col-sm-2 control-label" for="photodesc">描述</label>\n' +
+                    '            <div class="col-sm-10">\n' +
+                    '                <textarea id="photodesc" type="text" row="2" class="form-control" style="margin-bottom: 5px;">\n' +
+                    '\n' +
+                    '                </textarea>\n' +
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '        <div class="form-group">\n' +
+                    '            <div class="col-sm-offset-2 col-sm-10">\n' +
+                    '                <input type="button" value="上传" id="newphoto" class="btn btn-primary  btn-lg">\n' +
+                    '            </div>\n' +
+                    '        </div>\n' +
+                    '    </form>\n' +
+                    '</div>',
+                success: function () {
+                    $('#newphoto').on('click', function () {
+                        var title = $('#phototitle').val();
+                        var url = $('#photourl').val();
+                        var description = $('#photodesc').val();
+                        var photo_data = {'title': title, 'url': url, 'description': description};
+                        $.ajax({
+                            url: "{% url 'image:upload_image' %}",
+                            type: 'POST',
+                            data: photo_data,
+                            success: function (e) {
+                                var status = e['status'];
+                                if (status == '1') {
+                                    layer.close(index);
+                                    window.location.reload();
+                                } else {
+                                    layer.msg("图片加载失败，请更换图片。");
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+        };
+
+        function edit_picture(el, image_id) {
+            var image_id = image_id
+            var index = layer.open({
+                type: 2,
+                skin: 'layui-layer-demo',
+                shift: 5,
+                shadeClose: true,
+                title: '添加图片',
+                area: ['720px', '420px'],
+                title: '修改图片',
+                content: '{% url "image:edit_image" 1 %}',
+                success: function () {
+
+                }
+            });
+        };
+
+        function del_picture(el, image_id) {
+            var index = layer.open({
+                type: 1,
+                skin: 'layui-layer-demo',
+                closeBtn: 1,
+                shift: 2,
+                shadeClose: true,
+                title: '确认删除',
+                area: ['360px', '180px'],
+                content: '<p>是否确认删除该图片</p>',
+                btn: ["是", "否"],
+                yes: function (index, layero) {
+                    $.ajax({
+                        url: "{% url 'image:del_image' %}",
+                        type: "POST",
+                        data: {
+                            "image_id": image_id
+                        },
+                        success: function (e) {
+                            if (e == '1') {
+                                parent.location.reload();
+                                layer.msg("删除成功！");
+                            } else (e == '2')
+                            {
+                                layer.msg("删除失败！");
+                            }
+                        }
+                    });
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                }
+            })
+        };
+
+        function description_layer(title, url,user, description) {
+            var index = layer.open({
+                type: 1,
+                title: title,
+                skin: 'layio-layer-rim',
+                {#area: ['800px', '400px'],#}
+                content: '<div class="text-center"><img src="'+url+'"><p>发布者：'+user+'</p></div><div style="margin-left:20px;">'+description+'</div>'
+            })
+        }
+    </script>
+{% endblock %}

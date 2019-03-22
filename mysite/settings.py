@@ -27,7 +27,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['192.168.1.146', '127.0.0.1']
 
 # Application definition
-
+#  pip instal sorl-thumbnail,缩略图
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'account',
     'article',
     'mdeditor',
+    'image',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
