@@ -433,11 +433,17 @@
                 list_display_links = ['phone', 'profession', 'company', 'school', 'intro']
 
         ```
-        
+
+    - 表单模块
+        - 登陆表单
+                
     - 应用视图
         - 登录视图
         - 注册视图
         - 退出视图
+        - 忘记密码
+            - 邮件找回
+        - 修改密码
         
 - blog应用
     - 创建应用  

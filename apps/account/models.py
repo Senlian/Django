@@ -30,6 +30,7 @@ class AccountUserProfileModel(models.Model):
     #  自定义非模型字段方法，返回显示内容
     def user_display(self):
         return self.user.username
+
     # 自定义非模型字段方法的标题
     user_display.short_description = '账号'
     # 自定义非模型字段方法不支持排序，需要定义排序依据的字段，减号表示倒序
@@ -38,10 +39,10 @@ class AccountUserProfileModel(models.Model):
     username = property(user_display)
 
 
-
 class AccountUserDetailModel(models.Model):
     # 如果不用引号，则绑定模板需要在该模型前定义
-    user = models.OneToOneField('AccountUserProfileModel', related_name='user_detail',unique=True, on_delete=models.CASCADE, verbose_name='账户')
+    user = models.OneToOneField('AccountUserProfileModel', related_name='user_detail', unique=True,
+                                on_delete=models.CASCADE, verbose_name='账户')
     phone = models.CharField(max_length=200, blank=True, null=True, verbose_name='电话')
     profession = models.CharField(max_length=200, blank=True, null=True, verbose_name='职业')
     company = models.CharField(max_length=200, blank=True, null=True, verbose_name='公司')
@@ -55,9 +56,14 @@ class AccountUserDetailModel(models.Model):
     def __str__(self):
         return 'UserName:{0}'.format(self.user.user_id)
 
-    # User_id自定义列名和显示方式
     def user_display(self):
-        return self.user.username
+        return self.user.user.username
 
     user_display.short_description = '账号'
     username = property(user_display)
+
+    def email_display(self):
+        return self.user.user.email
+
+    email_display.short_description = '邮箱'
+    email = property(email_display)

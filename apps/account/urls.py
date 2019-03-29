@@ -12,8 +12,13 @@
 # @Desc       : 
 '''
 from django.urls import path, re_path
-from .views import AccountLoginView
+from django.contrib.auth import views as auth_views
+from . import views as account_views
+
+
 app_name = 'account'
 urlpatterns = [
-    re_path(r'^login/$', AccountLoginView, name='login')
+    re_path(r'^login/$', account_views.AccountLoginView, name='login'),
+    re_path(r'^logout/$', account_views.AccountLogoutView, name='logout'),
+    re_path(r'^register/$', account_views.AccountRegisterView, name='register'),
 ]
