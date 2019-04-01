@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path, include
+from django.contrib.staticfiles.views import serve
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,6 +25,8 @@ urlpatterns = [
     path('admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm', ),
     path(r'reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
+    # re_path(r'^favicon\.ico$', RedirectView.as_view(url=r'static/common/imgs/s-icon-16x16.ico')),
+    path('favicon.ico', serve, {'path': 'common/imgs/s-icon-16x16.ico'}),
 
     re_path(r'^account/', include('account.urls', namespace='account')),
     re_path(r'^', include('article.urls', namespace='article')),

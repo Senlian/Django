@@ -452,4 +452,19 @@
         > 在`settings.py`的`INSTALLED_APPS`列表中添加`blog`
     - 模型创建
     - 后台注册
-    - 应用视图        
+    - 应用视图
+    
+## 小技巧 ##
+- 设置浏览器图标
+   - django设置icon路由
+       ```icon
+            from django.views.generic.base import RedirectView
+            from django.contrib.staticfiles.views import serve 
+            re_path(r'^favicon\.ico$', RedirectView.as_view(url=r'static/common/imgs/s-icon-16x16.ico')),
+            path('favicon.ico', serve, {'path': 'common/imgs/s-icon-16x16.ico'}),           
+        ```
+    
+   - HTML模板中直接重定向
+    ```html-icon
+        <link rel="shortcut icon" href="{% static 'common/imgs/s-icon-16x16.ico' %}">
+    ```

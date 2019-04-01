@@ -20,6 +20,8 @@ from django.utils.translation import gettext_lazy as _
 class AccountLoginForm(forms.Form):
     username = forms.CharField(max_length=200, label='用户名', widget=widgets.TextInput(
         attrs={
+            'type': 'text',
+            'class': 'form-control',
             'placeholder': '请输入用户名',
             "oninvalid": "setCustomValidity('用户名不能为空哟')",
             "oninput": "setCustomValidity('')",
@@ -27,6 +29,8 @@ class AccountLoginForm(forms.Form):
 
     password = forms.CharField(label='密码', widget=forms.PasswordInput(
         attrs={
+            'type': 'password',
+            'class': 'form-control',
             'placeholder': '请输入密码',
             "oninvalid": "setCustomValidity('密码不能为空哟')",
             "oninput": "setCustomValidity('')",

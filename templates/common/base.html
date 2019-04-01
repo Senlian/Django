@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% load staticfiles %}
+    <title>{% block title %}{{ title }}-{{ site_title|default:_("这里输入站点标题") }}{% endblock %}</title>
+    {% block base_icon_head %}
+        <link rel="shortcut icon" href="{% static 'common/imgs/s-icon-16x16.ico' %}">
+    {% endblock %}
+    {% block base_css_head %}
+        <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
+    {% endblock %}
+</head>
+<body>
+{% block js_body_top %}{% endblock %}
+<header>
+    {% block header %}
+        {% include "common/header.html" %}
+    {% endblock %}
+</header>
+<main>
+    {% block content %}
+        {% block left_sider %}{% endblock %}
+        {% block text_center %}
+            <div>在这里输入正文</div>
+        {% endblock %}
+
+        {% block right_sider %}{% endblock %}
+    {% endblock %}
+</main>
+<footer>
+    {% block footer %}
+        {% include "common/footer.html" %}
+    {% endblock %}
+</footer>
+{% block base_js_body %}
+    <script src="{% static 'common/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'common/js/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'layui/layui.all.js' %}"></script>
+{% endblock %}
+{% block base_code_body %}
+    {#这里写入js代码#}
+{% endblock %}
+</body>
+</html>
