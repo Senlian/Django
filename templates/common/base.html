@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
     {% endblock %}
 </head>
-<body>
+<body {% block style_body %}style="width: auto;height: auto;" {% endblock %}>
 {% block js_body_top %}{% endblock %}
 <header>
     {% block header %}

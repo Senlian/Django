@@ -29,12 +29,12 @@
             <ul class="navbar-nav">
                 {% if not user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#" onclick="user_login(this)">
+                        <a class="nav-link" href="#" onclick='open_url("{% url 'account:login' %}")'>
                             <span>登录</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="#" onclick='open_url("{% url 'account:register' %}")'>
                             <span>注册</span>
                         </a>
                     </li>
@@ -66,7 +66,7 @@
 </nav>
 
 <script type="text/javascript">
-    function user_login(e) {
+    function open_url(url) {
         var index = layer.open({
             title: false,
             skin: 'demo-class',
@@ -74,12 +74,16 @@
             resize: false,
             scrollbar: false,
             shadeClose: true,
-            move: '.demo-class',
-            area: ["360px", "420px"],
+            move: '.layui-layer-content',
+            area: ["380px"],
             type: 2,
-            content: "{% url 'account:login' %}",
+            offset: '20%',
+            content: [url, 'no'],
             success: function () {
-
+                layer.iframeAuto(index);
+            },
+            end: function () {
+                window.parent.location.reload();
             }
         });
     };

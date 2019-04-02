@@ -1,1 +1,74 @@
-{% extends "common/base.html" %}
+{% extends 'common/base.html' %}
+{% load i18n %}
+{% load staticfiles %}
+{% block header %}{% endblock %}
+{% block content %}
+    <div class="container my-4">
+        <div class="mx-auto mb-2" type="width: 150px;">
+            <h2 class="text-center text-primary"><span>{{ site_header|default:_('账号注册') }}</span></h2>
+        </div>
+        <div class="my-auto">
+            {% if user.is_authenticated %}
+                <p class="errornote">
+                    {% blocktrans trimmed %}
+                        You are authenticated as {{ user.username }}, but are not authorized to
+                        access this page. Would you like to login to a different account?
+                    {% endblocktrans %}
+                </p>
+            {% endif %}
+            <form class="form-horizontal pt-md-350">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="inputEmail3"
+                           class="col-sm-2 control-label  font-weight-bold">{{ form.username.label_tag }}</label>
+                    <div class="col-sm-10">
+                        {{ form.username }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3"
+                           class="col-sm-2 control-label  font-weight-bold">{{ form.password.label_tag }}</label>
+                    <div class="col-sm-10">
+                        {{ form.password }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3"
+                           class="col-sm-2 control-label  font-weight-bold">{{ form.password_agin.label_tag }}</label>
+                    <div class="col-sm-10">
+                        {{ form.password_agin }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword3"
+                           class="col-sm-2 control-label  font-weight-bold">{{ form.email.label_tag }}</label>
+                    <div class="col-sm-10">
+                        {{ form.email }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10 row">
+                        <div class="col-4">
+                            <img id="img-login-verify" class="rounded-0" width="100px"
+                                 src="{% static 'common/imgs/verify.png' %}"
+                                 title="点击刷新">
+                        </div>
+                        <div class="col-8">
+                            <input id="input-login-verify" class="form-control" name="verify" type="text"
+                                   placeholder="验证码" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group my-auto">
+                    <div class="col-sm-offset-2 col-sm-10 text-center">
+                        <button type="submit" class="btn btn-block btn-primary">注册</button>
+                    </div>
+                </div>
+            </form>
+            <div class="container-fluid" style="margin-top: 15px">
+                <a class="float-right btn-link" target="_self" href="{% url 'account:login' %}">已有账号，直接登录</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}{% endblock %}

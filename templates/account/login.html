@@ -1,9 +1,11 @@
 {% extends 'common/base.html' %}
-{% load i18n %}
+{% load i18n static %}
+
 {% load staticfiles %}
+{% load account_tags %}
 {% block header %}{% endblock %}
 {% block content %}
-    <div class="container mt-4">
+    <div class="container my-4">
         <div class="mx-auto mb-2" type="width: 150px;">
             <h2 class="text-center text-primary"><span>{{ site_header|default:_('账号登录') }}</span></h2>
         </div>
@@ -16,16 +18,30 @@
                     {% endblocktrans %}
                 </p>
             {% endif %}
-            <form class="form-horizontal pt-md-350">
+            <form class="form-horizontal pt-md-350" role="form" method="post" action="." onsubmit="return onsubmitFunc(this)">
                 {% csrf_token %}
+                {% if form.username.errors %}
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label text-danger">{{ form.username.errors }}</label>
+                    </div>
+                {% endif %}
                 <div class="form-group">
-                    <label for="inputEmail3" class="col-sm-2 control-label">{{ form.username.label_tag }}</label>
+                    <label for="{{ form.username.id_for_label }}" class="col-sm-2 control-label font-weight-bold">
+                        {{ form.username.label_tag }}
+                    </label>
                     <div class="col-sm-10">
                         {{ form.username }}
                     </div>
                 </div>
+                {% if form.password.errors %}
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label  text-danger">{{ form.password.errors }}</label>
+                    </div>
+                {% endif %}
                 <div class="form-group">
-                    <label for="inputPassword3" class="col-sm-2 control-label">{{ form.password.label_tag }}</label>
+                    <label for="{{ form.password.id_for_label }}" class="col-sm-2 control-label  font-weight-bold">
+                        {{ form.password.label_tag }}
+                    </label>
                     <div class="col-sm-10">
                         {{ form.password }}
                     </div>
@@ -42,11 +58,11 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10 row">
                         <div class="col-8">
-                            <input id="input-login-verify" class="form-control" name="verify" type="text"
+                            <input id="id_login_verify" class="form-control" name="verify" type="text"
                                    placeholder="验证码" autocomplete="off">
                         </div>
                         <div class="col-4">
-                            <img id="img-login-verify" class="rounded-0" width="100px"
+                            <img id="id_login_verify_img" class="rounded-0" width="100px"
                                  src="{% static 'common/imgs/verify.png' %}"
                                  title="点击刷新">
                         </div>
@@ -60,9 +76,40 @@
             </form>
             <div class="container-fluid" style="margin-top: 15px">
                 <a class="btn-link" href="#">忘记密码 ?</a>
-                <a class="float-right btn-link" href="{% url 'account:register' %}">新用户注册</a>
+                <a class="float-right btn-link" target="_self" href="{% url 'account:register' %}">新用户注册</a>
             </div>
         </div>
     </div>
 {% endblock %}
 {% block footer %}{% endblock %}
+{% block base_code_body %}
+    <script type="text/javascript">
+        function onsubmitFunc(e) {
+            var index = parent.layer.getFrameIndex(window.name);
+            var url = '{% url "account:login" %}';
+            var username = $('#id_username').val();
+            var password = $('#id_password').val();
+            var verify = $('#id_login_verify').val();
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+                    username: username,
+                    password: password,
+                    verify: verify
+                },
+                cache: false,
+                success: function (msg) {
+                    parent.layer.close(index);
+                    return true;
+                },
+                error: function (msg) {
+                    return false;
+                }
+            });
+            return false;
+        }
+    </script>
+{% endblock %}
