@@ -21,4 +21,5 @@ urlpatterns = [
     re_path(r'^login/$', account_views.AccountLoginView, name='login'),
     re_path(r'^logout/$', account_views.AccountLogoutView, name='logout'),
     re_path(r'^register/$', account_views.AccountRegisterView, name='register'),
+    re_path(r'^send_email_verify/$', account_views.AccountEmailVerifyView, name='send_email_verify'),
 ]

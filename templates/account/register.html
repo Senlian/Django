@@ -3,7 +3,7 @@
 {% load staticfiles %}
 {% block header %}{% endblock %}
 {% block content %}
-    <div class="container my-4">
+    <div class="container my-4" style="width: 380px;">
         <div class="mx-auto mb-2" type="width: 150px;">
             <h2 class="text-center text-primary"><span>{{ site_header|default:_('账号注册') }}</span></h2>
         </div>
@@ -16,51 +16,49 @@
                     {% endblocktrans %}
                 </p>
             {% endif %}
-            <form class="form-horizontal pt-md-350">
+            <form class="form-horizontal pt-md-3" role="form" method="post" action="."
+                  onsubmit="return onsubmitRegister(this)">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="inputEmail3"
-                           class="col-sm-2 control-label  font-weight-bold">{{ form.username.label_tag }}</label>
-                    <div class="col-sm-10">
+                    <label for="{{ form.username.id_for_label }}"
+                           class="col-sm-12 control-label  font-weight-bold">{{ form.username.label_tag }}</label>
+                    <div class="col-sm-12">
                         {{ form.username }}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputPassword3"
-                           class="col-sm-2 control-label  font-weight-bold">{{ form.password.label_tag }}</label>
-                    <div class="col-sm-10">
+                    <label for="{{ form.password.id_for_label }}"
+                           class="col-sm-12 control-label  font-weight-bold">{{ form.password.label_tag }}</label>
+                    <div class="col-sm-12">
                         {{ form.password }}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputPassword3"
-                           class="col-sm-2 control-label  font-weight-bold">{{ form.password_agin.label_tag }}</label>
-                    <div class="col-sm-10">
+                    <label for="{{ form.password_agin.id_for_label }}"
+                           class="col-sm-12 control-label  font-weight-bold">{{ form.password_agin.label_tag }}</label>
+                    <div class="col-sm-12">
                         {{ form.password_agin }}
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputPassword3"
-                           class="col-sm-2 control-label  font-weight-bold">{{ form.email.label_tag }}</label>
-                    <div class="col-sm-10">
+                    <label for="{{ form.email.id_for_label }}"
+                           class="col-sm-12 control-label  font-weight-bold">{{ form.email.label_tag }}</label>
+                    <div class="col-sm-12">
                         {{ form.email }}
                     </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10 row">
-                        <div class="col-4">
-                            <img id="img-login-verify" class="rounded-0" width="100px"
-                                 src="{% static 'common/imgs/verify.png' %}"
-                                 title="点击刷新">
-                        </div>
+                <div class="form-group" style="display: none" id="id_verify_box">
+                    <div class="col-sm-12 row">
                         <div class="col-8">
-                            <input id="input-login-verify" class="form-control" name="verify" type="text"
-                                   placeholder="验证码" autocomplete="off">
+                            {{ form.email_verify }}
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-light text-primary" type="button" onclick="send_mail(this)">发送验证码</button>
                         </div>
                     </div>
                 </div>
                 <div class="form-group my-auto">
-                    <div class="col-sm-offset-2 col-sm-10 text-center">
+                    <div class="col-sm-offset-2 col-sm-12 text-center">
                         <button type="submit" class="btn btn-block btn-primary">注册</button>
                     </div>
                 </div>
@@ -72,3 +70,105 @@
     </div>
 {% endblock %}
 {% block footer %}{% endblock %}
+{% block base_code_body %}
+    <script type="text/javascript">
+        function onsubmitRegister(e) {
+            var index = parent.layer.getFrameIndex(window.name);
+            var url = '{% url "account:register" %}';
+            var username = $('#id_username').val();
+            var password = $('#id_password').val();
+            var password_agin = $('#id_password_agin').val();
+            var email = $('#id_email').val();
+            var email_verify = $('#id_email_verify').val();
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+                    username: username,
+                    password: password,
+                    password_agin: password_agin,
+                    email: email,
+                    email_verify: email_verify
+                },
+                cache: false,
+                success: function (responseData) {
+                    console.log(responseData)
+                    if (responseData.is_register) {
+                        parent.layer.close(index);
+                        return true;
+                    } else if ('username' in responseData) {
+                        layer.msg(responseData.username[0]);
+                    } else if ('password' in responseData) {
+                        layer.msg(responseData.password[0]);
+                    } else if ('password_agin' in responseData) {
+                        layer.msg(responseData.password_agin[0]);
+                    } else if ('email' in responseData) {
+                        layer.msg(responseData.email[0]);
+                    } else if ('email_verify' in responseData) {
+                        layer.msg(responseData.email_verify[0]);
+                    } else {
+                        layer.msg('注册失败，请检查表单项');
+                    }
+                    return false
+                },
+                error: function (msg) {
+                    layer.msg('注册失败，请检查表单项');
+                    {#$('html').html(msg.responseText)#}
+                    return false;
+                }
+            });
+            return false;
+        };
+        $('#id_email').on('input', function () {
+            if ($('#id_email').val()) {
+                $('#id_verify_box').show();
+                $('#id_email_verify').attr('required', true);
+            } else {
+                $('#id_verify_box').hide();
+            }
+        });
+        var curCount
+        var count = 60
+        var InterValObj
+        function send_mail(e) {
+
+            var element = $(e)
+            var email = $('#id_email').val();
+            element.attr('disabled', true);
+            element.val('ddd');
+            var email_verify = $('#id_email_verify').val();
+            var url = '{% url "account:send_email_verify" %}'
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+                    email: email,
+                    email_verify: email_verify
+                },
+                cache: false,
+                success: function (responseData) {
+                    if (responseData.is_send) {
+                        layer.msg('验证码已发送')
+                        return true;
+                    } else if ('email' in responseData) {
+                        layer.msg(responseData.email[0]);
+                    } else if ('email_verify' in responseData) {
+                        layer.msg(responseData.email_verify[0]);
+                    } else {
+                        layer.msg('验证码失败');
+                    }
+                    return false
+                },
+                error: function (msg) {
+                    layer.msg('验证码失败');
+                    {#$('html').html(msg.responseText)#}
+                    return false;
+                }
+            });
+        }
+    </script>
+{% endblock %}

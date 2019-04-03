@@ -1,24 +1,25 @@
 {% extends 'common/base.html' %}
 {% load i18n static %}
-
 {% load staticfiles %}
 {% load account_tags %}
 {% block header %}{% endblock %}
+
 {% block content %}
-    <div class="container my-4">
+    <div class="container my-4" style="width: 380px;">
         <div class="mx-auto mb-2" type="width: 150px;">
             <h2 class="text-center text-primary"><span>{{ site_header|default:_('账号登录') }}</span></h2>
         </div>
         <div class="my-auto">
             {% if user.is_authenticated %}
-                <p class="errornote">
-                    {% blocktrans trimmed %}
-                        You are authenticated as {{ user.username }}, but are not authorized to
+                <p class="bg-danger">
+                    {% blocktrans trimmed with name=user.username %}
+                        You are authenticated as {{ name }}, but are not authorized to
                         access this page. Would you like to login to a different account?
                     {% endblocktrans %}
                 </p>
             {% endif %}
-            <form class="form-horizontal pt-md-350" role="form" method="post" action="." onsubmit="return onsubmitFunc(this)">
+            <form class="form-horizontal pt-md-3" role="form" method="post" action="."
+                  onsubmit="return onsubmitLogin(this)">
                 {% csrf_token %}
                 {% if form.username.errors %}
                     <div class="form-group">
@@ -26,10 +27,10 @@
                     </div>
                 {% endif %}
                 <div class="form-group">
-                    <label for="{{ form.username.id_for_label }}" class="col-sm-2 control-label font-weight-bold">
+                    <label for="{{ form.username.id_for_label }}" class="col-sm-12 control-label font-weight-bold">
                         {{ form.username.label_tag }}
                     </label>
-                    <div class="col-sm-10">
+                    <div class="col-sm-12">
                         {{ form.username }}
                     </div>
                 </div>
@@ -39,15 +40,15 @@
                     </div>
                 {% endif %}
                 <div class="form-group">
-                    <label for="{{ form.password.id_for_label }}" class="col-sm-2 control-label  font-weight-bold">
+                    <label for="{{ form.password.id_for_label }}" class="col-sm-12 control-label  font-weight-bold">
                         {{ form.password.label_tag }}
                     </label>
-                    <div class="col-sm-10">
+                    <div class="col-sm-12">
                         {{ form.password }}
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
+                    <div class="col-sm-offset-2 col-sm-12">
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox"> 记住密码
@@ -56,7 +57,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10 row">
+                    <div class="col-sm-offset-2 col-sm-12 row">
                         <div class="col-8">
                             <input id="id_login_verify" class="form-control" name="verify" type="text"
                                    placeholder="验证码" autocomplete="off">
@@ -69,7 +70,7 @@
                     </div>
                 </div>
                 <div class="form-group my-auto">
-                    <div class="col-sm-offset-2 col-sm-10 text-center">
+                    <div class="col-sm-offset-2 col-sm-12 text-center">
                         <button type="submit" class="btn btn-block btn-primary">登录</button>
                     </div>
                 </div>
@@ -84,7 +85,7 @@
 {% block footer %}{% endblock %}
 {% block base_code_body %}
     <script type="text/javascript">
-        function onsubmitFunc(e) {
+        function onsubmitLogin(e) {
             var index = parent.layer.getFrameIndex(window.name);
             var url = '{% url "account:login" %}';
             var username = $('#id_username').val();
@@ -101,11 +102,22 @@
                     verify: verify
                 },
                 cache: false,
-                success: function (msg) {
-                    parent.layer.close(index);
-                    return true;
+                success: function (responseData) {
+                    if (responseData.is_login) {
+                        parent.layer.close(index);
+                        return true;
+                    } else if ('username' in responseData) {
+                        layer.msg(responseData.username[0]);
+                    } else if ('password' in responseData) {
+                        layer.msg(responseData.password[0]);
+                    } else {
+                        layer.msg('登录失败，请稍后再试');
+                    }
+                    return false;
                 },
                 error: function (msg) {
+                    layer.msg('登录失败，请稍后再试');
+                    {#$('html').html(msg.responseText)#}
                     return false;
                 }
             });
