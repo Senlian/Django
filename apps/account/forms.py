@@ -123,8 +123,8 @@ class AccountRegisterForm(forms.ModelForm):
 
     def clean_email_verify(self):
         form_email_verify = self.cleaned_data['email_verify']
-        print(cache.get('email_verify'))
-        if form_email_verify != cache.get('email_verify'):
+        email_to = self.cleaned_data['email']
+        if form_email_verify != cache.get('email_verify_{0}'.format(email_to.split('@')[0]), ''):
             raise forms.ValidationError('验证码错误！')
         return self.cleaned_data['email_verify']
 

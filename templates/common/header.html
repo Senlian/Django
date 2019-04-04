@@ -44,10 +44,10 @@
                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             {% if userinfo.photo %}
                                 <img class="rounded-circle" width="30px" height="30px"
-                                     src="{{ userinfo.photo | striptags }}">
+                                     src="{{ userinfo.photo | striptags }}" title="{{ user.username }}">
                             {% else %}
                                 <img class="rounded-circle" width="30px" height="30px"
-                                     src="{% static 'common/imgs/avatar.png' %}">
+                                     src="{% static 'common/imgs/avatar.png' %}" title="{{ user.username }}">
                             {% endif %}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">

@@ -439,8 +439,60 @@
                 
     - 应用视图
         - 登录视图
+            - 邮箱和用户名登录
+                > 在settings中设置`AUTHENTICATION_BACKENDS = ['account.backends.AccountBackend']`
+                ```AccountBackend
+                    #!/usr/bin/env python3
+                    # -*- coding: utf-8 -*-
+                    # backends.py
+                    
+                    '''
+                    # @license    : (C) Copyright 2013-{YEAR}, Node Supply Chain Manager Corporation Limited.
+                    # @author     : Administrator
+                    # @Email      :
+                    # @Time       : 2019/4/3 13:10
+                    # @File       : backends.py
+                    # @Software   : PyCharm
+                    # @Modules     :python3 -m pip install 
+                    # @Desc       : 
+                    '''
+                    from django.contrib.auth.backends import ModelBackend, UserModel
+                    from django.db.models import Q
+                    
+                    
+                    class AccountBackend(ModelBackend):
+                        def authenticate(self, request, username=None, password=None, **kwargs):
+                            if username is None:
+                                username = kwargs.get(UserModel.USERNAME_FIELD)
+                            try:
+                                user = UserModel.objects.get(Q(username=username) | Q(email=username))
+                            except UserModel.DoesNotExist:
+                                # Run the default password hasher once to reduce the timing
+                                # difference between an existing and a nonexistent user (#20760).
+                                UserModel().set_password(password)
+                            else:
+                                if user.check_password(password) and self.user_can_authenticate(user):
+                                    return user
+                ```
+                
+            - 验证码
+            - cookie
+                > `request.COOKIES.get(key)`
+            - session
+                ```session
+                    response = JsonResponse(jsonData)
+                    response.set_cookie(key,value,expires)
+                ```
+                
         - 注册视图
+            - 邮箱验证码
+            - 数据表保存
+            
         - 退出视图
+            - 内置方法
+                > logout(request)
+            - 自定义方法
+                > 删除session表中的键值对
         - 忘记密码
             - 邮件找回
         - 修改密码

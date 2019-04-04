@@ -11,7 +11,7 @@
         </div>
         <div class="my-auto">
             {% if user.is_authenticated %}
-                <p class="bg-danger">
+                <p class="errornote  alert alert-danger">
                     {% blocktrans trimmed with name=user.username %}
                         You are authenticated as {{ name }}, but are not authorized to
                         access this page. Would you like to login to a different account?
@@ -23,7 +23,7 @@
                 {% csrf_token %}
                 {% if form.username.errors %}
                     <div class="form-group">
-                        <label class="col-sm-12 control-label text-danger">{{ form.username.errors }}</label>
+                        <label class="col-sm-12 control-label alert alert-danger">{{ form.username.errors }}</label>
                     </div>
                 {% endif %}
                 <div class="form-group">
@@ -36,7 +36,7 @@
                 </div>
                 {% if form.password.errors %}
                     <div class="form-group">
-                        <label class="col-sm-12 control-label  text-danger">{{ form.password.errors }}</label>
+                        <label class="col-sm-12 control-label   alert alert-danger">{{ form.password.errors }}</label>
                     </div>
                 {% endif %}
                 <div class="form-group">
