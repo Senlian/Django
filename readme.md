@@ -64,6 +64,7 @@
     - 登录
     - 退出
     - 注册
+    - 密码找回
     - 个人信息
         - 信息展示
         - 信息修改
@@ -346,8 +347,10 @@
 - account应用
     - 创建应用  
         > `python manage.py startapp account`
+    
     - 应用激活
         > 在`settings.py`的`INSTALLED_APPS`列表中添加`account`
+    
     - 模型建立
         > models.py中创建模型类
         ```account.models.py
@@ -397,6 +400,7 @@
                     return 'UserName:{0}'.format(self.user.username)
             
         ```
+    
     - 创建数据表
         > `python manage.py migrations `
         ```migrations
@@ -414,7 +418,7 @@
               Applying account.0001_initial... OK
         ```
         
-    - 后台注册
+    - 模型后台注册
         > admin.py中注册管理模型
         ```admin
             from django.contrib import admin
@@ -436,6 +440,19 @@
 
     - 表单模块
         - 登陆表单
+            - 用户名
+            - 密码
+            - 记住密码
+                > required设置为False
+            
+        - 注册表单
+            - 用户名      
+            - 密码      
+            - 确认密码      
+            - 邮箱      
+            - 邮箱验证码
+                  
+        - 邮件表单    
                 
     - 应用视图
         - 登录视图
@@ -475,13 +492,29 @@
                                     return user
                 ```
                 
+            - 记住密码
+                - 记住密码表单项
+            
+            - 忘记密码
+                - 邮件找回
+                            
             - 验证码
-            - cookie
-                > `request.COOKIES.get(key)`
-            - session
+                > [生成验证码视图](#common)
+                
+            - [cookie](<https://www.cnblogs.com/sss4/p/7071334.html>)
                 ```session
+                    设置cookie,expires表示过去时间：                    
                     response = JsonResponse(jsonData)
                     response.set_cookie(key,value,expires)
+                    
+                    获取cookie：
+                    request.COOKIES.get(key)
+                ```
+                
+            - [session](<https://docs.djangoproject.com/en/dev/topics/http/sessions/>)
+                ```session
+                    request.session.get('key', None)
+                    request.sesson['key']=value`
                 ```
                 
         - 注册视图
@@ -493,22 +526,59 @@
                 > logout(request)
             - 自定义方法
                 > 删除session表中的键值对
-        - 忘记密码
-            - 邮件找回
+                           
         - 修改密码
         
+- article
+    - 创建应用  
+        > `python manage.py startapp article`    
+    - 应用激活
+        > 在`settings.py`的`INSTALLED_APPS`列表中添加`article`
+    - 模型创建
+        - 文章栏目
+            - 作者
+            - 栏目
+                                   
+        - 文章标签
+             - 作者
+             - 标签
+             
+        - 文章模型
+            - 作者
+                > 多对一
+            - 栏目
+                > 多对一
+            
+            - 标签
+                > 多对多
+            - 标题
+            - 内容
+            - 创建日期
+            - 修改日期
+        
+    - 后台注册
+    - 应用视图
+
 - blog应用
     - 创建应用  
         > `python manage.py startapp blog`    
     - 应用激活
         > 在`settings.py`的`INSTALLED_APPS`列表中添加`blog`
-    - 模型创建
-    - 后台注册
+    - 模型创建        
     - 应用视图
+        - 主页视图
     
+- <span id="common">common应用</span>
+    - 应用视图
+        - 生成验证码视图
+            > 利用Pillow模块的`Image, ImageDraw, ImageFont, ImageFilter`方法生成验证码图片；
+            > `request.sesson['verify']=verify` 保存验证码；
+            > 在校对视图中用`verify_code = request.session.get('verify', None).lower()`获取验证码进行比对。
+    
+        
 ## 小技巧 ##
 - 设置浏览器图标
-   - django设置icon路由
+   - 方法一、django设置icon路由
        ```icon
             from django.views.generic.base import RedirectView
             from django.contrib.staticfiles.views import serve 
@@ -516,7 +586,17 @@
             path('favicon.ico', serve, {'path': 'common/imgs/s-icon-16x16.ico'}),           
         ```
     
-   - HTML模板中直接重定向
+   - 方法二、HTML模板中直接重定向
     ```html-icon
         <link rel="shortcut icon" href="{% static 'common/imgs/s-icon-16x16.ico' %}">
     ```
+
+- 媒体文件引用
+    ```media
+        1. settings.TEMPLATES的options列表中添加`'django.template.context_processors.media'`
+        2. url配置路由：
+            from django.conf import settings
+            from django.conf.urls.static import static
+            urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    ```
+      

@@ -11,10 +11,11 @@ from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core import mail
 from django.conf import settings
-
+from django.views import View
 import random, string, json
 
 from .forms import AccountLoginForm, AccountRegisterForm, AccountEmailForm
+from common.views import CreateVerifyView
 
 
 # Create your views here.
@@ -22,10 +23,11 @@ from .forms import AccountLoginForm, AccountRegisterForm, AccountEmailForm
 @xframe_options_sameorigin
 def AccountLoginView(request):
     if request.user.is_authenticated or not request.META.get('HTTP_REFERER', ''):
-        return redirect('article:index')
+        return redirect('blog:index')
 
     is_login = False
     if request.method == 'GET':
+        CreateVerifyView(request)
         account_login_form = AccountLoginForm()
         return render(request, 'account/login.html',
                       {'form': account_login_form, 'title': '登录', 'site_title': '用户管理', 'site_header': '账号登录'})
@@ -34,15 +36,30 @@ def AccountLoginView(request):
         if account_login_form.is_valid():
             account_info = account_login_form.cleaned_data
             # 账户验证
-            account = authenticate(username=account_info.get('username', ''), password=account_info.get('password', ''))
+            username = account_info.get('username', '')
+            password = account_info.get('password', '')
+            remember = eval(account_info.get('remember', False))
+
+            account = authenticate(username=username, password=password)
+            verify_code = request.session.get('verify', None).lower()
+            verify_in = request.POST.get('verify', None).lower()
             if account and account.is_active:
                 # 内置方法登陆，该方法会在数据库存储django_session表中
-                login(request, account)
-                is_login = account.is_active
+                if not verify_in:
+                    account_login_form.errors.update({'verify': ['请输入验证码']})
+                elif verify_in != verify_code:
+                    CreateVerifyView(request)
+                    account_login_form.errors.update({'verify': ['验证码错误']})
+                else:
+                    login(request, account)
+                    is_login = account.is_active
             else:
+                CreateVerifyView(request)
                 account_login_form.errors.update({'password': ['密码错误']})
+
         account_login_form.errors.update({'is_login': is_login})
         response = JsonResponse(account_login_form.errors)
+
         # response.set_cookie('username', account_info.get('username', ''))
         return response
         # return render(request, 'account/login.html',{'form': account_login_form, 'title': '登录', 'site_title': '用户管理', 'site_header': '账号登录'})
@@ -52,16 +69,16 @@ def AccountLoginView(request):
 def AccountLogoutView(request):
     if request.user.is_authenticated:
         logout(request)
-    return redirect('article:index')
+    return redirect('blog:index')
 
 
 def AccountRegisterView(request):
     if request.user.is_authenticated or not request.META.get('HTTP_REFERER', ''):
-        return redirect('article:index')
+        return redirect('blog:index')
     is_register = False
     if request.method == 'GET':
         # if request.user.is_authenticated:
-        #     return redirect('article:index')
+        #     return redirect('blog:index')
         account_register_form = AccountRegisterForm()
         return render(request, 'account/register.html',
                       {'form': account_register_form, 'title': '注册', 'site_title': '用户管理', 'site_header': '账号注册'})
@@ -79,24 +96,64 @@ def AccountRegisterView(request):
     return JsonResponse(account_register_form.errors)
 
 
+
 @require_POST
 def AccountEmailVerifyView(request):
+    title = '注册验证码通知'
     email_verify = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
+    content = '您正在本站进行注册，验证码为 {0}, 如非本人操作请忽略。'.format(email_verify)
+    email_from = settings.DEFAULT_FROM_EMAIL
     TIMER = 30
-    is_send = True
+    is_send = False
+
     account_email_form = AccountEmailForm(request.POST)
 
     if account_email_form.is_valid():
         email_to = account_email_form.cleaned_data['email']
         cache.set('email_verify_{0}'.format(email_to.split('@')[0]), email_verify, TIMER)
         try:
-            mail.send_mail('注册验证码通知',
-                           '您正在本站进行注册，验证码为 {0}, 如非本人操作请忽略。'.format(email_verify),
-                           settings.DEFAULT_FROM_EMAIL,
+            mail.send_mail(title,
+                           content,
+                           email_from,
                            [email_to.strip()],
                            fail_silently=True, )
+            is_send = True
         except Exception as e:
             account_email_form.errors.update({'email_verify': ["验证码发送失败"]})
         finally:
             account_email_form.errors.update({'is_send': is_send, 'timer': TIMER})
     return JsonResponse(account_email_form.errors)
+
+
+def AccountSendResetEmailView(request):
+    TIMER = 30
+    is_send = False
+    if request.method == 'GET':
+        account_email_form = AccountEmailForm()
+        return render(request, 'account/password_reset_email.html', {'form': account_email_form})
+    else:
+        account_email_form = AccountEmailForm(request.POST)
+        if account_email_form.is_valid():
+            title = '密码重置'
+            email_from = settings.DEFAULT_FROM_EMAIL
+            email_to = account_email_form.cleaned_data['email']
+            content = '你正在请求重置密码'
+            try:
+                mail.send_mail(title,
+                               content,
+                               email_from,
+                               [email_to.strip()],
+                               fail_silently=True, )
+                is_send = True
+            except Exception as e:
+                account_email_form.errors.update({'email': ["邮件发送失败"]})
+            finally:
+                account_email_form.errors.update({'is_send': is_send, 'timer': TIMER})
+    return JsonResponse(account_email_form.errors)
+
+
+class AccountPasswordRestView(View):
+    def get(self, request):
+        return
+    def post(self, request):
+        return 

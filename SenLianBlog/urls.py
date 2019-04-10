@@ -14,6 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from django.urls import path, re_path, include
 from django.contrib.staticfiles.views import serve
@@ -24,10 +26,15 @@ urlpatterns = [
     path('admin/password_reset/', auth_views.PasswordResetView.as_view(), name='admin_password_reset'),
     path('admin/password_reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm', ),
-    path(r'reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete', ),
     # re_path(r'^favicon\.ico$', RedirectView.as_view(url=r'static/common/imgs/s-icon-16x16.ico')),
     path('favicon.ico', serve, {'path': 'common/imgs/s-icon-16x16.ico'}),
 
     re_path(r'^account/', include('account.urls', namespace='account')),
-    re_path(r'^', include('article.urls', namespace='article')),
+    re_path(r'^article/', include('article.urls', namespace='article')),
+    re_path(r'^', include('blog.urls', namespace='blog')),
+    re_path(r'^common/', include('common.urls', namespace='common')),
+
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

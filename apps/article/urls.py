@@ -15,6 +15,4 @@ from django.urls import path, re_path
 from . import views as article_views
 
 app_name = 'article'
-urlpatterns = [
-    re_path(r'^$', article_views.ArticleIndexView, name='index'),
-]
+urlpatterns = []

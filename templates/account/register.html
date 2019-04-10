@@ -5,7 +5,11 @@
 {% block content %}
     <div class="container my-4" style="width: 380px;">
         <div class="mx-auto mb-2" type="width: 150px;">
-            <h2 class="text-center text-primary"><span>{{ site_header|default:_('账号注册') }}</span></h2>
+            <h2 class="text-center text-primary">
+                <a class="text-primary" style="text-decoration-line: none;" href="{% url 'blog:index' %}" target="_top">
+                    <span>{{ site_header|default:_('账号注册') }}</span>
+                </a>
+            </h2>
         </div>
         <div class="my-auto">
             {% if user.is_authenticated %}
@@ -85,45 +89,49 @@
             var password_agin = $('#id_password_agin').val();
             var email = $('#id_email').val();
             var email_verify = $('#id_email_verify').val();
-            $.ajax({
-                url: url,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
-                    username: username,
-                    password: password,
-                    password_agin: password_agin,
-                    email: email,
-                    email_verify: email_verify
-                },
-                cache: false,
-                success: function (responseData) {
-                    console.log(responseData)
-                    if (responseData.is_register) {
-                        parent.layer.close(index);
-                        return true;
-                    } else if ('username' in responseData) {
-                        layer.msg(responseData.username[0]);
-                    } else if ('password' in responseData) {
-                        layer.msg(responseData.password[0]);
-                    } else if ('password_agin' in responseData) {
-                        layer.msg(responseData.password_agin[0]);
-                    } else if ('email' in responseData) {
-                        layer.msg(responseData.email[0]);
-                    } else if ('email_verify' in responseData) {
-                        layer.msg(responseData.email_verify[0]);
-                    } else {
+
+            if (password != password_agin) {
+                layer.msg('两次输入的密码不一致');
+                return false;
+            } else {
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+                        username: username,
+                        password: password,
+                        password_agin: password_agin,
+                        email: email,
+                        email_verify: email_verify
+                    },
+                    cache: false,
+                    success: function (responseData) {
+                        console.log(responseData)
+                        if (responseData.is_register) {
+                            parent.layer.close(index);
+                            return true;
+                        } else if ('username' in responseData) {
+                            layer.msg(responseData.username[0]);
+                        } else if ('password' in responseData) {
+                            layer.msg(responseData.password[0]);
+                        } else if ('password_agin' in responseData) {
+                            layer.msg(responseData.password_agin[0]);
+                        } else if ('email' in responseData) {
+                            layer.msg(responseData.email[0]);
+                        } else if ('email_verify' in responseData) {
+                            layer.msg(responseData.email_verify[0]);
+                        } else {
+                            layer.msg('注册失败，请检查表单项');
+                        }
+                    },
+                    error: function (msg) {
                         layer.msg('注册失败，请检查表单项');
+                        {#$('html').html(msg.responseText)#}
                     }
-                    return false
-                },
-                error: function (msg) {
-                    layer.msg('注册失败，请检查表单项');
-                    {#$('html').html(msg.responseText)#}
-                    return false;
-                }
-            });
+                });
+            }
             return false;
         };
 
@@ -151,12 +159,12 @@
                 curCount--;
                 element.text("重新发送(" + curCount + "s)");
             }
-            ;
         };
 
         function send_mail(e) {
             var element = $(e);
             var email = $('#id_email').val();
+            var email_type = true;
             if (email != "") {
                 element.attr('disabled', true);
                 var url = '{% url "account:send_email_verify" %}';
@@ -166,7 +174,8 @@
                     dataType: 'json',
                     data: {
                         csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
-                        email: email
+                        email: email,
+                        email_type: email_type,
                     },
                     cache: false,
                     success: function (responseData) {
@@ -177,25 +186,23 @@
                             {# 计时器 每秒使用SetRemainTimes刷新 #}
                             InterValObj = window.setInterval(SetRemainTimes, 1000, element, email);
                             return true;
-                        } else if ('email' in responseData) {
-                            layer.msg(responseData.email[0]);
+                        } else if ('email_type' in responseData) {
+                            layer.msg(responseData.email_type[0]);
                         } else if ('email_verify' in responseData) {
                             layer.msg(responseData.email_verify[0]);
                         } else {
                             layer.msg('验证码发送失败');
                         }
                         element.attr('disabled', false);
-                        return false;
                     },
                     error: function (msg) {
                         layer.msg('验证码发送失败');
                         element.attr('disabled', false);
                         {#$('html').html(msg.responseText)#}
-                        return false;
                     }
                 });
             }
-            ;
+            return false;
         };
 
     </script>

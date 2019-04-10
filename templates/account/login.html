@@ -7,7 +7,11 @@
 {% block content %}
     <div class="container my-4" style="width: 380px;">
         <div class="mx-auto mb-2" type="width: 150px;">
-            <h2 class="text-center text-primary"><span>{{ site_header|default:_('账号登录') }}</span></h2>
+            <h2 class="text-center text-primary">
+                <a class="text-primary" style="text-decoration-line: none;" href="{% url 'blog:index' %}" target="_top">
+                    <span>{{ site_header|default:_('账号登录') }}</span>
+                </a>
+            </h2>
         </div>
         <div class="my-auto">
             {% if user.is_authenticated %}
@@ -50,8 +54,9 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-12">
                         <div class="checkbox">
-                            <label>
-                                <input type="checkbox"> 记住密码
+                            {{ form.remember }}
+                            <label for="{{ form.remember.id_for_label }}">
+                                {{ form.remember.label_tag }}
                             </label>
                         </div>
                     </div>
@@ -64,8 +69,8 @@
                         </div>
                         <div class="col-4">
                             <img id="id_login_verify_img" class="rounded-0" width="100px"
-                                 src="{% static 'common/imgs/verify.png' %}"
-                                 title="点击刷新">
+                                 src="{{ MEDIA_URL }}/verifys/verify.png"
+                                 title="点击刷新" onclick="refreshVerify()">
                         </div>
                     </div>
                 </div>
@@ -76,7 +81,7 @@
                 </div>
             </form>
             <div class="container-fluid" style="margin-top: 15px">
-                <a class="btn-link" href="#">忘记密码 ?</a>
+                <a class="btn-link" href="{% url 'account:password_reset_email' %}">忘记密码 ?</a>
                 <a class="float-right btn-link" target="_self" href="{% url 'account:register' %}">新用户注册</a>
             </div>
         </div>
@@ -90,6 +95,7 @@
             var url = '{% url "account:login" %}';
             var username = $('#id_username').val();
             var password = $('#id_password').val();
+            var remember = $('#id_remember').is(':checked');
             var verify = $('#id_login_verify').val();
             $.ajax({
                 url: url,
@@ -99,6 +105,7 @@
                     csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
                     username: username,
                     password: password,
+                    remember: remember,
                     verify: verify
                 },
                 cache: false,
@@ -110,18 +117,36 @@
                         layer.msg(responseData.username[0]);
                     } else if ('password' in responseData) {
                         layer.msg(responseData.password[0]);
+                    } else if ('remember' in responseData) {
+                        layer.msg(responseData.remember[0]);
+                    } else if ('verify' in responseData) {
+                        layer.msg(responseData.verify[0]);
                     } else {
                         layer.msg('登录失败，请稍后再试');
                     }
+                    refreshVerify();
                     return false;
                 },
                 error: function (msg) {
                     layer.msg('登录失败，请稍后再试');
                     {#$('html').html(msg.responseText)#}
+                    refreshVerify();
                     return false;
                 }
             });
             return false;
+        };
+
+        function refreshVerify(id, src) {
+            id = id || 'id_login_verify_img';
+            src = src || ({{ MEDIA_URL }} +"verifys/verify.png?");
+            $.ajax({
+                type: 'get',
+                url: '{% url "common:verify" %}',
+                success: function () {
+                    $("#" + id).attr('src', src + Math.random());
+                }
+            })
         }
     </script>
 {% endblock %}

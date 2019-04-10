@@ -36,7 +36,7 @@ class AccountUserProfileModelAdmin(admin.ModelAdmin):
     # description显示在字段集标题下方
     fieldsets = (
         ('字段集标题1', {
-            'fields': ('age', 'birth', 'sex',),
+            'fields': ('user','age', 'birth', 'sex',),
             'description': '字段集描述1'
         }),
         ('字段集标题2', {

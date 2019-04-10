@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'account',
     'article',
     'blog',
+    'common',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -138,3 +140,8 @@ DEFAULT_FROM_EMAIL = "from_now_on820@qq.com"
 
 # 登录跳转页面
 LOGIN_REDIRECT_URL = '/home/'
+
+# 关闭浏览器似的session过期
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# 访问服务器期间设置session不过期，保持登录状态
+SESSION_SAVE_EVERY_REQUEST = True

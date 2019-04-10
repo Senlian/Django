@@ -41,6 +41,14 @@ class AccountLoginForm(forms.Form):
             "oninput": "setCustomValidity('')"
         }))
 
+    remember = forms.ChoiceField(label='记住密码', required=False, initial=False, choices=((True, 1), (False, 0)),
+                                 widget=forms.CheckboxInput(
+                                     attrs={
+                                         'type': 'checkbox',
+                                         'blank': True,
+                                     }
+                                 ))
+
     def clean_username(self):
         username = self.cleaned_data['username']
         if username and User.objects.filter(Q(username=username) | Q(email=username)):
@@ -61,7 +69,7 @@ class AccountRegisterForm(forms.ModelForm):
             'title': '请再次输入密码!'
         }))
 
-    email_verify = forms.CharField(label='邮箱验证码', widget=forms.TextInput(
+    email_verify = forms.CharField(label='邮箱验证码', required=False, widget=forms.TextInput(
         attrs={
             'type': 'text',
             'class': 'form-control',
@@ -82,7 +90,10 @@ class AccountRegisterForm(forms.ModelForm):
                     'class': 'form-control',
                     'autocomplete': 'off',
                     "autofocus": "autofocus",
+                    'pattern': '^[a-z]+(\w)*',
                     'title': '用户名由小写的字母、数字和下划线组成。',
+                    "oninvalid": "setCustomValidity('用户名由小写的字母、数字和下划线组成，并以字母开头。')",
+                    "oninput": "setCustomValidity('')",
                     'placeholder': '请输入用户名'
                 }),
             'password': widgets.PasswordInput(
@@ -90,7 +101,10 @@ class AccountRegisterForm(forms.ModelForm):
                     'type': 'password',
                     'class': 'form-control',
                     'autocomplete': 'off',
+                    'minlength': "6",
                     'title': '密码长度不低于6位。',
+                    "oninvalid": "setCustomValidity('密码长度不低于6位。')",
+                    "oninput": "setCustomValidity('')",
                     'placeholder': '设置您的密码'
                 }),
             'email': widgets.EmailInput(
@@ -98,19 +112,19 @@ class AccountRegisterForm(forms.ModelForm):
                     'type': 'email',
                     'class': 'form-control',
                     'autocomplete': "off",
+                    'required': True,
+                    'pattern': '^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$',
                     'title': '请输入您的邮箱账号！',
+                    "oninvalid": "setCustomValidity('请输入正确的邮箱地址')",
+                    "oninput": "setCustomValidity('')",
                     'placeholder': '请输入您的邮箱账号'
                 })
         }
         labels = {'email': '邮箱'}
-        help_texts = {
-            'username': _('用户名由字母、下划线或数字组成'),
-            'password': _('用户名由字母、下划线或数字组成'),
-            'email': _('用户名由字母、下划线或数字组成'),
-        }
 
     def clean_email(self):
         email = self.cleaned_data['email']
+
         if User.objects.filter(email=email):
             raise forms.ValidationError('邮箱已被注册')
         return email
@@ -123,13 +137,20 @@ class AccountRegisterForm(forms.ModelForm):
 
     def clean_email_verify(self):
         form_email_verify = self.cleaned_data['email_verify']
-        email_to = self.cleaned_data['email']
-        if form_email_verify != cache.get('email_verify_{0}'.format(email_to.split('@')[0]), ''):
+        email_to = self.cleaned_data.get('email', '')
+        if not email_to or form_email_verify != cache.get('email_verify_{0}'.format(email_to.split('@')[0]), ''):
             raise forms.ValidationError('验证码错误！')
-        return self.cleaned_data['email_verify']
+        return form_email_verify
 
 
 class AccountEmailForm(forms.ModelForm):
+    email_type = forms.ChoiceField(label='记住密码', initial=True, choices=((True, 1), (False, 0)),
+                                   widget=forms.CheckboxInput(
+                                       attrs={
+                                           'type': 'checkbox',
+                                           'hidden': True,
+                                       }))
+
     class Meta:
         model = User
         fields = ('email',)
@@ -145,11 +166,21 @@ class AccountEmailForm(forms.ModelForm):
         }
         labels = {'email': '邮箱'}
 
-    def clean_email(self):
-        email = self.cleaned_data['email']
-        if User.objects.filter(email=email):
-            raise forms.ValidationError('邮箱已被注册')
-        return email
+    def clean_email_type(self):
+        form_data = self.cleaned_data
+        email_type = eval(form_data['email_type'])
+        try:
+            email = form_data['email']
+        except Exception as e:
+            raise forms.ValidationError('邮箱验证失败')
+
+        if email_type:
+            if User.objects.filter(email=email):
+                raise forms.ValidationError('邮箱已被注册')
+        else:
+            if not User.objects.filter(email=email):
+                raise forms.ValidationError('该邮箱还没有注册账号')
+        return email_type
 
     def save(self, commit=False):
         return super().save(commit=False)
