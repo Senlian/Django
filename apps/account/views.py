@@ -22,6 +22,17 @@ from common.views import CreateVerifyView
 @method_decorator(csrf_exempt, name='POST')
 @xframe_options_sameorigin
 def AccountLoginView(request):
+    """函数功能.
+
+    函数功能说明.
+
+    Args:
+        request (int): arg1的参数说明
+
+    Returns:
+        render: 返回值说明
+
+    """
     if request.user.is_authenticated or not request.META.get('HTTP_REFERER', ''):
         return redirect('blog:index')
 
@@ -96,7 +107,6 @@ def AccountRegisterView(request):
     return JsonResponse(account_register_form.errors)
 
 
-
 @require_POST
 def AccountEmailVerifyView(request):
     title = '注册验证码通知'
@@ -154,6 +164,7 @@ def AccountSendResetEmailView(request):
 
 class AccountPasswordRestView(View):
     def get(self, request):
-        return
+        return render(request, 'account/password_reset.html', {'title': '密码', 'site_title': '用户管理', 'site_header': '密码重置'})
+
     def post(self, request):
-        return 
+        return HttpResponse('reset post')

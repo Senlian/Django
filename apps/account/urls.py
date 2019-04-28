@@ -21,6 +21,7 @@ urlpatterns = [
     re_path(r'^login/$', account_views.AccountLoginView, name='login'),
     re_path(r'^logout/$', account_views.AccountLogoutView, name='logout'),
     re_path(r'^register/$', account_views.AccountRegisterView, name='register'),
+    re_path(r'^password_reset/$', account_views.AccountPasswordRestView.as_view(), name='password_reset'),
     re_path(r'^password_reset_email/$', account_views.AccountSendResetEmailView, name='password_reset_email'),
     re_path(r'^send_email_verify/$', account_views.AccountEmailVerifyView, name='send_email_verify'),
 ]

@@ -30,11 +30,10 @@ urlpatterns = [
     # re_path(r'^favicon\.ico$', RedirectView.as_view(url=r'static/common/imgs/s-icon-16x16.ico')),
     path('favicon.ico', serve, {'path': 'common/imgs/s-icon-16x16.ico'}),
 
+    re_path(r'^', include('blog.urls', namespace='blog')),
     re_path(r'^account/', include('account.urls', namespace='account')),
     re_path(r'^article/', include('article.urls', namespace='article')),
-    re_path(r'^', include('blog.urls', namespace='blog')),
     re_path(r'^common/', include('common.urls', namespace='common')),
-
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
