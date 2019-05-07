@@ -64,11 +64,40 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
     
 
 ## 资料链接 ##
-[django官方文档](<https://docs.djangoproject.com/en/2.2/>)  
+[力扣](<https://leetcode.com/>)
+
+[力扣中国](<https://leetcode-cn.com/>)
+
+[RFC6570-URI模板](<https://tools.ietf.org/html/rfc6570#page-3>)
+
+[numpy中文教程](<https://www.runoob.com/numpy/numpy-tutorial.html>)
+
+[matplotlib中文文档](<https://www.matplotlib.org.cn/>)
+
+[django官方文档](<https://docs.djangoproject.com/en/2.2/>) 
+
+[自学课堂](<https://code.ziqiangxuetang.com/django/django-tutorial.html>) 
+
+[django-markdown](<https://blog.csdn.net/duke10/article/details/81033686>)
 
 [layui官方文档](<https://www.layui.com/>)
 
 [bootstrap官方文档](<https://v2.bootcss.com/javascript.html#modals>)
+
+[RestFramework官网](<https://www.django-rest-framework.org/>)
+
+[RestfulApi设计指南](<http://www.ruanyifeng.com/blog/2014/05/restful_api.html>)
+
+[Github的Api设计文档3](<https://developer.github.com/v3/>)
+
+[Github的Api设计文档4](<https://developer.github.com/v3/>)
+
+[SVG图像入门](<http://www.ruanyifeng.com/blog/2018/08/svg.html>)
+
+[GraphQL](<http://graphql.cn/>)
+
+[Sphinx使用手册](<https://zh-sphinx-doc.readthedocs.io/en/latest/markup/index.html>)
+
 
 ## 知识点 ##
 - sphinx 自动生成项目文档
