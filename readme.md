@@ -63,11 +63,11 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
     
 
 ## 资料链接 ##
-[django官方文档](<'https://docs.djangoproject.com/en/2.2/'>)  
+[django官方文档](<https://docs.djangoproject.com/en/2.2/>)  
 
-[layui官方文档](<'https://www.layui.com/'>)
+[layui官方文档](<https://www.layui.com/>)
 
-[bootstrap官方文档](<'https://v2.bootcss.com/javascript.html#modals'>)
+[bootstrap官方文档](<https://v2.bootcss.com/javascript.html#modals>)
 
 ## 知识点 ##
 - sphinx 自动生成项目文档

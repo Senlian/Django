@@ -3,7 +3,7 @@
 ## 模型建立 ##
 > models.py中定义应用模型
 
-- [重写用户模型](<'https://www.jianshu.com/p/b993f4feff83'>)
+- [重写用户模型](<https://www.jianshu.com/p/b993f4feff83>)
 
 
 - 自定义表名
@@ -27,11 +27,11 @@
 ## 后台注册 ##
 > 在admin.py中注册模型到管理后台
 
-[Django-admin官方文档](<'https://docs.djangoproject.com/en/2.1/ref/contrib/admin/'>)
+[Django-admin官方文档](<https://docs.djangoproject.com/en/2.1/ref/contrib/admin/>)
 
-[Django内置admin字段介绍1](<'https://www.cnblogs.com/metianzing/p/7688546.html'>)
+[Django内置admin字段介绍1](<https://www.cnblogs.com/metianzing/p/7688546.html>)
 
-[Django内置admin字段介绍2](<'https://www.cnblogs.com/navysummer/p/10200247.html'>)
+[Django内置admin字段介绍2](<https://www.cnblogs.com/navysummer/p/10200247.html>)
 
 
 ## 权限管理 ##
