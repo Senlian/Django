@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 
 from django.contrib.auth.forms import UsernameField, AuthenticationForm
 
+# 由于定制了用户管理模块，所以不能直接使用auth.models.User模型
 User = get_user_model()
 
 

@@ -2,7 +2,8 @@
 
 [TOC]
 ## 简介 ##
-> 四川专业IT交流社区（SiChuan Software Developer Network）
+> 四川专业IT交流社区（SiChuan Software Developer Network）,
+
 > 学习开发的仿CSDN的博客系统
 
 ## 开发环境 ##  

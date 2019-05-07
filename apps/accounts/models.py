@@ -24,7 +24,7 @@ class UserProfile(AbstractUser):
                               null=True, verbose_name='头像')
 
     class Meta:
-        db_table = 'UserProfile'
+        db_table = 'userprofile'
         verbose_name = '用户信息'
         verbose_name_plural = verbose_name
         ordering = ['-date_joined']
