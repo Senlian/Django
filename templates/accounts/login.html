@@ -1,0 +1,65 @@
+{% extends "common/layerui.html" %}
+{% load accounts %}
+{% block form_body %}
+    <div class="form-group">
+        <label for="{{ form.username.id_for_label }}" class="col-sm-12 control-label font-weight-bold">
+            {{ form.username.label_tag }}
+        </label>
+        {% if form.username.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.username.errors }}</label>
+        {% endif %}
+        <div class="col-sm-6  control-label">
+            {{ form.username }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="{{ form.password.id_for_label }}" class="col-sm-12 control-label  font-weight-bold">
+            {{ form.password.label_tag }}
+        </label>
+        {% if form.password.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.password.errors }}</label>
+        {% endif %}
+        <div class="col-sm-12">
+            {{ form.password }}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-12">
+            <div class="checkbox">
+                {{ form.remember }}
+                <label for="{{ form.remember.id_for_label }}">
+                    {{ form.remember.label_tag }}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-12 row">
+            <div class="col-8">
+                <input id="id_login_verify" class="form-control" name="verify" type="text"
+                       placeholder="验证码" autocomplete="off">
+            </div>
+            <div class="col-4">
+                <img id="id_login_verify_img" class="rounded-0" width="100px"
+                     src="{{ MEDIA_URL }}/verifys/verify.png"
+                     title="点击刷新" onclick="refreshVerify()">
+            </div>
+        </div>
+    </div>
+    <div class="form-group my-auto">
+        <div class="col-sm-offset-2 col-sm-12 text-center">
+            <button type="submit" class="btn btn-block btn-primary btn-lg">登录</button>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-top: 15px">
+        <a class="btn-link" target="_self" href="#">忘记密码 ?</a>
+        <a class="btn-link float-right" target="_self" href="{% url 'accounts:register' %}">新用户注册</a>
+    </div>
+{% endblock %}
+{% block base_code_extend %}
+    <script type="text/javascript">
+        function refresh() {
+            
+        }
+    </script>
+{% endblock %}

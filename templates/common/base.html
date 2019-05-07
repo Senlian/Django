@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% load staticfiles %}
+    <title>{% block title %}{{ title }}-{{ site_title|default:_("这里输入站点标题") }}{% endblock %}</title>
+    {% block base_icon_head %}
+        <link rel="shortcut icon" href="{% static 'common/imgs/s-64x64.jpg' %}">
+    {% endblock %}
+    {% block base_css %}
+        <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
+    {% endblock %}
+    {% block base_css_extend %}{% endblock %}
+</head>
+<body {% block base_body_style %}style="width: auto;height: auto;" {% endblock %}>
+{% block base_js_top %}{% endblock %}
+<header>
+    {% block header %}
+        {% include "common/header.html" %}
+    {% endblock %}
+</header>
+<main class="my-3">
+    {% block content %}
+        <div class="row container-fluid">
+            {% block left_sider_box %}
+                <div class="col col-md-2 col-lg-2">
+                    {% block left_sider_body %}
+                        <div>左侧边</div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+            {% block center_box %}
+                <div class="col col-md-8 col-lg-8">
+                    {% block center_body %}
+                        <div>在这里输入正文</div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+            {% block right_sider_box %}
+                <div class="col col-md-2 col-lg-2">
+                    {% block right_sider_body %}
+                        <div>右侧边</div>
+                    {% endblock %}
+                </div>
+            {% endblock %}
+        </div>
+    {% endblock %}
+</main>
+<footer>
+    {% block footer %}
+        {% include "common/footer.html" %}
+    {% endblock %}
+</footer>
+{% block base_js_footer %}
+    <script src="{% static 'common/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'common/js/popper.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'layui/layui.all.js' %}"></script>
+{% endblock %}
+{% block base_js_extend %}{#这里写入js代码#}{% endblock %}
+{% block base_code %}{#这里写入js代码#}{% endblock %}
+{% block base_code_extend %}{#这里写入js代码#}{% endblock %}
+</body>
+</html>

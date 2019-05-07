@@ -1,0 +1,76 @@
+{% extends "common/layerui.html" %}
+{% block form_body %}
+    <div class="form-group">
+        <label for="{{ form.username.id_for_label }}"
+               class="col-sm-12 control-label  font-weight-bold">{{ form.username.label_tag }}
+        </label>
+        {% if form.username.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.username.errors }}</label>
+        {% endif %}
+        <div class="col-sm-12">
+            {{ form.username }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="{{ form.password.id_for_label }}"
+               class="col-sm-12 control-label  font-weight-bold">{{ form.password.label_tag }}
+        </label>
+        {% if form.password.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.password.errors }}</label>
+        {% endif %}
+        <div class="col-sm-12">
+            {{ form.password }}
+        </div>
+    </div>
+    {% if form.password_agin %}
+    <div class="form-group">
+        <label for="{{ form.password_agin.id_for_label }}"
+               class="col-sm-12 control-label  font-weight-bold">{{ form.password_agin.label_tag }}
+        </label>
+        {% if form.password_agin.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.password_agin.errors }}</label>
+        {% endif %}
+        <div class="col-sm-12">
+            {{ form.password_agin }}
+        </div>
+    </div>
+    {% endif %}
+    <div class="form-group">
+        <label for="{{ form.email.id_for_label }}"
+               class="col-sm-12 control-label  font-weight-bold">{{ form.email.label_tag }}
+        </label>
+        {% if form.email.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.email.errors }}</label>
+        {% endif %}
+        <div class="col-sm-12">
+            {{ form.email }}
+        </div>
+    </div>
+    <div class="form-group" style="display: none" id="id_verify_box">
+        <div class="col-sm-12 row">
+            <div class="col-8">
+                {{ form.email_verify }}
+            </div>
+            <div class="col-4">
+                <button id="id_btn_email" class="btn btn-light text-primary" type="button"
+                        onclick="send_mail(this)">发送验证码
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group my-auto">
+        <div class="col-sm-offset-2 col-sm-12 text-center">
+            <button type="submit" class="btn btn-block btn-primary btn-lg">注册</button>
+        </div>
+    </div>
+    <div class="container-fluid" style="margin-top: 15px">
+        <a class="float-right btn-link" target="_self" href="{% url 'accounts:login' %}">已有账号，直接登录</a>
+    </div>
+{% endblock %}
+{% block base_code_extend %}
+    <script type="text/javascript">
+        function refresh() {
+
+        }
+    </script>
+{% endblock %}

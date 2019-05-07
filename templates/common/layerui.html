@@ -1,0 +1,88 @@
+{% extends 'common/base.html' %}
+
+{% load staticfiles %}
+{% load i18n static %}
+{% load accounts %}
+
+{% block header %}{% endblock %}
+{% block content %}
+    {% block form_container %}
+        <div class="container-fluid my-2">
+            <form class="form-horizontal mb-5" role="form" action="." method="post"
+                  onsubmit="return onsubmitForm(this);">
+                {% csrf_token %}
+                {% block form_title %}
+                    <p class="py-3 ml-2"
+                       style="background:url('{% static "common/imgs/SCSDN.svg" %}') no-repeat left;background-size:70px;line-height:42px;">
+                        <a class="text-primary" style="text-decoration: none;height: 32px;"
+                           href="{% url 'blog:index' %}" target="_top">
+                            <span style="color: black;font-size: 16px;padding-left: 75px;">
+                                &middot; {{ site_header|default:_('用户名密码登录') }}
+                            </span>
+                        </a>
+                    </p>
+                {% endblock %}
+
+                {% block form_errors %}
+                    {% if user.is_authenticated %}
+                        <p class="errornote errorlist  alert alert-danger mb-3">
+                            {% blocktrans trimmed %}
+                                You are authenticated as {{ user.username }} {{ form_ok }}, but are not authorized to
+                                access this page. Would you like to login to a different account?
+                            {% endblocktrans %}
+                        </p>
+                    {% endif %}
+                {% endblock %}
+                {% block form_body %}{% endblock %}
+            </form>
+        </div>
+    {% endblock %}
+
+{% endblock %}
+
+{% block footer %}{% endblock %}
+{% block base_code %}
+    <script type="text/javascript">
+        function GetFormData(e) {
+            /* 获取全部表单数据，包含CSRF_TOKEN */
+            var input_tags = e.getElementsByTagName('input');
+            var formData = {};
+            for (var i = 0; i < input_tags.length; i++) {
+                var input_tag = input_tags[i];
+                formData[input_tag.name] = input_tag.value;
+            }
+            return formData;
+        };
+
+        function onsubmitForm(e) {
+            /* ajax表单提交 */
+            var formData = GetFormData(e);
+            var index = parent.layer.getFrameIndex(window.name);
+            var url = window.location.pathname;
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                data: formData,
+                cache: false,
+                success: function (responseData) {
+                    parent.layer.close(index);
+                    layer.msg('操作成功，即将跳转！');
+                    /* 成功跳转 */
+                    window.parent.location.href = responseData.success_url;
+                    return false;
+                },
+                error: function (responseData) {
+                    /* 失败重新渲染窗口 */
+                    <!-- console.log(responseData.responseText); -->
+                    window.document.write(responseData.responseText);
+                    window.document.close();
+                    layer.msg('操作失败，请稍后再试');
+                    return false;
+                }
+            });
+            return false;
+        }
+    </script>
+{% endblock %}
+{% block base_code_extend %}{% endblock %}
