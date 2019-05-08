@@ -23,17 +23,17 @@
         </div>
     </div>
     {% if form.password_agin %}
-    <div class="form-group">
-        <label for="{{ form.password_agin.id_for_label }}"
-               class="col-sm-12 control-label  font-weight-bold">{{ form.password_agin.label_tag }}
-        </label>
-        {% if form.password_agin.errors %}
-            <label class="col-sm-12 control-label alert alert-danger">{{ form.password_agin.errors }}</label>
-        {% endif %}
-        <div class="col-sm-12">
-            {{ form.password_agin }}
+        <div class="form-group">
+            <label for="{{ form.password_agin.id_for_label }}"
+                   class="col-sm-12 control-label  font-weight-bold">{{ form.password_agin.label_tag }}
+            </label>
+            {% if form.password_agin.errors %}
+                <label class="col-sm-12 control-label alert alert-danger">{{ form.password_agin.errors }}</label>
+            {% endif %}
+            <div class="col-sm-12">
+                {{ form.password_agin }}
+            </div>
         </div>
-    </div>
     {% endif %}
     <div class="form-group">
         <label for="{{ form.email.id_for_label }}"
@@ -63,14 +63,38 @@
             <button type="submit" class="btn btn-block btn-primary btn-lg">注册</button>
         </div>
     </div>
-    <div class="container-fluid" style="margin-top: 15px">
+    <div class="container-fluid my-2">
         <a class="float-right btn-link" target="_self" href="{% url 'accounts:login' %}">已有账号，直接登录</a>
     </div>
 {% endblock %}
 {% block base_code_extend %}
     <script type="text/javascript">
-        function refresh() {
+        var curCount = 0;
+        var InterValObj;
+        $('#id_email').on('input', function () {
+            if ($('#id_email').val()) {
+                $('#id_verify_box').show();
+                $('#id_email_verify').attr('required', true);
+            } else {
+                $('#id_verify_box').hide();
+            }
+        });
 
-        }
+        $('#id_email').on('change', function () {
+            window.clearInterval(InterValObj);
+            $('#id_btn_email').removeAttr("disabled"); //启用按钮
+            $('#id_btn_email').text("发送验证码");
+        });
+
+        function SetRemainTimes(element, email) {
+            if (curCount == 0) {
+                window.clearInterval(InterValObj); //停止计时器
+                element.removeAttr("disabled"); //启用按钮
+                element.text("重新发送");
+            } else {
+                curCount--;
+                element.text("重新发送(" + curCount + "s)");
+            }
+        };
     </script>
 {% endblock %}

@@ -8,7 +8,6 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 
 from django.contrib.auth.forms import UsernameField, AuthenticationForm
-from blog.views import DrawVerifyView
 
 # 由于定制了用户管理模块，所以不能直接使用auth.models.User模型
 User = get_user_model()
@@ -186,7 +185,7 @@ class AccountRegisterForm(forms.ModelForm):
         Returns:
             verify: str
         """
-        email = self.cleaned_data['email'].lower()
+        email = self.cleaned_data['email'].strip().lower()
         if User.objects.filter(email=email):
             raise forms.ValidationError('邮箱{0}已被注册'.format(email))
         return email
