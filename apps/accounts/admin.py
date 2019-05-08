@@ -1,9 +1,12 @@
 from django.contrib import admin
 from .models import UserProfile
 
+admin.sites.AdminSite.site_title = '管理员系统'
+admin.sites.AdminSite.site_header = '后台管理'
+admin.sites.AdminSite.index_title = '欢迎登陆'
+
 
 # Register your models here.
-
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
     # 定义显示项
@@ -12,7 +15,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     # 定义可以跳转修改界面的显示项
     list_display_links = ['username', 'email', 'phone', 'profession', 'company', 'school', 'intro']
     # 右侧过滤栏字段
-    list_filter = ('is_superuser','gender', 'profession', 'company', 'school')
+    list_filter = ('is_superuser', 'gender', 'profession', 'company', 'school')
     # 连表查询是否自动select_related
     list_select_related = False
     # 每页显示条数

@@ -142,3 +142,14 @@ AUTH_USER_MODEL = 'accounts.UserProfile'
 
 # 指定用户认证方法
 # AUTHENTICATION_BACKENDS=[]
+
+
+#  DEBUG 模式 将邮件内容显示在控制台
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_HOST = "smtp.qq.com"
+EMAIL_PORT = 25
+EMAIL_USE_TLS = False
+EMAIL_HOST_USER = "from_now_on820@qq.com"
+EMAIL_HOST_PASSWORD = "pmfrgzmkuznabdif"
+DEFAULT_FROM_EMAIL = "from_now_on820@qq.com"

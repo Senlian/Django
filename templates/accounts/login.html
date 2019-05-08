@@ -35,14 +35,16 @@
     </div>
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-12 row">
+            {% if form.verify.errors %}
+                <label class="col-sm-12 control-label alert alert-danger">{{ form.verify.errors }}</label>
+            {% endif %}
             <div class="col-8">
-                <input id="id_login_verify" class="form-control" name="verify" type="text"
-                       placeholder="验证码" autocomplete="off">
+                {{ form.verify }}
             </div>
             <div class="col-4">
                 <img id="id_login_verify_img" class="rounded-0" width="100px"
-                     src="{{ MEDIA_URL }}/verifys/verify.png"
-                     title="点击刷新" onclick="refreshVerify()">
+                     src="{{ MEDIA_URL }}verifys/verify.png"
+                     title="点击刷新" onclick="RefreshVerify()">
             </div>
         </div>
     </div>
@@ -57,9 +59,5 @@
     </div>
 {% endblock %}
 {% block base_code_extend %}
-    <script type="text/javascript">
-        function refresh() {
-            
-        }
-    </script>
+
 {% endblock %}

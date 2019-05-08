@@ -51,8 +51,19 @@
 
 ## 视图管理 ##    
 - 登录视图
-
+    - 内置登录
+        > `from django.contrib.auth import login`
+    - 下次自动登录
+        > [session机制](<https://www.cnblogs.com/sss4/p/7071334.html>)
+    - 验证码
+        - 利用`PIL`和`random`制作含噪点的随机密码，前端使用`ajax`动态刷新
+   
+    
 - 退出视图
+    - 内置退出方法
+        - 在`LogoutView`中利用`next_page`设置退出后的跳转地址,
+        - 或利用`settings.LOGOUT_REDIRECT_URL`指定跳转地址，但这个会影响所有的`LogoutView`视图.
+
 
 - 注册视图
 

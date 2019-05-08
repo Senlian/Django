@@ -8,4 +8,5 @@ app_name = 'blog'
 urlpatterns = [
     # 首页展示
     re_path(r'^$', views.IndexView.as_view(), name='index'),
+    re_path(r'^verify$', views.DrawVerifyView, name='verify'),
 ]

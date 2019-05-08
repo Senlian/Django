@@ -49,14 +49,32 @@
             var formData = {};
             for (var i = 0; i < input_tags.length; i++) {
                 var input_tag = input_tags[i];
-                formData[input_tag.name] = input_tag.value;
+                if (input_tag.type == 'checkbox') {
+                    formData[input_tag.name] = input_tag.checked;
+                } else {
+                    formData[input_tag.name] = input_tag.value;
+                }
             }
             return formData;
         };
 
+        function RefreshVerify(id, src) {
+            id = id || 'id_login_verify_img';
+            src = src || ({{ MEDIA_URL }} +"verifys/verify.png?");
+            $.ajax({
+                type: 'get',
+                dataType: 'json',
+                url: '{% url "blog:verify" %}',
+                success: function () {
+                    $("#" + id).attr('src', src + Math.random());
+                }
+            })
+        }
+
         function onsubmitForm(e) {
             /* ajax表单提交 */
             var formData = GetFormData(e);
+            {#console.log(formData);#}
             var index = parent.layer.getFrameIndex(window.name);
             var url = window.location.pathname;
             $.ajax({
@@ -74,9 +92,10 @@
                 },
                 error: function (responseData) {
                     /* 失败重新渲染窗口 */
-                    <!-- console.log(responseData.responseText); -->
+                    {#console.log(responseData.responseText);#}
                     window.document.write(responseData.responseText);
                     window.document.close();
+                    RefreshVerify();
                     layer.msg('操作失败，请稍后再试');
                     return false;
                 }

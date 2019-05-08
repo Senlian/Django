@@ -80,6 +80,12 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 
 [django-markdown](<https://blog.csdn.net/duke10/article/details/81033686>)
 
+[xadmin官方文档](<https://sshwsfc.github.io/xadmin/>)
+
+[xadmin学并思](<http://x.xuebingsi.com/>)
+
+[xadmin下载地址](<https://github.com/sshwsfc/xadmin>)
+
 [layui官方文档](<https://www.layui.com/>)
 
 [bootstrap官方文档](<https://v2.bootcss.com/javascript.html#modals>)

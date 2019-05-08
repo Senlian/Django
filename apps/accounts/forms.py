@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
 from django import forms
 from django.db.models import Q
 from django.forms import widgets
+from django.core.cache import cache
 from django.contrib.auth import authenticate
 from django.contrib.auth import get_user_model
 
 from django.contrib.auth.forms import UsernameField, AuthenticationForm
+from blog.views import DrawVerifyView
 
 # 由于定制了用户管理模块，所以不能直接使用auth.models.User模型
 User = get_user_model()
@@ -27,7 +28,7 @@ class AccountsLoginForm(AuthenticationForm):
             "oninvalid": "setCustomValidity('用户名不能为空哟')",
             "oninput": "setCustomValidity('')"
         }))
-    password = forms.CharField(label='密码', widget=forms.PasswordInput(
+    password = forms.CharField(label='密码', widget=widgets.PasswordInput(
         attrs={
             'type': 'password',
             'class': 'form-control',
@@ -38,14 +39,33 @@ class AccountsLoginForm(AuthenticationForm):
             "oninput": "setCustomValidity('')"
         }))
 
-    remember = forms.ChoiceField(label='记住密码', required=False, initial=False, choices=((True, 1), (False, 0)),
-                                 widget=forms.CheckboxInput(
-                                     attrs={
-                                         'type': 'checkbox',
-                                         'blank': True,
-                                     }))
+    remember = forms.BooleanField(label='下次自动登录', required=False)
+
+    verify = forms.CharField(max_length=10, required=False, label='验证码', widget=widgets.TextInput(
+        attrs={
+            'type': 'text',
+            'class': 'form-control',
+            'autocomplete': 'off',
+            'placeholder': '验证码',
+            "oninvalid": "setCustomValidity('请输入验证码')",
+            "oninput": "setCustomValidity('')"
+        }))
+
+    def clean(self):
+        self.cleaned_data.get('remember')
+        self.cleaned_data.get('verify')
+        super(AccountsLoginForm, self).clean()
+        return self.cleaned_data
 
     def clean_username(self):
+        """函数功能.
+            用户验证
+        Args:
+            self (object): 表单实例
+
+        Returns:
+            username: str
+        """
         username = self.cleaned_data['username']
         if username and User.objects.filter(Q(username=username) | Q(email=username)):
             return username
@@ -53,6 +73,14 @@ class AccountsLoginForm(AuthenticationForm):
             raise forms.ValidationError('用户名不存在')
 
     def clean_password(self):
+        """函数功能.
+            密码验证
+        Args:
+            self (object): 表单实例
+
+        Returns:
+            password: str
+        """
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
         self.user_cache = authenticate(self.request, username=username, password=password)
@@ -60,9 +88,42 @@ class AccountsLoginForm(AuthenticationForm):
             raise forms.ValidationError('密码和用户名不匹配')
         return password
 
+    def clean_remember(self):
+        """函数功能.
+            通过session实现下次自动登录，
+            remember=True，设置session保存周期为settings.SESSION_COOKIE_AGE
+            remember=False，设置session保存周期为0，即退出浏览器清楚
+        Args:
+            self (object): 表单实例
+
+        Returns:
+            remember: Boolean
+        """
+        remember = self.cleaned_data.get('remember', False)
+        if remember:
+            self.request.session.set_expiry(None)
+        else:
+            self.request.session.set_expiry(0)
+        return remember
+
+    def clean_verify(self):
+        """函数功能.
+                验证码验证
+        Args:
+            self (object): 表单实例
+
+        Returns:
+            verify: str
+        """
+        verify = self.cleaned_data.get('verify', '')
+        verify_code = self.request.session.get('verify', None)
+        if verify_code and verify.lower() != verify_code.lower():
+            raise forms.ValidationError('请输入正确的验证码')
+        return verify
+
 
 class AccountRegisterForm(forms.ModelForm):
-    email_verify = forms.CharField(label='邮箱验证码', required=False, widget=forms.TextInput(
+    verify = forms.CharField(label='邮箱验证码', required=False, widget=forms.TextInput(
         attrs={
             'type': 'text',
             'class': 'form-control',
@@ -105,18 +166,42 @@ class AccountRegisterForm(forms.ModelForm):
                     'type': 'email',
                     'class': 'form-control',
                     'autocomplete': "off",
-                    'required': True,
-                    'pattern': '^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$',
+                    'required': False,
+                    # 'pattern': '^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$',
                     'title': '请输入您的邮箱账号！',
                     "oninvalid": "setCustomValidity('请输入正确的邮箱地址')",
                     "oninput": "setCustomValidity('')",
                     'placeholder': '请输入您的邮箱账号'
                 })
         }
-        labels = {'email': '邮箱'}
+        # 定义字段label_tag
+        # labels = {'email': '邮箱'}
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        """函数功能.
+                验证邮箱是否被注册
+        Args:
+            self (object): 表单实例
+
+        Returns:
+            verify: str
+        """
+        email = self.cleaned_data['email'].lower()
         if User.objects.filter(email=email):
-            raise forms.ValidationError('邮箱已被注册')
+            raise forms.ValidationError('邮箱{0}已被注册'.format(email))
         return email
+
+    def clean_verify(self):
+        """函数功能.
+                邮箱验证码验证
+        Args:
+            self (object): 表单实例
+
+        Returns:
+            verify: str
+        """
+        verify = self.cleaned_data['verify']
+        email = self.cleaned_data.get('email', '')
+        if email and verify != cache.get('register_verify_{0}'.format(email.split('@')[0]), ''):
+            raise forms.ValidationError('验证码错误！')
+        return verify
