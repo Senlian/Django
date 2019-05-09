@@ -1,0 +1,118 @@
+{% extends "common/layerui.html" %}
+{% block header %}{% include "common/header.html" %}{% endblock %}
+{% block form_body %}
+    {% block form_title %}{% endblock %}
+    {% block form_errors %}{% endblock %}
+    <div class="form-group">
+        <label for="{{ form.is_staff.id_for_label }}"
+               class="col-sm-12 control-label  font-weight-bold">{{ form.is_staff.label_tag }}
+        </label>
+        {% if form.is_staff.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.is_staff.errors }}</label>
+        {% endif %}
+        <div class="col-sm-2">
+            {{ form.is_staff }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="{{ form.email.id_for_label }}"
+               class="col-sm-12 control-label  font-weight-bold">{{ form.email.label_tag }}
+        </label>
+        {% if form.email.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.email.errors }}</label>
+        {% endif %}
+        <div class="col-12 row">
+            <div>
+                {{ form.email }}
+            </div>
+            <div class="float-left">
+                <button id="id_btn_email" class="btn btn-block btn-primary btn-lg" type="submit"
+                        onclick="send_mail(this)">重设密码
+                </button>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="container-fluid my-2">
+        <a class="btn-link" target="_self" href="{% url 'accounts:login' %}">返回主页</a>
+    </div>
+{% endblock %}
+{% block footer %}{% include 'common/footer.html' %}{% endblock %}
+{% block base_code_extend %}
+    <script type="text/javascript">
+        {# 时间 #}
+        var curCount = 0;
+        {# 计时器 #}
+        var InterValObj;
+
+        function onsubmitForm(e) {
+            return false;
+        }
+
+        {# 输入操作 #}
+        $('input').on('input', function () {
+
+        });
+
+        {# 邮箱变更操作 #}
+        $('#id_email').on('change', function () {
+            window.clearInterval(InterValObj);
+            $('#id_btn_email').removeAttr("disabled"); //启用按钮
+            $('#id_btn_email').text("重设密码");
+        });
+
+        {# 设置倒计时 #}
+
+        function SetRemainTimes(element, email) {
+            if (curCount == 0) {
+                window.clearInterval(InterValObj); //停止计时器
+                element.removeAttr("disabled"); //启用按钮
+                element.text("重新发送");
+            } else {
+                curCount--;
+                element.text("重新发送(" + curCount + "s)");
+            }
+        };
+
+        {# 发送邮件 #}
+
+        function send_mail(e) {
+            var element = $(e);
+            var email = $('#id_email').val();
+            var is_staff = $('#id_is_staff');
+            console.log(is_staff);
+            console.log(is_staff.type);
+            if (email != "") {
+                element.attr('disabled', true);
+                var url = '{% url "accounts:emailto" %}';
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+                        email: email,
+                        is_staff: is_staff,
+                    },
+                    cache: false,
+                    success: function (JsonResponse) {
+                        curCount = JsonResponse.timer;
+                        {# 计时器 每秒使用SetRemainTimes刷新 #}
+                        InterValObj = window.setInterval(SetRemainTimes, 1000, element, email);
+                        layer.msg('邮件已发送');
+                        element.text('重新发送(' + curCount + 's)');
+                        return true;
+                    },
+                    error: function (HttpResponse) {
+
+                        window.document.write(HttpResponse.responseText);
+                        window.document.close();
+                        element.attr('disabled', false);
+                        return false;
+                    }
+                });
+            }
+            return false;
+        };
+    </script>
+{% endblock %}

@@ -57,8 +57,16 @@
         > [session机制](<https://www.cnblogs.com/sss4/p/7071334.html>)
     - 验证码
         - 利用`PIL`和`random`制作含噪点的随机密码，前端使用`ajax`动态刷新
-   
-    
+    - 用户名、手机、邮箱多途径登录   
+        ```Q查询
+            from django.db.models import Q
+            from django.contrib.auth import get_user_model
+            
+            User = get_user_model()
+            User.objects.filter(Q(username=username) | Q(email=username) | Q(phone=username))
+        ```
+        
+        
 - 退出视图
     - 内置退出方法
         - 在`LogoutView`中利用`next_page`设置退出后的跳转地址,

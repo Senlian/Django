@@ -14,7 +14,6 @@ class UserProfile(AbstractUser):
     )
     nick_name = models.CharField(max_length=50, blank=True, null=True, verbose_name='昵称')
     birth = models.DateField(blank=True, null=True, verbose_name='生日')
-    email = models.EmailField(blank=True, null=True, unique=True, verbose_name='邮箱')
     phone = models.CharField(max_length=200, blank=True, null=True, unique=True, verbose_name='电话')
     gender = models.CharField(max_length=6, choices=SEXES, default='male', verbose_name='性别')
     profession = models.CharField(max_length=200, blank=True, null=True, verbose_name='职业')

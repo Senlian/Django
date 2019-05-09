@@ -60,15 +60,17 @@
 
         function RefreshVerify(id, src) {
             id = id || 'id_login_verify_img';
-            src = src || ({{ MEDIA_URL }} +"verifys/verify.png?");
-            $.ajax({
-                type: 'get',
-                dataType: 'json',
-                url: '{% url "blog:verify" %}',
-                success: function () {
-                    $("#" + id).attr('src', src + Math.random());
-                }
-            })
+            if ($("#" + id)) {
+                src = src || ({{ MEDIA_URL }} +"verifys/verify.png?");
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    url: '{% url "blog:verify" %}',
+                    success: function () {
+                        $("#" + id).attr('src', src + Math.random());
+                    }
+                });
+            }
         }
 
         function onsubmitForm(e) {
@@ -92,7 +94,7 @@
                 },
                 error: function (responseData) {
                     /* 失败重新渲染窗口 */
-                    {#console.log(responseData.responseText);#}
+                    console.log(responseData.responseText);
                     window.document.write(responseData.responseText);
                     window.document.close();
                     RefreshVerify();

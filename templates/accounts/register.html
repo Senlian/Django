@@ -47,6 +47,9 @@
         </div>
     </div>
     <div class="form-group" style="display: none" id="id_verify_box">
+        {% if form.verify.errors %}
+            <label class="col-sm-12 control-label alert alert-danger">{{ form.verify.errors }}</label>
+        {% endif %}
         <div class="col-sm-12 row">
             <div class="col-8">
                 {{ form.verify }}
@@ -69,22 +72,45 @@
 {% endblock %}
 {% block base_code_extend %}
     <script type="text/javascript">
+        {# 时间 #}
         var curCount = 0;
+        {# 计时器 #}
         var InterValObj;
-        $('#id_email').on('input', function () {
+
+        {# 验证码输入框显示 #}
+
+        function SwitchVerifyBox() {
+            var verify_box = $('#id_verify_box');
+            h = verify_box.height();
+            var index = parent.layer.getFrameIndex(window.name);
             if ($('#id_email').val()) {
-                $('#id_verify_box').show();
-                $('#id_email_verify').attr('required', true);
+                verify_box.show();
+                $('#id_verify').attr('required', true);
+                parent.layer.style(index, {height: 448 + h});
             } else {
-                $('#id_verify_box').hide();
+                verify_box.hide();
+                parent.layer.style(index, {height: 448});
             }
+        }
+
+        {# 窗口加载操作 #}
+        window.onload = function () {
+            SwitchVerifyBox();
+        }
+
+        {# 输入操作 #}
+        $('input').on('input', function () {
+            SwitchVerifyBox();
         });
 
+        {# 邮箱变更操作 #}
         $('#id_email').on('change', function () {
             window.clearInterval(InterValObj);
             $('#id_btn_email').removeAttr("disabled"); //启用按钮
             $('#id_btn_email').text("发送验证码");
         });
+
+        {# 设置倒计时 #}
 
         function SetRemainTimes(element, email) {
             if (curCount == 0) {
@@ -95,6 +121,45 @@
                 curCount--;
                 element.text("重新发送(" + curCount + "s)");
             }
+        };
+
+        {# 发送邮件 #}
+
+        function send_mail(e) {
+            var element = $(e);
+            var email = $('#id_email').val();
+            var is_staff = false;
+            if (email != "") {
+                element.attr('disabled', true);
+                var url = '{% url "accounts:emailto" %}';
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        csrfmiddlewaretoken: $('[name=csrfmiddlewaretoken]').val(),
+                        email: email,
+                        is_staff: is_staff,
+                    },
+                    cache: false,
+                    success: function (JsonResponse) {
+                        curCount = JsonResponse.timer;
+                        {# 计时器 每秒使用SetRemainTimes刷新 #}
+                        InterValObj = window.setInterval(SetRemainTimes, 1000, element, email);
+                        layer.msg('验证码已发送');
+                        element.text('重新发送(' + curCount + 's)');
+                        return true;
+                    },
+                    error: function (HttpResponse) {
+                        console.log('eeeee');
+                        console.log(HttpResponse.responseText);
+                        layer.msg(HttpResponse.responseText);
+                        element.attr('disabled', false);
+                        return false;
+                    }
+                });
+            }
+            return false;
         };
     </script>
 {% endblock %}
