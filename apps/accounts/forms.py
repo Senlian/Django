@@ -215,13 +215,14 @@ class AccountRegisterForm(forms.ModelForm):
 
 class AccountEmailForm(forms.Form):
     is_staff = forms.BooleanField(label='是否注册', required=False, initial=True)
-    email = forms.EmailField(label='邮箱', required=False, widget=widgets.EmailInput(
+    email = forms.EmailField(label='请输入您账号所绑定的邮箱地址', required=False, widget=widgets.EmailInput(
         attrs={
             'type': 'email',
             'class': 'form-control-lg',
             'autocomplete': "off",
             'required': False,
             'title': '请输入您的邮箱账号！',
+            'onblur': '$(".alert-danger").remove("");',
             "oninvalid": "setCustomValidity('请输入正确的邮箱地址')",
             "oninput": "setCustomValidity('')",
             'placeholder': '邮箱'

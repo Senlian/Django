@@ -77,10 +77,23 @@
     - 利用form.ModelForm
     - 注册验证码邮件通知
     - 注册成功邮件通知
-
+    
+    
+- 发送邮件视图
+    - 邮箱已注册
+        - 重设密码
+    - 邮箱未注册
+        - 注册验证码
+            > `timeout`有效期
+            ```验证码设置
+                from django.core.cache import cache
+                cache.set(key, value, timeout)
+            ```
+                
 - 修改密码
 
 - 重置密码
+    
 
 - 函数视图
 

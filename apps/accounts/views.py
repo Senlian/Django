@@ -97,6 +97,10 @@ class RegisterView(AccountsRegisterFormMixin, auth_views.FormView):
         return JsonResponse({'success_url': success_url})
 
 
+class ResetPasswordView(auth_views.FormView):
+    pass
+
+
 class EmailToView(auth_views.FormView):
     form_class = AccountEmailForm
     success_url = reverse_lazy('blog:index')
@@ -137,12 +141,11 @@ class EmailToView(auth_views.FormView):
         except Exception as e:
             print(e)
             raise e
-        if not is_staff:
-            return JsonResponse({'is_send': 'ok', 'timer': TIMER})
-        else:
-            return HttpResponseRedirect(self.get_success_url())
+        return JsonResponse({'is_send': 'ok', 'timer': TIMER})
 
     def form_invalid(self, form):
-        print('dddddd')
-        print(form.errors.as_text())
-        return HttpResponse(form.errors.as_text().split('*')[-1])
+        is_staff = form.cleaned_data['is_staff']
+        if not is_staff:
+            return HttpResponse(form.errors.as_text().split('*')[-1])
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
