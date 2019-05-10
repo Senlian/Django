@@ -1,1 +1,61 @@
 {% extends "common/layerui.html" %}
+{% block header %}{% include "common/header.html" %}{% endblock %}
+{% block form_title %}
+    <p class="py-3">
+        <a class="text-dark font-weight-bold ml-3" style="text-decoration: none;height: 32px;color: black;"
+           href="{% url 'blog:index' %}" target="_top">
+            <h2 style="color: black">修改密码</h2>
+        </a>
+    </p>
+    <hr class="mb-5  ml-3">
+{% endblock %}
+{% block form_errors %}{% endblock %}
+{% block form_body %}
+    <div class="container-fluid" style="width: 400px">
+        {% if user.is_authenticated %}
+            <div class="form-group">
+                <label for="{{ form.password_old.id_for_label }}" class="col-sm-12 control-label  font-weight-bold">
+                    {{ form.password_old.label_tag }}
+                </label>
+                {% if form.password_old.errors %}
+                    <label class="col-sm-12 control-label alert alert-danger">{{ form.password_old.errors }}</label>
+                {% endif %}
+                <div class="col-sm-12">
+                    {{ form.password_old }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="{{ form.password.id_for_label }}" class="col-sm-12 control-label  font-weight-bold">
+                {{ form.password.label_tag }}
+            </label>
+            {% if form.password.errors %}
+                <label class="col-12 control-label alert alert-danger">{{ form.password.errors }}</label>
+            {% endif %}
+            <div class="col-sm-12">
+                {{ form.password }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="{{ form.password_again.id_for_label }}" class="col-sm-12 control-label  font-weight-bold">
+                {{ form.password_again.label_tag }}
+            </label>
+            {% if form.password_again.errors %}
+                <label class="col-sm-12 control-label alert alert-danger">{{ form.password_again.errors }}</label>
+            {% endif %}
+            <div class="col-sm-12">
+                {{ form.password_again }}
+            </div>
+        </div>
+        <div class="form-group my-auto">
+            <div class="col-sm-offset-2 col-sm-12 text-center">
+                <button type="submit" class="btn btn-block btn-primary btn-lg">修改密码</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block footer %}{% include 'common/footer.html' %}{% endblock %}
+{% block base_code_extend %}
+
+{% endblock %}

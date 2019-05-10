@@ -1,8 +1,8 @@
 {% extends "common/layerui.html" %}
 {% block header %}{% include "common/header.html" %}{% endblock %}
+{% block form_title %}{% endblock %}
+{% block form_errors %}{% endblock %}
 {% block form_body %}
-    {% block form_title %}{% endblock %}
-    {% block form_errors %}{% endblock %}
     <div class="form-group sr-only">
         <label for="{{ form.is_staff.id_for_label }}"
                class="col-sm-12 control-label  font-weight-bold">{{ form.is_staff.label_tag }}
@@ -78,7 +78,7 @@
             var is_staff = true;
             if (email != "") {
                 element.attr('disabled', true);
-                var url = '{% url "accounts:emailto" %}';
+                var url = '{% url "accounts:send_email" %}';
                 $.ajax({
                     url: url,
                     type: 'post',

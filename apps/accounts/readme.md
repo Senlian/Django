@@ -48,6 +48,10 @@
     
     > django创建表时自动在`auth_permissions`权限表中自动添加`add`,`delete`,`change`,`view`四个权限.
 
+## 表单管理 ##
+- 登录表单
+- 注册表单
+- 邮件表单
 
 ## 视图管理 ##    
 - 登录视图
@@ -56,7 +60,7 @@
     - 下次自动登录
         > [session机制](<https://www.cnblogs.com/sss4/p/7071334.html>)
     - 验证码
-        - 利用`PIL`和`random`制作含噪点的随机密码，前端使用`ajax`动态刷新
+        > 利用`PIL`和`random`制作含噪点的随机密码，前端使用`ajax`动态刷新
     - 用户名、手机、邮箱多途径登录   
         ```Q查询
             from django.db.models import Q
@@ -76,23 +80,68 @@
 - 注册视图
     - 利用form.ModelForm
     - 注册验证码邮件通知
+        > 转发送邮件视图（邮箱未注册）
     - 注册成功邮件通知
+        > 利用AbstractUser自带发送邮件功能
     
     
 - 发送邮件视图
     - 邮箱已注册
-        - 重设密码
+        - 重设密码邮件（附重设密码链接）
+            - 生成身份标识
+                - uid
+                    > 经base64编码的用户主键
+                    ```uid
+                        from django.utils.http import urlsafe_base64_encode
+                        from django.utils.encoding import force_bytes
+                        urlsafe_base64_encode(force_bytes(user.pk))
+                    ```
+                - token
+                    > 经hashlib.sha1和hmac双重加密的用户信息
+                    ```token
+                        from django.contrib.auth.tokens import default_token_generator as token_generator
+                        token_generator.make_token(user)
+                    ```
+            - 生成主域名
+                - protocol
+               
+                    > https or http
+                    
+                    > [SECURE_PROXY_SSL_HEADER 配置](<http://program.dengshilong.org/2016/11/18/Django%E4%B9%8BSECURE-PROXY-SSL-HEADER%E8%AE%BE%E7%BD%AE/>)
+                    
+                    `protocol = 'https://' if self.request.is_secure() else 'http://'`
+                - domain
+                    > 如127.0.0.1:8000
+                    ```domain
+                        from django.contrib.sites.shortcuts import get_current_site
+                        current_site.domain
+                    ```
+            - 完整的重设密码链接
+                ```uri
+                    视图中：
+                    uri + resolve_url('accounts:reset', uidb64=uid, token=token)
+                    模板中：
+                    {{ protocol }}://{{ domain }}{% url 'reset' uidb64=uid token=token %}
+                ```
+                   
     - 邮箱未注册
-        - 注册验证码
+        - 注册验证码邮件
             > `timeout`有效期
             ```验证码设置
                 from django.core.cache import cache
                 cache.set(key, value, timeout)
             ```
-                
+
+- 重设密码
+    - 身份验证
+        - uid base64解码获取账号
+    - 链接有效性验证
+        - 用户身份获取失败判断无效
+        - 
+                    
 - 修改密码
 
-- 重置密码
+
     
 
 - 函数视图

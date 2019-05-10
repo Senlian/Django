@@ -1,16 +1,17 @@
 from django.conf import settings
-from django.urls import reverse_lazy
-from django.shortcuts import render, resolve_url
+from django.urls import reverse_lazy, resolve
+from django.utils.encoding import force_bytes
+from django.shortcuts import render, resolve_url, reverse
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import views as auth_views
-from django.views.generic.edit import BaseFormView
 from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
-from django.utils.http import is_safe_url, urlsafe_base64_decode
+from django.utils.http import is_safe_url, urlsafe_base64_decode, urlsafe_base64_encode
 
 import random, string
 
-from .forms import AccountsLoginForm, AccountRegisterForm, AccountEmailForm
+from .forms import AccountsLoginForm, AccountRegisterForm, AccountEmailForm, AccountSetPasswordForm
 from blog.views import DrawVerifyView
 
 
@@ -97,14 +98,17 @@ class RegisterView(AccountsRegisterFormMixin, auth_views.FormView):
         return JsonResponse({'success_url': success_url})
 
 
-class ResetPasswordView(auth_views.FormView):
+class ResetPasswordView(auth_views.PasswordResetConfirmView):
+    # template_name = 'accounts/reset.html'
+
+    success_url = reverse_lazy('blog:index')
     pass
 
 
-class EmailToView(auth_views.FormView):
+class SendEmailView(auth_views.FormView):
     form_class = AccountEmailForm
     success_url = reverse_lazy('blog:index')
-    template_name = 'accounts/forget.html'
+    template_name = 'accounts/send_email.html'
 
     def form_valid(self, form):
         current_site = get_current_site(self.request)
@@ -113,35 +117,13 @@ class EmailToView(auth_views.FormView):
         protocol = 'https://' if self.request.is_secure() else 'http://'
         uri = protocol + domain
 
-        email = form.cleaned_data['email'].strip().lower()
         is_staff = form.cleaned_data['is_staff']
-        TIMER = settings.EMAIL_TIMER
-        try:
-            if is_staff:
-                subject = '密码重设通知'
-                html_message = """<p><span>您正在申请重设<a href='{0}'>本站</a>的登录密码,网站地址:<a href='{0}'>{0}</a>。</span><br>
-                <span>请点击访问下方链接重新设置您的登录密码：<br><blockquote><a href='{0}'>{0}</a></blockquote></span><br>
-                <span>如您已忘记本站账号，账号为 <span style="color: blue;font-weight: bold;">{1}</span> ,</span>
-                <span>如非本人操作，请忽略。</span></p>""".format(uri, form.get_user(email))
-            else:
-                subject = '邮箱验证通知'
-                verify = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
-                form.set_cache('register_verify_{0}'.format(email.split('@')[0]), verify, TIMER)
-                html_message = """<p><span>您正在使用该邮箱注册<a href='{0}'>本站</a>的会员,网站地址:<a href='{0}'>{0}</a>。</span><br>
-                <span>为保证是您本人进行的注册操作，特发送此邮件进行验证，</span>
-                <span>请输入验证码 <span style="color: red;font-weight: bold;">{1}</span> 并在<span style="color: blue;font-weight: bold;">{2}秒</span>内完成您的注册。</span><br>
-                <span>如非本人操作，请忽略。</span><br></p>""".format(uri, verify, TIMER)
+        if is_staff:
+            is_send = self.send_reset(uri, form)
+        else:
+            is_send = self.send_verify(uri, form)
 
-            opts = {
-                'subject': subject,
-                'to_email': email,
-                'html_message': html_message,
-            }
-            form.send_email(**opts)
-        except Exception as e:
-            print(e)
-            raise e
-        return JsonResponse({'is_send': 'ok', 'timer': TIMER})
+        return JsonResponse({'is_send': is_send, 'timer': settings.EMAIL_TIMER})
 
     def form_invalid(self, form):
         is_staff = form.cleaned_data['is_staff']
@@ -149,3 +131,37 @@ class EmailToView(auth_views.FormView):
             return HttpResponse(form.errors.as_text().split('*')[-1])
         else:
             return self.render_to_response(self.get_context_data(form=form))
+
+    def send_reset(self, uri, form):
+        subject = '密码重设通知'
+        # 获取账户信息
+        user = form.get_user()
+        # base64位加密
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = token_generator.make_token(user)
+        reset_uri = uri + resolve_url('accounts:reset', uidb64=uid, token=token)
+        html_message = """<p><span>您正在申请重设<a href='{0}'>本站</a>的登录密码,网站地址:<a href='{0}'>{0}</a>。</span><br>
+        <span>请点击访问下方链接重新设置您的登录密码：<br><blockquote><a href='{1}'>{1}</a></blockquote></span><br>
+        <span>如您已忘记本站账号，账号为 <span style="color: blue;font-weight: bold;">{2}</span> ,</span>
+        <span>如非本人操作，请忽略。</span></p>""".format(uri, reset_uri, user.username)
+        opts = {
+            'subject': subject,
+            'html_message': html_message,
+        }
+        return form.send_email(**opts)
+
+    def send_verify(self, uri, form, TIMER=None):
+        TIMER = TIMER or settings.EMAIL_TIMER
+        email = form.cleaned_data['email'].strip().lower()
+        subject = '邮箱验证通知'
+        verify = ''.join(random.sample(string.ascii_lowercase + string.digits, 6))
+        form.set_cache('register_verify_{0}'.format(email.split('@')[0]), verify, TIMER)
+        html_message = """<p><span>您正在使用该邮箱注册<a href='{0}'>本站</a>的会员,网站地址:<a href='{0}'>{0}</a>。</span><br>
+        <span>为保证是您本人进行的注册操作，特发送此邮件进行验证，</span>
+        <span>请输入验证码 <span style="color: red;font-weight: bold;">{1}</span> 并在<span style="color: blue;font-weight: bold;">{2}秒</span>内完成您的注册。</span><br>
+        <span>如非本人操作，请忽略。</span><br></p>""".format(uri, verify, TIMER)
+        opts = {
+            'subject': subject,
+            'html_message': html_message,
+        }
+        return form.send_email(**opts)

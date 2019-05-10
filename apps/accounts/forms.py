@@ -23,6 +23,7 @@ class AccountsLoginForm(AuthenticationForm):
         attrs={
             'type': 'text',
             'class': 'form-control',
+            'title': '请输入用户名、手机或者邮箱地址',
             'autocomplete': 'off',
             "autofocus": "autofocus",
             'placeholder': '用户名 | 手机 | 邮箱',
@@ -33,6 +34,7 @@ class AccountsLoginForm(AuthenticationForm):
         attrs={
             'type': 'password',
             'class': 'form-control',
+            'title': '请输入密码',
             'autocomplete': 'off',
             'placeholder': '密码',
             'onblur': 'var index = parent.layer.getFrameIndex(window.name);$(".alert-danger").remove("");parent.layer.style(index, {height: "496px"});',
@@ -47,6 +49,7 @@ class AccountsLoginForm(AuthenticationForm):
             'type': 'text',
             'class': 'form-control',
             'autocomplete': 'off',
+            'title': '请输入验证码',
             'placeholder': '验证码',
             "oninvalid": "setCustomValidity('请输入验证码')",
             "oninput": "setCustomValidity('')"
@@ -213,6 +216,47 @@ class AccountRegisterForm(forms.ModelForm):
         return verify
 
 
+class AccountSetPasswordForm(forms.ModelForm):
+    password_old = forms.CharField(max_length=128, label="输入旧密码", widget=widgets.PasswordInput(
+        attrs={
+            'type': 'password',
+            'class': 'form-control',
+            'autocomplete': 'off',
+            'minlength': "6",
+            'title': '密码长度不低于6位。',
+            "oninvalid": "setCustomValidity('密码长度不低于6位。')",
+            "oninput": "setCustomValidity('')",
+            'placeholder': '输入旧密码'
+        }))
+    password_again = forms.CharField(max_length=128, label="确认新密码", widget=widgets.PasswordInput(
+        attrs={
+            'type': 'password',
+            'class': 'form-control',
+            'autocomplete': 'off',
+            'minlength': "6",
+            'title': '密码长度不低于6位。',
+            "oninvalid": "setCustomValidity('密码长度不低于6位。')",
+            "oninput": "setCustomValidity('')",
+            'placeholder': '确认新密码'
+        }))
+
+    class Meta:
+        model = User
+        fields = ('password',)
+        widgets = {'password': widgets.PasswordInput(
+            attrs={
+                'type': 'password',
+                'class': 'form-control',
+                'autocomplete': 'off',
+                'minlength': "6",
+                'title': '密码长度不低于6位。',
+                "oninvalid": "setCustomValidity('密码长度不低于6位。')",
+                "oninput": "setCustomValidity('')",
+                'placeholder': '输入新密码'
+            }), }
+        labels = {'password': '输入新密码'}
+
+
 class AccountEmailForm(forms.Form):
     is_staff = forms.BooleanField(label='是否注册', required=False, initial=True)
     email = forms.EmailField(label='请输入您账号所绑定的邮箱地址', required=False, widget=widgets.EmailInput(
@@ -229,6 +273,14 @@ class AccountEmailForm(forms.Form):
         }))
 
     def clean_email(self):
+        """函数功能.
+                邮箱验证
+        Args:
+            self (object): 表单实例
+
+        Returns:
+            verify: str
+        """
         email = self.cleaned_data['email']
         is_staff = self.cleaned_data['is_staff']
         if not User.objects.filter(email=email):
@@ -239,20 +291,59 @@ class AccountEmailForm(forms.Form):
                 raise forms.ValidationError('该邮箱已经在本站注册。')
         return email
 
-    def get_user(self, email):
+    def get_user(self, email=None):
+        """函数功能.
+            根据邮箱获取用户名
+        Args:
+            self (object): 表单实例
+            email: 邮箱，默认self.cleaned_data['email']
+
+        Returns:
+            verify: str
+        """
+        email = email or self.cleaned_data['email']
         auth_user = User.objects.filter(email=email)
         if auth_user:
-            return auth_user[0].username
+            return auth_user[0]
         else:
             from django.contrib.auth.models import AnonymousUser
-            return AnonymousUser.username
+            return AnonymousUser
 
     def set_cache(self, key, value, timeout):
-        cache.set(key, value, timeout)
+        """函数功能.
+            设置缓存
+        Args:
+            self (object): 表单实例
+            key: 缓存键
+            value: 缓存键值
+            timeout: 过期时间
 
-    def send_email(self, subject, to_email, from_email=None, message=None, html_message=None, **kwargs):
+        Returns:
+            dict: {key: value}
+        """
+        cache.set(key, value, timeout)
+        return {key: value}
+
+    def send_email(self, subject, to_email=None, from_email=None, message=None, html_message=None, **kwargs):
+        """函数功能.
+            发送邮件
+        Args:
+            self (object): 表单实例
+            subject: 邮件主题
+            to_email: 收件人
+            from_email: 发件人
+            message: 消息主题
+            html_message: html格式消息
+            kwargs: 其他参数
+
+        Returns:
+            Boolean: 是否发送成功
+        """
         from_email = from_email or settings.EMAIL_HOST_USER
-        print('send')
-        mail.send_mail(subject=subject, message=message, from_email=from_email,
-                       recipient_list=[to_email], html_message=html_message, **kwargs)
-        print('send ok')
+        try:
+            to_email = to_email or self.cleaned_data['email']
+            mail.send_mail(subject=subject, message=message, from_email=from_email,
+                           recipient_list=[to_email], html_message=html_message, **kwargs)
+            return True
+        except:
+            return False
