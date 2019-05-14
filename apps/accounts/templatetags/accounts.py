@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django import template
+from django.shortcuts import resolve_url
 
 register = template.Library()
 
@@ -68,3 +69,11 @@ def set_var(parser, token):
     except ValueError as e:
         msg = '%r tag requires a single argument' % tag
         raise template.TemplateSyntaxError(msg)
+
+@register.filter(name=('ischange'))
+def ischange(url=None):
+    if not url:
+        return False
+    if url == resolve_url('accounts:change'):
+        return True
+    return False

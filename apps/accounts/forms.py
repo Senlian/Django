@@ -3,18 +3,17 @@
 from django import forms
 from django.db.models import Q
 from django.forms import widgets
-from django.core.cache import cache
-from django.core import mail
-from django.contrib.auth import authenticate
-from django.contrib.auth import get_user_model
 from django.conf import settings
-
+from django.core import mail
+from django.core.cache import cache
+from django.contrib.auth import (authenticate, password_validation, get_user_model)
+from django.utils.translation import gettext, gettext_lazy as _
 from django.contrib.auth.forms import UsernameField, AuthenticationForm
 
 # 由于定制了用户管理模块，所以不能直接使用auth.models.User模型
 User = get_user_model()
 
-
+# TODO：登录表单
 class AccountsLoginForm(AuthenticationForm):
     '''
         登录表单
@@ -127,7 +126,8 @@ class AccountsLoginForm(AuthenticationForm):
         return verify
 
 
-class AccountRegisterForm(forms.ModelForm):
+# TODO：注册表单
+class AccountsRegisterForm(forms.ModelForm):
     verify = forms.CharField(label='邮箱验证码', required=False, widget=forms.TextInput(
         attrs={
             'type': 'text',
@@ -216,7 +216,68 @@ class AccountRegisterForm(forms.ModelForm):
         return verify
 
 
-class AccountSetPasswordForm(forms.ModelForm):
+# TODO：设置密码表单
+class AccountsSetPasswordForm(forms.Form):
+    password = forms.CharField(max_length=128, label="输入新密码", widget=widgets.PasswordInput(
+        attrs={
+            'type': 'password',
+            'class': 'form-control',
+            'autocomplete': 'off',
+            'minlength': "6",
+            'title': '密码长度不低于6位。',
+            "oninvalid": "setCustomValidity('密码长度不低于6位。')",
+            "oninput": "setCustomValidity('')",
+            'placeholder': '输入新密码'
+        }))
+    password_ = forms.CharField(max_length=128, label="确认新密码", widget=widgets.PasswordInput(
+        attrs={
+            'type': 'password',
+            'class': 'form-control',
+            'autocomplete': 'off',
+            'minlength': "6",
+            'title': '密码长度不低于6位。',
+            "oninvalid": "setCustomValidity('密码长度不低于6位。')",
+            "oninput": "setCustomValidity('')",
+            'placeholder': '确认新密码'
+        }))
+    error_messages = {
+        'password_mismatch': _("The two password fields didn't match."),
+    }
+
+    def __init__(self, user, *args, **kwargs):
+        """函数功能.
+                表单初始化
+        Args:
+            user: 通过uidb64解析获得用户信息
+
+        Returns:
+            None
+        """
+        self.user = user
+        super().__init__(*args, **kwargs)
+
+    def clean_password_(self):
+        password = self.cleaned_data.get('password')
+        password_ = self.cleaned_data.get('password_')
+        if password and password_:
+            if password != password_:
+                raise forms.ValidationError(
+                    self.error_messages['password_mismatch'],
+                    code='password_mismatch',
+                )
+        password_validation.validate_password(password_, self.user)
+        return password_
+
+    def save(self, commit=True):
+        password = self.cleaned_data["password"]
+        self.user.set_password(password)
+        if commit:
+            self.user.save()
+        return self.user
+
+
+# TODO：修改密码表单
+class AccountsChangePwdForm(AccountsSetPasswordForm):
     password_old = forms.CharField(max_length=128, label="输入旧密码", widget=widgets.PasswordInput(
         attrs={
             'type': 'password',
@@ -228,36 +289,29 @@ class AccountSetPasswordForm(forms.ModelForm):
             "oninput": "setCustomValidity('')",
             'placeholder': '输入旧密码'
         }))
-    password_again = forms.CharField(max_length=128, label="确认新密码", widget=widgets.PasswordInput(
-        attrs={
-            'type': 'password',
-            'class': 'form-control',
-            'autocomplete': 'off',
-            'minlength': "6",
-            'title': '密码长度不低于6位。',
-            "oninvalid": "setCustomValidity('密码长度不低于6位。')",
-            "oninput": "setCustomValidity('')",
-            'placeholder': '确认新密码'
-        }))
 
-    class Meta:
-        model = User
-        fields = ('password',)
-        widgets = {'password': widgets.PasswordInput(
-            attrs={
-                'type': 'password',
-                'class': 'form-control',
-                'autocomplete': 'off',
-                'minlength': "6",
-                'title': '密码长度不低于6位。',
-                "oninvalid": "setCustomValidity('密码长度不低于6位。')",
-                "oninput": "setCustomValidity('')",
-                'placeholder': '输入新密码'
-            }), }
-        labels = {'password': '输入新密码'}
+    error_messages = {
+        **AccountsSetPasswordForm.error_messages,
+        'password_incorrect': _("Your old password was entered incorrectly. Please enter it again."),
+    }
+
+    field_order = ['password_old', 'password', 'password_']
+
+    def clean_password_old(self):
+        """
+        Validate that the password_old field is correct.
+        """
+        password_old = self.cleaned_data["password_old"]
+        if not self.user.check_password(password_old):
+            raise forms.ValidationError(
+                self.error_messages['password_incorrect'],
+                code='password_incorrect',
+            )
+        return password_old
 
 
-class AccountEmailForm(forms.Form):
+# TODO：邮件表单
+class AccountsEmailForm(forms.Form):
     is_staff = forms.BooleanField(label='是否注册', required=False, initial=True)
     email = forms.EmailField(label='请输入您账号所绑定的邮箱地址', required=False, widget=widgets.EmailInput(
         attrs={

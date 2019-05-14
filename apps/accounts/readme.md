@@ -51,6 +51,8 @@
 ## 表单管理 ##
 - 登录表单
 - 注册表单
+- 设置密码表单
+- 修改密码表单
 - 邮件表单
 
 ## 视图管理 ##    
@@ -132,20 +134,41 @@
                 cache.set(key, value, timeout)
             ```
 
-- 重设密码
+
+- 重设密码视图
+    - 内置重置方法
     - 身份验证
         - uid base64解码获取账号
     - 链接有效性验证
         - 用户身份获取失败判断无效
-        - 
-                    
-- 修改密码
-
+        - token验证
+            > 用户+时间戳生成的token如果和得到的token相同则有效
+        - 时间验证
+            > token解析出的时间戳如果超出`settings.PASSWORD_RESET_TIMEOUT_DAYS`则失效
+        - 修改密码后删除token,使链接失效
+            > `del self.request.session[INTERNAL_RESET_SESSION_TOKEN]`
+    - 重设密码后自动登录
+        > `post_reset_login=True`
+     
+                   
+- 修改密码视图
+    - 内置修改方法
+    - 未登录跳转到登录页面
+        ```PasswordChangeView
+            @method_decorator(login_required)        
+            def dispatch(self, *args, **kwargs):
+        ```
+    - 获取用户信息
+        > `self.request.user`
 
     
+- 个人信息
 
-- 函数视图
-
-- 模板视图
 
 ## 路由管理 ##
+- 登录
+- 退出
+- 注册
+- 重设密码
+- 修改密码
+- 邮件通知

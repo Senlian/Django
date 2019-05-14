@@ -1,8 +1,8 @@
 from django.conf import settings
 from django.urls import reverse_lazy, resolve
 from django.utils.encoding import force_bytes
-from django.shortcuts import render, resolve_url, reverse
-from django.contrib.auth import login as auth_login
+from django.shortcuts import render, resolve_url, reverse, redirect
+from django.contrib.auth import update_session_auth_hash, logout as auth_logout, login as auth_login
 from django.contrib.auth import views as auth_views
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator as token_generator
@@ -11,7 +11,8 @@ from django.utils.http import is_safe_url, urlsafe_base64_decode, urlsafe_base64
 
 import random, string
 
-from .forms import AccountsLoginForm, AccountRegisterForm, AccountEmailForm, AccountSetPasswordForm
+from .forms import (AccountsLoginForm, AccountsRegisterForm, AccountsEmailForm, AccountsSetPasswordForm,
+                    AccountsChangePwdForm)
 from blog.views import DrawVerifyView
 
 
@@ -54,11 +55,13 @@ class LoginView(AccountsLoginFormMixin, auth_views.LoginView):
     # 模板表单
     form_class = AccountsLoginForm
     # 表单渲染数据=form+extra_context
-    extra_context = {'title': '登录', 'site_header': '用户名密码登录'}
+    extra_context = {'title': '登录', 'site_header': '用户名密码登录', 'site_title': '账号管理'}
     redirect_field_name = reverse_lazy('blog:index')
 
     def get(self, request, *args, **kwargs):
         """Handle GET requests: instantiate a blank version of the form."""
+        if request.user.is_authenticated:
+            return redirect('blog:index')
         DrawVerifyView(request)
         return self.render_to_response(self.get_context_data())
 
@@ -67,9 +70,9 @@ class RegisterView(AccountsRegisterFormMixin, auth_views.FormView):
     # 模板
     template_name = 'accounts/register.html'
     # 模板表单
-    form_class = AccountRegisterForm
+    form_class = AccountsRegisterForm
     # 表单渲染数据=form+extra_context
-    extra_context = {'title': '注册', 'site_header': '账号注册'}
+    extra_context = {'title': '注册', 'site_header': '账号注册', 'site_title': '账号管理'}
     redirect_field_name = reverse_lazy('blog:index')
 
     def form_valid(self, form):
@@ -99,16 +102,46 @@ class RegisterView(AccountsRegisterFormMixin, auth_views.FormView):
 
 
 class ResetPasswordView(auth_views.PasswordResetConfirmView):
-    # template_name = 'accounts/reset.html'
-
+    template_name = 'accounts/reset.html'
+    form_class = AccountsSetPasswordForm
     success_url = reverse_lazy('blog:index')
-    pass
+    post_reset_login = True
+    extra_context = {'title': '重设密码', 'site_header': '重设密码', 'site_title': '账号管理'}
+
+    def form_valid(self, form):
+        user = form.save()
+        # 链接失效
+        del self.request.session[auth_views.INTERNAL_RESET_SESSION_TOKEN]
+        if self.post_reset_login:
+            auth_login(self.request, user, self.post_reset_login_backend)
+        success_url = self.get_success_url()
+        return JsonResponse({'success_url': success_url})
+
+
+class ChangePasswordView(auth_views.PasswordChangeView):
+    template_name = 'accounts/reset.html'
+    form_class = AccountsChangePwdForm
+    success_url = reverse_lazy('blog:index')
+    post_reset_login = False
+    extra_context = {'title': '修改密码', 'site_header': '修改密码', 'site_title': '账号管理'}
+
+    def form_valid(self, form):
+        # 密码修改
+        form.save()
+        # Updating the password logs out all other sessions for the user
+        # except the current one.
+        update_session_auth_hash(self.request, form.user)
+        success_url = self.get_success_url()
+        if not self.post_reset_login:
+            auth_logout(self.request)
+        return JsonResponse({'success_url': success_url})
 
 
 class SendEmailView(auth_views.FormView):
-    form_class = AccountEmailForm
+    form_class = AccountsEmailForm
     success_url = reverse_lazy('blog:index')
     template_name = 'accounts/send_email.html'
+    extra_context = {'title': '重设通知', 'site_header': '重设通知', 'site_title': '账号管理'}
 
     def form_valid(self, form):
         current_site = get_current_site(self.request)
@@ -165,3 +198,8 @@ class SendEmailView(auth_views.FormView):
             'html_message': html_message,
         }
         return form.send_email(**opts)
+
+
+class UserInfoView(auth_views.TemplateView):
+    template_name = 'accounts/userinfo.html'
+    extra_context = {'title': '我的资料', 'site_title': '个人中心-SCSDN', 'site_header': '个人资料'}
