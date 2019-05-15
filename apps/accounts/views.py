@@ -8,7 +8,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator as token_generator
 from django.http.response import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.utils.http import is_safe_url, urlsafe_base64_decode, urlsafe_base64_encode
-
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
 import random, string
 
 from .forms import (AccountsLoginForm, AccountsRegisterForm, AccountsEmailForm, AccountsSetPasswordForm,
@@ -200,6 +202,42 @@ class SendEmailView(auth_views.FormView):
         return form.send_email(**opts)
 
 
-class UserInfoView(auth_views.TemplateView):
+class UserCenterMixin:
+    # @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+
+class UserCenterInfoView(UserCenterMixin, auth_views.TemplateView):
     template_name = 'accounts/user_center_info.html'
-    extra_context = {'title': '我的资料', 'site_title': '个人中心-SCSDN', 'site_header': '个人资料'}
+    extra_context = {'title': '个人资料', 'site_title': '个人中心-SCSDN', 'site_header': '我的资料'}
+
+
+class UserCenterCollectsView(UserCenterMixin, auth_views.TemplateView):
+    template_name = 'accounts/user_center_info.html'
+    extra_context = {'title': '个人资料', 'site_title': '个人中心-SCSDN', 'site_header': '我的收藏'}
+
+
+class UserCenterFocusView(UserCenterMixin, auth_views.TemplateView):
+    template_name = 'accounts/user_center_info.html'
+    extra_context = {'title': '个人资料', 'site_title': '个人中心-SCSDN', 'site_header': '我的关注'}
+
+
+class UserCenterFansView(UserCenterMixin, auth_views.TemplateView):
+    template_name = 'accounts/user_center_info.html'
+    extra_context = {'title': '个人资料', 'site_title': '个人中心-SCSDN', 'site_header': '我的粉丝'}
+
+
+class UserCenterBlogsView(UserCenterMixin, auth_views.TemplateView):
+    template_name = 'accounts/user_center_info.html'
+    extra_context = {'title': '个人资料', 'site_title': '个人中心-SCSDN', 'site_header': '我的博客'}
+
+
+class UserCenterPhotosView(UserCenterMixin, auth_views.TemplateView):
+    template_name = 'accounts/user_center_info.html'
+    extra_context = {'title': '个人资料', 'site_title': '个人中心-SCSDN', 'site_header': '我的相册'}
+
+
+class UserCenterEditProtraitView(UserCenterMixin, auth_views.TemplateView):
+    template_name = 'accounts/user_center_edit_protrait.html'
+    extra_context = {'title': '个人资料', 'site_title': '个人中心-SCSDN', 'site_header': '头像裁剪'}

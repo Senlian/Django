@@ -1,5 +1,6 @@
 {% extends 'accounts/base/user_center_base.html' %}
 {% load staticfiles %}
+{% load accounts %}
 {% block left_slider_subbox %}
     <div class="col col-md-2 col-lg-2">
         <a href="#">
@@ -10,7 +11,7 @@
                 <img class="img-thumbnail rounded-circle" width="150px" height="150px"
                      src="{% static 'common/imgs/avatar.png' %}" alt="Cinque Terre">
             {% endif %}
-            <button class="btn btn-primary btn-block col-10" id="upload_image"
+            <button class="btn btn-primary btn-block col-lg-7 col-md-12 col-sm-12" id="upload_image"
                     onclick="upload_image_layer()">
                 更换头像
             </button>
@@ -18,7 +19,7 @@
     </div>
 {% endblock %}
 {% block right_slider_subbox %}
-    <div class="col col-md-10 col-lg-10">
+    <div class="col col-md-8 col-lg-8">
         <table class="table table-hover">
             <caption style="caption-side:top;">
                 <span>基本信息</span>
@@ -26,24 +27,24 @@
             </caption>
             <tbody>
             <tr>
-                <td>账号</td>
-                <td>{{ user.username | default:_('') }}</td>
+                <td width="300px">账号</td>
+                <td>{{ user.username | default_if_none:_('') }}</td>
             </tr>
             <tr>
-                <td>昵称</td>
-                <td>{{ user.nick_name | default:_('') }}</td>
+                <td width="300px">昵称</td>
+                <td>{{ user.nick_name | default_if_none:_('') }}</td>
             </tr>
             <tr>
-                <td>姓名</td>
-                <td>{{ user.name | default:_('') }}</td>
+                <td width="300px">姓名</td>
+                <td>{{ user.name | default_if_none:_('') }}</td>
             </tr>
             <tr>
-                <td>性别</td>
-                <td>{{ user.gender | default:_('') }}</td>
+                <td width="300px">性别</td>
+                <td>{{ user.gender | default_if_none:_('') }}</td>
             </tr>
             <tr>
-                <td>生日</td>
-                <td>{{ user.birth | default:_('') }}</td>
+                <td width="300px">生日</td>
+                <td>{{ user.birth | default_if_none:_('') }}</td>
             </tr>
             </tbody>
         </table>
@@ -55,24 +56,24 @@
             </caption>
             <tbody>
             <tr>
-                <td>电话</td>
-                <td>{{ user.phone | default:_('') }}</td>
+                <td width="300px">电话</td>
+                <td>{{ user.phone | default_if_none:_('') }}</td>
             </tr>
             <tr>
-                <td>邮箱</td>
-                <td>{{ user.email | default:_('') }}</td>
+                <td width="300px">邮箱</td>
+                <td>{{ user.email | default_if_none:_('') }}</td>
             </tr>
             <tr>
-                <td>职业</td>
-                <td>{{ user.profession | default:_('') }}</td>
+                <td width="300px">职业</td>
+                <td>{{ user.profession | default_if_none:_('') }}</td>
             </tr>
             <tr>
-                <td>公司</td>
-                <td>{{ user.company }}</td>
+                <td width="300px">公司</td>
+                <td>{{ user.company | default_if_none:_('') }}</td>
             </tr>
             <tr>
-                <td>学校</td>
-                <td>{{ user.school | default:_('') }}</td>
+                <td width="300px">学校</td>
+                <td>{{ user.school | default_if_none:_('') }}</td>
             </tr>
             </tbody>
         </table>
@@ -81,7 +82,7 @@
                 <span>个人简介</span>
             </header>
             <hr>
-            <blockquote class="layui-elem-quote">{{ user.intro | default:_('这家伙很懒，什么都没留下') }}</blockquote>
+            <blockquote class="layui-elem-quote">{{ user.intro | default_if_none:_('这家伙很懒，什么都没留下') }}</blockquote>
 
         </div>
 

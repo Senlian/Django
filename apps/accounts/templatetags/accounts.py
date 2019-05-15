@@ -70,10 +70,65 @@ def set_var(parser, token):
         msg = '%r tag requires a single argument' % tag
         raise template.TemplateSyntaxError(msg)
 
-@register.filter(name=('ischange'))
+
+@register.filter(name=('is_change'))
 def ischange(url=None):
     if not url:
         return False
-    if url == resolve_url('accounts:change'):
+    if url.lower() == resolve_url('accounts:change').lower():
+        return True
+    return False
+
+
+@register.filter(name=('is_uc_info'))
+def isucinfo(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('accounts:uc_info').lower():
+        return True
+    return False
+
+
+@register.filter(name=('is_uc_collects'))
+def isuccollects(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('accounts:uc_collects').lower():
+        return True
+    return False
+
+
+@register.filter(name=('is_uc_focus'))
+def isucfocus(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('accounts:uc_focus').lower():
+        return True
+    return False
+
+
+@register.filter(name=('is_uc_fans'))
+def isucfans(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('accounts:uc_fans').lower():
+        return True
+    return False
+
+
+@register.filter(name=('is_uc_blogs'))
+def isucmyblogs(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('accounts:uc_blogs').lower():
+        return True
+    return False
+
+
+@register.filter(name=('is_uc_photos'))
+def isucmyphotos(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('accounts:uc_photos').lower():
         return True
     return False

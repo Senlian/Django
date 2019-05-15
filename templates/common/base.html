@@ -49,10 +49,20 @@
     {% endblock %}
 </main>
 <footer>
+    {% block back_top %}
+        {#        <a href="#">#}
+        {#            <ul class="layui-fixbar" style="margin-bottom:80px">#}
+        {#                <li class="layui-icon layui-fixbar-top" lay-type="top"#}
+        {#                    style="display: list-item;">#}
+        {#                </li>#}
+        {#            </ul>#}
+        {#        </a>#}
+    {% endblock %}
     {% block footer %}
         {% include "common/footer.html" %}
     {% endblock %}
 </footer>
+
 {% block base_js_footer %}
     <script src="{% static 'common/js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'common/js/popper.min.js' %}"></script>
@@ -60,7 +70,18 @@
     <script src="{% static 'layui/layui.all.js' %}"></script>
 {% endblock %}
 {% block base_js_extend %}{#这里写入js代码#}{% endblock %}
-{% block base_code %}{#这里写入js代码#}{% endblock %}
+{% block base_code %}{#这里写入js代码#}
+    <script type="text/javascript">
+        layui.use('util', function () {
+            var util = layui.util;
+            //执行
+            util.fixbar({
+                css: {'bottom': 80}
+            });
+        });
+    </script>
+{% endblock %}
 {% block base_code_extend %}{#这里写入js代码#}{% endblock %}
 </body>
 </html>
+

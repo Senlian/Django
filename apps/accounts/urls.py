@@ -13,5 +13,12 @@ urlpatterns = [
     re_path(r'^change/$', views.ChangePasswordView.as_view(), name='change'),
     re_path(r'^send_email/$', views.SendEmailView.as_view(), name='send_email'),
 
-    re_path(r'^userinfo/$', views.UserInfoView.as_view(), name='userinfo'),
+    re_path(r'^user-center-info/$', views.UserCenterInfoView.as_view(), name='uc_info'),
+    re_path(r'^user-center-collects/$', views.UserCenterCollectsView.as_view(), name='uc_collects'),
+    re_path(r'^user-center-focus/$', views.UserCenterFocusView.as_view(template_name='accounts/user_center_focus.html'), name='uc_focus'),
+    re_path(r'^user-center-fans/$', views.UserCenterFansView.as_view(), name='uc_fans'),
+    re_path(r'^user-center-blogs/$', views.UserCenterBlogsView.as_view(), name='uc_blogs'),
+    re_path(r'^user-center-photos/$', views.UserCenterPhotosView.as_view(), name='uc_photos'),
+
+    re_path(r'^user-center-edit-photos/$', views.UserCenterEditProtraitView.as_view(), name='uc_edit_protrait'),
 ]

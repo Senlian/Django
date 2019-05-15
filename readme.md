@@ -104,6 +104,9 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 
 [Sphinx使用手册](<https://zh-sphinx-doc.readthedocs.io/en/latest/markup/index.html>)
 
+[cropper官网](<https://fengyuanchen.github.io/cropper/>)
+
+[cropperjs下载地址](<https://github.com/fengyuanchen/cropperjs#getting-started>)
 
 ## 知识点 ##
 - sphinx 自动生成项目文档

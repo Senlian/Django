@@ -1,15 +1,30 @@
 {% load staticfiles %}
+{% load accounts %}
 <ul class="layui-nav layui-nav-tree layui-bg-cyan" lay-filter="">
     <!-- 侧边导航: <ul class="layui-nav layui-nav-tree layui-nav-side"> -->
     <li class="layui-nav-item layui-nav-itemed">
         <a href="javascript:;">个人信息</a>
         <dl class="layui-nav-child">
-            <dd><a href="{% url 'accounts:userinfo' %}">我的资料</a></dd>
-            <dd><a href="javascript:;">我的收藏</a></dd>
-            <dd><a href="javascript:;">我的关注</a></dd>
-            <dd><a href="javascript:;">我的粉丝</a></dd>
+            <dd {% if request.path|is_uc_info %}class="layui-this"{% else %}class=""{% endif %}>
+                <a href="{% url 'accounts:uc_info' %}">我的资料</a>
+            </dd>
+            <dd {% if request.path|is_uc_collects %}class="layui-this"{% else %}class=""{% endif %}>
+                <a href="{% url 'accounts:uc_collects' %}">我的收藏</a>
+            </dd>
+            <dd {% if request.path|is_uc_focus %}class="layui-this"{% else %}class=""{% endif %}>
+                <a href="{% url 'accounts:uc_focus' %}">我的关注</a>
+            </dd>
+            <dd {% if request.path|is_uc_fans %}class="layui-this"{% else %}class=""{% endif %}>
+                <a href="{% url 'accounts:uc_fans' %}">我的粉丝</a>
+            </dd>
         </dl>
     </li>
-    <li class="layui-nav-item"><a href="">我的博客</a></li>
-    <li class="layui-nav-item"><a href="">我的相册</a></li>
+    <li class="layui-nav-item">
+        <a {% if request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
+           href="{% url 'accounts:uc_blogs' %}">我的博客</a>
+    </li>
+    <li class="layui-nav-item">
+        <a {% if request.path|is_uc_photos %}class="layui-this"{% else %}class=""{% endif %}
+           href="{% url 'accounts:uc_photos' %}">我的相册</a>
+    </li>
 </ul>

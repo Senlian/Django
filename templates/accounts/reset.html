@@ -1,9 +1,9 @@
 {% extends "common/layerui.html" %}
 {% load i18n static %}
 {% load accounts %}
-{% block header %}{% if not validlink and not request.path|ischange %}{% include "common/header.html" %}{% else %}{% endif %}{% endblock %}
+{% block header %}{% if not validlink and not request.path|is_change %}{% include "common/header.html" %}{% else %}{% endif %}{% endblock %}
 {% block content %}
-    {% if validlink or request.path|ischange %}
+    {% if validlink or request.path|is_change %}
         {% block form_container %}
             <div class="container-fluid">
                 <form class="form-horizontal mb-5" role="form" action="." method="post"
@@ -77,5 +77,5 @@
     {% endif %}
 {% endblock %}
 
-{% block footer %}{% if not request.path|ischange %}{% include 'common/footer.html' %}{% endif %}{% endblock %}
+{% block footer %}{% if not request.path|is_change %}{% include 'common/footer.html' %}{% endif %}{% endblock %}
 {% block base_code_extend %}{% endblock %}
