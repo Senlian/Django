@@ -131,7 +131,7 @@
             var is_staff = false;
             if (email != "") {
                 element.attr('disabled', true);
-                var url = '{% url "accounts:emailto" %}';
+                var url = '{% url "accounts:send_email" %}';
                 $.ajax({
                     url: url,
                     type: 'post',
