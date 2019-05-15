@@ -201,5 +201,5 @@ class SendEmailView(auth_views.FormView):
 
 
 class UserInfoView(auth_views.TemplateView):
-    template_name = 'accounts/userinfo.html'
+    template_name = 'accounts/user_center_info.html'
     extra_context = {'title': '我的资料', 'site_title': '个人中心-SCSDN', 'site_header': '个人资料'}
