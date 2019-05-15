@@ -20,5 +20,5 @@ urlpatterns = [
     re_path(r'^user-center-blogs/$', views.UserCenterBlogsView.as_view(), name='uc_blogs'),
     re_path(r'^user-center-photos/$', views.UserCenterPhotosView.as_view(), name='uc_photos'),
 
-    re_path(r'^user-center-edit-photos/$', views.UserCenterEditProtraitView.as_view(), name='uc_edit_protrait'),
+    re_path(r'^user-center-edit-protrait/$', views.UserCenterEditProtraitView.as_view(), name='uc_edit_protrait'),
 ]
