@@ -9,7 +9,7 @@ window.onload = function () {
     // 获得actions按钮容器
     var actions = document.getElementById('actions');
     // 实例化cropper
-    var cropper = new Cropper(protrait, {
+    var options = {
         // 视图模式
         ViewMode: 2,
         // 拖拽模式
@@ -37,7 +37,7 @@ window.onload = function () {
         // 画布加载后是否自动显示裁剪框
         autoCrop: true,
         // 自定义裁剪框占画布的比例
-        autoCropArea: 0.6,
+        autoCropArea: 0.8,
         // 画布可移动
         movable: true,
         // 画布缩放比例
@@ -46,7 +46,8 @@ window.onload = function () {
         cropBoxMovable: true,
         // 裁剪框是否可以通过拖动改变大小
         cropBoxResizable: true,
-    });
+    };
+    var cropper = new Cropper(protrait, options);
     var originalImageURL = protrait.src;
     var uploadedImageType = 'image/jpeg';
     var uploadedImageName = 'cropped.jpg';
@@ -222,14 +223,13 @@ window.onload = function () {
                 if (/^image\/\w+/.test(file.type)) {
                     uploadedImageType = file.type;
                     uploadedImageName = file.name;
-
                     if (uploadedImageURL) {
                         URL.revokeObjectURL(uploadedImageURL);
                     }
 
-                    image.src = uploadedImageURL = URL.createObjectURL(file);
+                    protrait.src = uploadedImageURL = URL.createObjectURL(file);
                     cropper.destroy();
-                    cropper = new Cropper(image, options);
+                    cropper = new Cropper(protrait, options);
                     inputImage.value = null;
                 } else {
                     window.alert('Please choose an image file.');

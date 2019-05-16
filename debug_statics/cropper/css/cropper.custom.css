@@ -1,3 +1,12 @@
+.btn {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+label.btn {
+    margin-bottom: 0;
+}
+
 .img-container,
 .img-preview {
     background-color: #f7f7f7;
@@ -30,7 +39,6 @@
     margin-bottom: 0.5rem;
     margin-right: 0.5rem;
     overflow: hidden;
-    border-radius: 50%;
     box-shadow: 0 0 10px #7E7E7E;
 }
 
@@ -59,12 +67,8 @@
     width: 2rem;
 }
 
-.docs-buttons {
-    margin-top: 25px;
-}
-
 .docs-buttons > .btn-group {
-    margin-top: 10px;
+    margin-top: 2px;
 }
 
 .docs-buttons > .btn,
@@ -79,6 +83,7 @@
     padding: 0.5rem 0.75rem;
 }
 
+.img-preview,
 .cropper-view-box,
 .cropper-face {
     /* 设置裁剪框为圆形,裁剪框比例1/1时候为圆形，其他时候为椭圆形 */
