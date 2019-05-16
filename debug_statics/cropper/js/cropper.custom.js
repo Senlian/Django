@@ -228,8 +228,9 @@ window.onload = function () {
                     }
 
                     protrait.src = uploadedImageURL = URL.createObjectURL(file);
-                    cropper.destroy();
-                    cropper = new Cropper(protrait, options);
+                    // cropper.destroy();
+                    // cropper = new Cropper(protrait, options);
+                    cropper.replace(uploadedImageURL, false);
                     inputImage.value = null;
                 } else {
                     window.alert('Please choose an image file.');
