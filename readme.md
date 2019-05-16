@@ -110,6 +110,8 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 
 [cropper视频教程](<https://www.bilibili.com/video/av38512574/?p=15>)
 
+[fontawesome字体图标](<http://fontawesome.dashgame.com/>)
+
 ## 知识点 ##
 - sphinx 自动生成项目文档
     - pip install sphinx

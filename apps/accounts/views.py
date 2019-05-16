@@ -239,5 +239,5 @@ class UserCenterPhotosView(UserCenterMixin, auth_views.TemplateView):
 
 
 class UserCenterEditProtraitView(UserCenterMixin, auth_views.TemplateView):
-    template_name = 'accounts/demo.html'
+    template_name = 'accounts/user_center_edit_protrait.html'
     extra_context = {'title': '个人资料', 'site_title': '个人中心-SCSDN', 'site_header': '头像裁剪'}

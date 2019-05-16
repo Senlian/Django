@@ -1,0 +1,86 @@
+.img-container,
+.img-preview {
+    background-color: #f7f7f7;
+    text-align: center;
+    width: 100%;
+}
+
+.img-container {
+    margin-bottom: 1rem;
+    max-height: 497px;
+    min-height: 200px;
+}
+
+@media (min-width: 768px) {
+    .img-container {
+        min-height: 497px;
+    }
+}
+
+.img-container > img {
+    max-width: 100%;
+}
+
+.docs-preview {
+    margin-right: -1rem;
+}
+
+.img-preview {
+    float: left;
+    margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
+    overflow: hidden;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #7E7E7E;
+}
+
+.img-preview > img {
+    max-width: 100%;
+}
+
+.preview-lg {
+    height: 9rem;
+    width: 16rem;
+}
+
+.preview-md {
+    height: 4.5rem;
+    width: 8rem;
+}
+
+.preview-sm {
+    height: 2.25rem;
+    width: 4rem;
+}
+
+.preview-xs {
+    height: 1.125rem;
+    margin-right: 0;
+    width: 2rem;
+}
+
+.docs-buttons {
+    margin-top: 25px;
+}
+
+.docs-buttons > .btn-group {
+    margin-top: 10px;
+}
+
+.docs-buttons > .btn,
+.docs-buttons > .btn-group {
+    margin-bottom: 0.5rem;
+    margin-right: 0.25rem;
+}
+
+.docs-tooltip {
+    display: block;
+    margin: -0.5rem -0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.cropper-view-box,
+.cropper-face {
+    /* 设置裁剪框为圆形,裁剪框比例1/1时候为圆形，其他时候为椭圆形 */
+    border-radius: 50%;
+}
