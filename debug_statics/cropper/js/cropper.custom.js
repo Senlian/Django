@@ -226,7 +226,6 @@ window.onload = function () {
                     if (uploadedImageURL) {
                         URL.revokeObjectURL(uploadedImageURL);
                     }
-
                     protrait.src = uploadedImageURL = URL.createObjectURL(file);
                     // cropper.destroy();
                     // cropper = new Cropper(protrait, options);
