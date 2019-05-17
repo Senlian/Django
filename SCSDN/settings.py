@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'common',
     'accounts',
     'articles',
     'blog',
@@ -66,6 +67,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.media',
             ],
+            'libraries': {
+                'common_extras': 'common.templatetages.common_extras'
+            }
         },
     },
 ]

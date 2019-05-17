@@ -3,18 +3,9 @@
 {% load accounts %}
 {% block left_slider_subbox %}
     <div class="col col-md-2 col-lg-2">
-        <a href="#">
-            {% if userinfo.photo %}
-                <img class="img-thumbnail rounded-circle" width="150px" height="150px"
-                     src="{{ userinfo.photo | striptags }}">
-            {% else %}
-                <img class="img-thumbnail rounded-circle" width="150px" height="150px"
-                     src="{% static 'common/imgs/avatar.png' %}" alt="Cinque Terre">
-            {% endif %}
-            <button class="btn btn-primary btn-block col-lg-7 col-md-12 col-sm-12" id="upload_image"
-                    onclick="upload_image_layer()">
-                更换头像
-            </button>
+        <a href="#" onclick='layer_open("{% url 'accounts:uc_edit_protrait' %}")'>
+            <img class="img-thumbnail rounded-circle" width="150px" height="150px" src="{{ user.photo | is_protrait }}">
+            <span class="btn btn-primary btn-block col-lg-7 col-md-12 col-sm-12" style="color: white;">更换头像</span>
         </a>
     </div>
 {% endblock %}
@@ -87,4 +78,30 @@
         </div>
 
     </div>
+{% endblock %}
+{% block base_code_extend %}
+    <script type="text/javascript">
+        function layer_open(url) {
+            var index = layer.open({
+                title: false,
+                skin: 'demo-class',
+                title: '更换头像',
+                closeBtn: 1,
+                resize: false,
+                scrollbar: false,
+                shadeClose: true,
+                move: '.layui-layer-content',
+                area: ["840px"],
+                type: 2,
+                offset: '20%',
+                content: [url, 'no'],
+                success: function () {
+                    layer.iframeAuto(index);
+                },
+                end: function () {
+                    window.parent.location.reload();
+                }
+            });
+        };
+    </script>
 {% endblock %}
