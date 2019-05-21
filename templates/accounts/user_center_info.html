@@ -5,7 +5,7 @@
     <div class="col col-md-2 col-lg-2">
         <a href="#" onclick='layer_open("{% url 'accounts:uc_edit_protrait' %}")'>
             <img class="img-thumbnail rounded-circle" width="150px" height="150px" src="{{ user.photo | is_protrait }}">
-            <span class="btn btn-primary btn-block col-lg-7 col-md-12 col-sm-12" style="color: white;">更换头像</span>
+            <span class="btn btn-primary btn-block col-lg-7 col-md-12 col-sm-12" style="color: white;">修改头像</span>
         </a>
     </div>
 {% endblock %}
@@ -31,7 +31,7 @@
             </tr>
             <tr>
                 <td width="300px">性别</td>
-                <td>{{ user.gender | default_if_none:_('') }}</td>
+                <td>{{ user.get_gender_display | default_if_none:_('') }}</td>
             </tr>
             <tr>
                 <td width="300px">生日</td>
@@ -43,7 +43,8 @@
         <table class="table table-hover">
             <caption style="caption-side:top;">
                 <span>详细信息</span>
-                <a class="float-right" style="color:blue;" href="#">修改资料<i class="layui-icon layui-icon-right"></i></a>
+                <a class="float-right" style="color:blue;" href="{% url 'accounts:uc_edit_info' %}">修改资料<i
+                        class="layui-icon layui-icon-right"></i></a>
             </caption>
             <tbody>
             <tr>
@@ -85,7 +86,7 @@
             var index = layer.open({
                 title: false,
                 skin: 'demo-class',
-                title: '更换头像',
+                title: '修改头像',
                 closeBtn: 1,
                 resize: false,
                 scrollbar: false,
@@ -103,5 +104,14 @@
                 }
             });
         };
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+            laydate.render({
+                elem: '#id_birth',
+                trigger: 'click',
+                calendar: true,
+                format: 'yyyy/MM/dd',
+            });
+        });
     </script>
 {% endblock %}

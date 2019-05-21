@@ -85,7 +85,8 @@ def ischange(url=None):
 def isucinfo(url=None):
     if not url:
         return False
-    if url.lower() == resolve_url('accounts:uc_info').lower():
+    if (url.lower() == resolve_url('accounts:uc_info').lower()) or \
+            (url.lower() == resolve_url('accounts:uc_edit_info').lower()):
         return True
     return False
 

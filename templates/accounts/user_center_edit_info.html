@@ -1,0 +1,104 @@
+{% extends 'accounts/user_center_info.html' %}
+{% load staticfiles %}
+{% load accounts %}
+
+{% block right_slider_subbox %}
+    <div class="col col-md-8 col-lg-8">
+        <form class="form mb-5" role="form" action="{% url 'accounts:uc_edit_info' %}" method="post">
+            <table class="table table-hover">
+                <caption style="caption-side:top;">
+                    <span>基本信息</span>
+                </caption>
+                <tbody>
+                <tr>
+                    <td>账号</td>
+                    <td colspan="3">{{ user.username | default_if_none:_('') }}</td>
+                </tr>
+                <tr>
+                    <td>昵称</td>
+                    <td colspan="3"><div style="width: 200px">{{ form.nick_name }}</div></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;&nbsp;&nbsp;姓</td>
+                    <td>{{ form.first_name }}</td>
+                    <td>&nbsp;&nbsp;&nbsp;名</td>
+                    <td>{{ form.last_name }}</td>
+                </tr>
+                <tr>
+                    <td>性别</td>
+                    <td colspan="3">
+                        <div style="width: 55px">{{ form.gender }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>生日</td>
+                    <td colspan="3" id="id_calender">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-outline-secondary" style="border-color: lightgray;">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </div>
+                            <div style="width: 120px">
+                                {{ form.birth }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table table-hover">
+                <caption style="caption-side:top;">
+                    <span>详细信息</span>
+                </caption>
+                <tbody>
+                <tr>
+                    <td>电话
+                    </td>
+                    <td>{{ user.phone | default_if_none:_('') }}
+                        <a class="float-right" style="color:blue;" href="#">修改电话
+                            <i class="layui-icon layui-icon-right"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>邮箱</td>
+                    <td>{{ user.email | default_if_none:_('') }}
+                        <a class="float-right" style="color:blue;" href="#">修改邮箱
+                            <i class="layui-icon layui-icon-right"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>职业</td>
+                    <td>{{ form.profession }}</td>
+                </tr>
+                <tr>
+                    <td>公司</td>
+                    <td>{{ form.company }}</td>
+                </tr>
+                <tr>
+                    <td>学校</td>
+                    <td>{{ form.school }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="table">
+                <header style="caption-side:top;color: #6c757d;padding-top: .75rem;padding-bottom: .75rem;">
+                    <span>个人简介</span>
+                </header>
+                <hr>
+                <blockquote class="layui-elem-quote">{{ form.intro }}</blockquote>
+            </div>
+            <div class="form-group my-auto">
+                <div class="col-sm-offset-2 col-sm-12 text-right">
+                    <a class="btn btn-primary btn-lg layui-bg-gray border-0" href="{% url 'accounts:uc_info' %}"
+                       target="_self">取消</a>
+                    <button type="submit" class="btn btn-primary btn-lg layui-bg-red border-0">提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+

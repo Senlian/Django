@@ -1,16 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+from django.urls import re_path, reverse_lazy, path
+from django.contrib.auth import views as auth_views
 
-'''
-# @license    : (C) Copyright 2013-{YEAR}, Node Supply Chain Manager Corporation Limited.
-# @author     : Administrator
-# @Email      :
-# @Time       : 2019/4/29 16:23
-# @File       : urls.py
-# @Software   : PyCharm
-# @Modules     :python3 -m pip install 
-# @Desc       : 
-'''
+from . import views
 
-if __name__ == '__main__':
-    pass
+app_name = 'articles'
+
+urlpatterns = [
+    re_path(r'^search$', auth_views.TemplateView.as_view(), name='search')
+]

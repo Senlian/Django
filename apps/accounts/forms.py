@@ -3,6 +3,7 @@
 from django import forms
 from django.db.models import Q
 from django.forms import widgets
+from django.contrib.admin import widgets as admin_widgets
 from django.conf import settings
 from django.core import mail
 from django.core.cache import cache
@@ -12,6 +13,7 @@ from django.contrib.auth.forms import UsernameField, AuthenticationForm
 
 # 由于定制了用户管理模块，所以不能直接使用auth.models.User模型
 User = get_user_model()
+
 
 # TODO：登录表单
 class AccountsLoginForm(AuthenticationForm):
@@ -401,3 +403,95 @@ class AccountsEmailForm(forms.Form):
             return True
         except:
             return False
+
+
+# TODO：用户信息表单
+class AccountsUserProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('nick_name', 'first_name', 'last_name', 'gender',
+                  'birth', 'profession', 'company', 'school', 'intro')
+
+        widgets = {
+            'nick_name': widgets.TextInput(
+                attrs={
+                    'type': 'text',
+                    'class': 'form-control',
+                    'autocomplete': 'off',
+                    "autofocus": "autofocus",
+                    'placeholder': '昵称'
+                }),
+            'first_name': widgets.TextInput(
+                attrs={
+                    'type': 'text',
+                    'class': 'form-control',
+                    'autocomplete': 'off',
+                    'placeholder': '姓'
+                }),
+            'last_name': widgets.TextInput(
+                attrs={
+                    'type': 'text',
+                    'class': 'form-control',
+                    'autocomplete': 'off',
+                    'placeholder': '名'
+                }),
+            'gender': widgets.Select(attrs={"class": "custom-select"}),
+
+            'birth': widgets.DateInput(
+                attrs={
+                    'class':'layui-input',
+                    'placeholder': '选择日期',
+                    'autocomplete': 'off'
+                }
+            ),
+            'profession': widgets.TextInput(
+                attrs={
+                    'type': 'text',
+                    'class': 'form-control',
+                    'autocomplete': 'off',
+                    'placeholder': '职业'
+                }),
+            'company': widgets.TextInput(
+                attrs={
+                    'type': 'text',
+                    'class': 'form-control',
+                    'autocomplete': 'off',
+                    'placeholder': '公司'
+                }),
+            'school': widgets.TextInput(
+                attrs={
+                    'type': 'text',
+                    'class': 'form-control',
+                    'autocomplete': 'off',
+                    'placeholder': '学校'
+                }),
+            'intro': widgets.Textarea(
+                attrs={
+                    'type': 'text',
+                    'class': 'form-control',
+                    'autocomplete': 'off',
+                    'placeholder': '关于您的个人介绍'
+                })
+        }
+        labels = {
+            'username': '账号',
+            'first_name': '姓',
+            'last_name': '名'
+        }
+
+    def __init__(self, *args, **kwargs):
+        return super().__init__(label_suffix='', *args, **kwargs)
+
+    def save(self, ):
+        if not self.instance:
+            return False
+        self.instance.nick_name = self.cleaned_data['nick_name']
+        self.instance.first_name = self.cleaned_data['first_name']
+        self.instance.last_name = self.cleaned_data['last_name']
+        self.instance.gender = self.cleaned_data['gender']
+        self.instance.birth = self.cleaned_data['birth']
+        self.instance.profession = self.cleaned_data['profession']
+        self.instance.company = self.cleaned_data['company']
+        self.instance.school = self.cleaned_data['school']
+        self.instance.intro = self.cleaned_data['intro']
+        return self.instance.save()
