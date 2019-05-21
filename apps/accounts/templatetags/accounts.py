@@ -135,6 +135,13 @@ def isucmyphotos(url=None):
         return True
     return False
 
+@register.filter(name=('is_uc_news'))
+def isucnews(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('accounts:uc_news').lower():
+        return True
+    return False
 
 @register.filter(name=('is_protrait'))
 def is_protrait(protrait=None):
