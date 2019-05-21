@@ -1,0 +1,20 @@
+{% load staticfiles %}
+{% load accounts %}
+<ul class="layui-nav layui-nav-tree layui-bg-cyan" lay-filter="">
+    <li class="layui-nav-item">
+        <a {% if request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
+           href="{% url 'accounts:uc_blogs' %}">账号信息</a>
+    </li>
+    <li class="layui-nav-item">
+        <a {% if request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
+           href="{% url 'accounts:uc_blogs' %}">修改密码</a>
+    </li>
+    <li class="layui-nav-item">
+        <a {% if request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
+           href="{% url 'accounts:uc_blogs' %}">修改手机</a>
+    </li>
+    <li class="layui-nav-item">
+        <a {% if request.path|is_uc_photos %}class="layui-this"{% else %}class=""{% endif %}
+           href="{% url 'accounts:uc_photos' %}">修改邮箱</a>
+    </li>
+</ul>

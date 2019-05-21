@@ -22,4 +22,6 @@ urlpatterns = [
 
     re_path(r'^user-center-edit-protrait/$', views.UserCenterEditProtraitView.as_view(), name='uc_edit_protrait'),
     re_path(r'^user-center-edit-info/$', views.UserCenterEditInfoView.as_view(), name='uc_edit_info'),
+
+    re_path(r'^accounts-manager-info/$', views.AccountsManagerInfoView.as_view(), name='am_info'),
 ]
