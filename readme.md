@@ -54,6 +54,7 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
     - 注销账号
     - 个人主页
     - 头像修改  
+    - 资料修改  
     
 - articles
 
@@ -114,6 +115,12 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 
 [Canvas接口文档](<https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API>)
 
+[Django Models笔记](<https://www.cnblogs.com/zy6103/p/8053143.html>)
+
+[Django MarkDown集成](<https://segmentfault.com/a/1190000013671248>)
+
+[Django MarkDown2](<https://github.com/svetlyak40wt/django-markdown2/>)
+
 ## 知识点 ##
 - sphinx 自动生成项目文档
     - pip install sphinx
@@ -151,22 +158,25 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 ## 项目进度 ##
 - 2019/05/09
     - accounts应用
-        - 注册后台管理
-        - 登录视图
-        - 注册视图
-        - 忘记密码视图
-        - 修改密码视图
+        > 账号管理
+        - 注册超级后台管理 --ok
+        - 登录视图 --ok
+        - 注册视图 --ok
+        - 忘记密码视图 --ok
+        - 修改密码视图 --ok
         - 个人中心视图
-            - 信息展示
-                - 个人资料
-                    - 头像
-                    - 个人信息
+            - 个人信息
+                - 我的资料 --ok
+                    - 头像 --ok
+                        - 头像修改 --ok
+                    - 个人信息 --ok
+                        - 信息修改 --ok
                 - 我的收藏
                 - 我的关注
                 - 我的粉丝
-                - 我的博客                    
-            - 信息修改
-            - 头像修改
+            - 我的博客                    
+            - 我的相册                    
+                    
     - blog应用
         - 主页视图
         - 生成验证码视图        

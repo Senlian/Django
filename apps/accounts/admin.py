@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile
+from accounts.models import UserProfile, UserRelation
 
 admin.sites.AdminSite.site_title = '管理员系统'
 admin.sites.AdminSite.site_header = '后台管理'
@@ -11,9 +11,9 @@ admin.sites.AdminSite.index_title = '欢迎登陆'
 class UserProfileAdmin(admin.ModelAdmin):
     # 定义显示项
     list_display = ['username', 'is_superuser', 'email', 'phone', 'gender',
-                    'name', 'age', 'profession', 'company', 'school', 'intro']
+                    'name', 'age', 'profession', 'company', 'school']
     # 定义可以跳转修改界面的显示项
-    list_display_links = ['username', 'email', 'phone', 'profession', 'company', 'school', 'intro']
+    list_display_links = ['username', 'email', 'phone', 'profession', 'company', 'school']
     # 右侧过滤栏字段
     list_filter = ('is_superuser', 'gender', 'profession', 'company', 'school')
     # 连表查询是否自动select_related
@@ -130,3 +130,34 @@ class UserProfileAdmin(admin.ModelAdmin):
         }),
     )
     filter_horizontal = ('groups', 'user_permissions',)
+
+@admin.register(UserRelation)
+class UserRelationAdmin(admin.ModelAdmin):
+    # 定义显示项
+    list_display = ['focus', 'fans']
+    # 定义可以跳转修改界面的显示项
+    list_display_links = ['focus', 'fans']
+    # 右侧过滤栏字段
+    list_filter = ('focus', 'fans')
+    # 连表查询是否自动select_related
+    list_select_related = True
+    # 每页显示条数
+    list_per_page = 10
+    # 页面总数小于等于list_max_show_all时在管理界面下方提示‘显示全部’
+    list_max_show_all = 50
+
+    # 搜索框的搜索字段
+    search_fields = ('focus', 'fans')
+
+    # True,保存为新的
+    # False,保存并增加另一个,默认
+    save_as = False
+    # 如果save_as为True,save_as_continue为True,点击`保存为新的`后继续编辑页面,默认
+    # 如果save_as为True,save_as_continue为False,否则跳转到列表页面
+    save_as_continue = True
+    # True，编辑界面上方也显示保存按钮，默认False
+    save_on_top = True
+    # 是否保留过滤器
+    preserve_filters = False
+    # 编辑页面对外键进行编辑
+

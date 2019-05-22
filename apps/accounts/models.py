@@ -7,6 +7,7 @@ from datetime import datetime
 
 # Create your models here.
 
+# TODO: 用户信息表
 class UserProfile(AbstractUser):
     SEXES = (
         ('male', '男'),
@@ -42,3 +43,17 @@ class UserProfile(AbstractUser):
     name.short_description = '姓名'
     age = property(age)
     name = property(name)
+
+
+# TODO: 用户关系表
+class UserRelation(models.Model):
+    focus = models.ForeignKey(UserProfile, related_name='focus', on_delete=models.CASCADE, verbose_name='关注')
+    fans = models.ForeignKey(UserProfile, related_name='fans', on_delete=models.CASCADE, verbose_name='粉丝')
+
+    class Meta:
+        db_table = 'userrelation'
+        verbose_name = '用户关系'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return '关注:{0} 粉丝{1}'.format(self.focus, self.fans)
