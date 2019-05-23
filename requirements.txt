@@ -1,4 +1,6 @@
 Django==2.2
+django-mdeditor==0.1.14
 Pillow==6.0.0
 pytz==2019.1
+slugify==0.0.1
 sqlparse==0.3.0

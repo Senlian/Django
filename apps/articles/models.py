@@ -11,7 +11,8 @@ from accounts.models import UserProfile
 class ArticleColumns(models.Model):
     author = models.ForeignKey(UserProfile, related_name='columns', on_delete=models.CASCADE, verbose_name='作者')
     body = models.CharField(max_length=200, verbose_name='栏目')
-    created = models.DateTimeField(default=timezone.now(), verbose_name='创建时间')
+    # created = models.DateTimeField(default=timezone.now, verbose_name='创建时间')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     update = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:
@@ -28,7 +29,8 @@ class ArticleColumns(models.Model):
 class ArticleTags(models.Model):
     author = models.ForeignKey(UserProfile, related_name='tags', on_delete=models.CASCADE, verbose_name='作者')
     body = models.CharField(max_length=200, verbose_name='关键字')
-    created = models.DateTimeField(default=timezone.now(), verbose_name='创建时间')
+    # created = models.DateTimeField(default=timezone.now, verbose_name='创建时间')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     update = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:
@@ -58,7 +60,8 @@ class Articles(models.Model):
     title = models.CharField(max_length=200, verbose_name='标题')
     body = models.TextField(verbose_name='内容')
     slug = models.SlugField(max_length=200, blank=True, null=False, verbose_name='访问地址')
-    created = models.DateTimeField(default=timezone.now(), verbose_name='创建时间')
+    # created = models.DateTimeField(default=timezone.now, verbose_name='创建时间')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     update = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:
@@ -82,10 +85,10 @@ class Articles(models.Model):
 # TODO: 文章评论
 class ArticleComments(models.Model):
     author = models.ForeignKey(UserProfile, related_name='comments', to_field='username',
-                               on_delete=models.SET('未知用户'))
-    article = models.ForeignKey(Articles, related_name='comments', on_delete=models.CASCADE)
-    body = models.TextField()
-    created = models.DateTimeField(auto_now_add=True)
+                               on_delete=models.SET('未知用户'), verbose_name='作者')
+    article = models.ForeignKey(Articles, related_name='comments', on_delete=models.CASCADE, verbose_name='文章')
+    body = models.TextField(verbose_name='内容')
+    created = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
 
     class Meta:
         db_table = 'articlecomments'
