@@ -121,6 +121,8 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 
 [Django MarkDown2](<https://github.com/svetlyak40wt/django-markdown2/>)
 
+[markdown开源官网](<https://pandao.github.io/editor.md//>)
+
 ## 知识点 ##
 - sphinx 自动生成项目文档
     - pip install sphinx

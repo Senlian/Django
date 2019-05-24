@@ -1,0 +1,21 @@
+{% load staticfiles %}
+<div class="list-group">
+    {% for article in articles %}
+        <div class="list-group-item">
+            <a href="#" style="font-size: 18px;color: #4f4f4f;">
+                {{ article.title }}
+            </a>
+            <p class="mt-3 mx-2" style="font-size: 12px;color: #999;">
+                <span>{{ article.created }}</span>
+                <span>
+                    <i class="layui-icon layui-icon-read"></i>
+                    {{ article.likes.count }}
+                </span>
+                <span>
+                    <i class="fa fa-commenting-o"></i>
+                     {{ article.comments.count }}
+                </span>
+            </p>
+        </div>
+    {% endfor %}
+</div>

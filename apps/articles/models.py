@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
 from django.urls import reverse
+from mdeditor.fields import MDTextField
 from accounts.models import UserProfile
 
 
@@ -58,7 +59,8 @@ class Articles(models.Model):
                                        verbose_name='收藏')
 
     title = models.CharField(max_length=200, verbose_name='标题')
-    body = models.TextField(verbose_name='内容')
+    # body = models.TextField(verbose_name='内容')
+    body = MDTextField(verbose_name='内容')
     slug = models.SlugField(max_length=200, blank=True, null=False, verbose_name='访问地址')
     # created = models.DateTimeField(default=timezone.now, verbose_name='创建时间')
     created = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
@@ -79,7 +81,7 @@ class Articles(models.Model):
         return super(Articles, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("article:article_detail", args=[self.id, self.slug])
+        return reverse("articles:back", args=[self.id, self.slug])
 
 
 # TODO: 文章评论

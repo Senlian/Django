@@ -1,0 +1,11 @@
+{% extends 'common/base.html' %}
+{% block left_slider_body %}
+    {% include 'articles/base/back_stage_leftslider.html' %}
+{% endblock %}
+{% block center_box %}
+    <div class="col col-md-10 col-lg-10">
+        {% block center_body %}{% endblock %}
+    </div>
+{% endblock %}
+
+{% block right_slider_box %}{% endblock %}

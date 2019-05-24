@@ -13,7 +13,9 @@
                 {% block center_body %}
                     <div class="layui-card">
                         <div class="layui-card-header">
-                            <h3>{{ site_header|default:_("这里输入面板标题") }}</h3>
+                            {% block site_header %}
+                                <h3>{{ site_header|default:_("这里输入面板标题") }}</h3>
+                            {% endblock %}
                         </div>
                         <div class="layui-card-body row">
                             {% block left_slider_subbox %}{% endblock %}
