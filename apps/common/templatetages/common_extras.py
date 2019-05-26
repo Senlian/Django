@@ -5,6 +5,7 @@ from django import template
 from django.conf import settings
 from django.shortcuts import resolve_url
 
+
 register = template.Library()
 
 
@@ -72,71 +73,20 @@ def set_var(parser, token):
         raise template.TemplateSyntaxError(msg)
 
 
-@register.filter(name=('is_change'))
-def ischange(url=None):
-    if not url:
-        return False
-    if url.lower() == resolve_url('accounts:change').lower():
-        return True
-    return False
-
-
-@register.filter(name=('is_uc_info'))
-def isucinfo(url=None):
-    if not url:
-        return False
-    if url.lower() == resolve_url('accounts:uc_info').lower():
-        return True
-    return False
-
-
-@register.filter(name=('is_uc_collects'))
-def isuccollects(url=None):
-    if not url:
-        return False
-    if url.lower() == resolve_url('accounts:uc_collects').lower():
-        return True
-    return False
-
-
-@register.filter(name=('is_uc_focus'))
-def isucfocus(url=None):
-    if not url:
-        return False
-    if url.lower() == resolve_url('accounts:uc_focus').lower():
-        return True
-    return False
-
-
-@register.filter(name=('is_uc_fans'))
-def isucfans(url=None):
-    if not url:
-        return False
-    if url.lower() == resolve_url('accounts:uc_fans').lower():
-        return True
-    return False
-
-
-@register.filter(name=('is_uc_blogs'))
-def isucmyblogs(url=None):
-    if not url:
-        return False
-    if url.lower() == resolve_url('accounts:uc_blogs').lower():
-        return True
-    return False
-
-
-@register.filter(name=('is_uc_photos'))
-def isucmyphotos(url=None):
-    if not url:
-        return False
-    if url.lower() == resolve_url('accounts:uc_photos').lower():
-        return True
-    return False
-
-
-@register.filter(name=('is_protrait'))
-def is_protrait(protrait=None):
-    if not protrait:
-        return settings.STATIC_URL + 'common/imgs/avatar.png'
-    return protrait
+@register.filter(name='markdown')
+def markdown(body=None):
+    try:
+        import markdown
+        body = markdown.markdown(body, extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.fenced_code',
+            'markdown.extensions.fontnotes',
+            'markdown.extensions.headerid',
+            'markdown.extensions.legacy_aatrs',
+            'markdown.extensions.codehilite',
+            'markdown.extensions.toc',
+        ])
+    except Exception as e:
+        print(e)
+    print(body)
+    return body

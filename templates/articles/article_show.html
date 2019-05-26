@@ -1,5 +1,6 @@
 {% extends 'articles/base/back_stage_base.html' %}
 {% load staticfiles %}
+{% load common_extras %}
 {% block left_slider_body %}
     {% include 'articles/base/article_show_leftslider.html' %}
 {% endblock %}
@@ -8,6 +9,6 @@
         <div>
             <h3>{{ article.title }}</h3>
         </div>
-        <p>{{ article.body }}</p>
+        <p>{{ article.body|markdown|safe }}</p>
     </div>
 {% endblock %}

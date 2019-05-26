@@ -148,3 +148,16 @@ def is_protrait(protrait=None):
     if not protrait:
         return settings.STATIC_URL + 'common/imgs/avatar.png'
     return protrait
+
+@register.filter(name='markdown')
+def markdown(body=None):
+    try:
+        import markdown
+        body = markdown.markdown(body, extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+            'markdown.extensions.toc',
+        ])
+    except Exception as e:
+        raise e
+    return body
