@@ -1,0 +1,13 @@
+{% extends 'articles/base/back_stage_base.html' %}
+{% load staticfiles %}
+{% block left_slider_body %}
+    {% include 'articles/base/article_show_leftslider.html' %}
+{% endblock %}
+{% block center_box %}
+    <div class="col col-md-10 col-lg-10" style="box-shadow: 0 2px 4px 0 rgba(0,0,0,0.05)">
+        <div>
+            <h3>{{ article.title }}</h3>
+        </div>
+        <p>{{ article.body }}</p>
+    </div>
+{% endblock %}

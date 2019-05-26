@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
-from django.utils.text import slugify
+# from django.utils.text import slugify
+from slugify import slugify
 from django.urls import reverse
 from mdeditor.fields import MDTextField
 from accounts.models import UserProfile
@@ -47,6 +48,12 @@ class ArticleTags(models.Model):
 
 # TODO: 文章信息
 class Articles(models.Model):
+    STATUS = (
+        ('1', '公开'),
+        ('2', '私密'),
+        ('3', '草稿'),
+        ('4', '删除'),
+    )
     author = models.ForeignKey(UserProfile, related_name='articles', on_delete=models.CASCADE, verbose_name='作者')
     column = models.ForeignKey(ArticleColumns, related_name='articles', default=None, on_delete=models.DO_NOTHING,
                                blank=True, null=True, verbose_name='栏目')
@@ -60,8 +67,12 @@ class Articles(models.Model):
 
     title = models.CharField(max_length=200, verbose_name='标题')
     # body = models.TextField(verbose_name='内容')
+
     body = MDTextField(verbose_name='内容')
     slug = models.SlugField(max_length=200, blank=True, null=False, verbose_name='访问地址')
+    status = models.CharField(max_length=5, choices=STATUS, default='1', verbose_name='状态')
+    allowreply = models.BooleanField(default=True, verbose_name='允许评论')
+    top = models.BooleanField(default=False, verbose_name='置顶')
     # created = models.DateTimeField(default=timezone.now, verbose_name='创建时间')
     created = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     update = models.DateTimeField(auto_now=True, verbose_name='更新时间')
@@ -81,7 +92,12 @@ class Articles(models.Model):
         return super(Articles, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse("articles:back", args=[self.id, self.slug])
+        try:
+            return reverse("articles:show", args=[self.id, self.slug])
+        except Exception as e:
+            print(e)
+            print(self.id)
+            print(self.slug)
 
 
 # TODO: 文章评论

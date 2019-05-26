@@ -23,11 +23,11 @@ class ArticlesAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('', {
-            'fields': ('author', 'column'),
+            'fields': ('author', 'status', 'column'),
             # 'description': '账号注册信息'
         }),
         ('', {
-            'fields': ('title', 'body'),
+            'fields': (('title', 'allowreply', 'top'), 'body'),
             # 'description': '账户权限信息'
         }),
         ('', {

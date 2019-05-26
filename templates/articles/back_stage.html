@@ -3,10 +3,10 @@
     <div class="layui-tab layui-tab-brief" lay-filter="list">
         <ul class="layui-tab-title">
             <li lay-id="0" class="layui-this">全部({{ articles.count }})</li>
-            <li lay-id="1">公开({{ articles.count }})</li>
-            <li lay-id="2">私密({{ articles.count }})</li>
-            <li lay-id="3">草稿箱({{ articles.count }})</li>
-            <li lay-id="4">回收站({{ articles.count }})</li>
+            <li lay-id="1">公开({{ publics.count }})</li>
+            <li lay-id="2">私密({{ privates.count }})</li>
+            <li lay-id="3">草稿箱({{ drafts.count }})</li>
+            <li lay-id="4"><i class="fa fa-trash-o mx-1"></i>回收站({{ deleteds.count }})</li>
         </ul>
         <div class="layui-tab-content">
             {% include 'articles/article_intro_list.html' %}

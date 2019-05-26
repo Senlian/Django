@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load accounts %}
-<ul class="layui-nav layui-nav-tree layui-bg-cyan mt-5 py-3" lay-filter="">
+<div class="py-5 mt-3">
+<ul class="layui-nav layui-nav-tree layui-bg-cyan">
     <li class="layui-nav-item">
         <a {% if not request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
            href="#">博客管理</a>
@@ -17,8 +18,5 @@
         <a {% if request.path|is_uc_photos %}class="layui-this"{% else %}class=""{% endif %}
            href="#">评论管理</a>
     </li>
-    <li class="layui-nav-item">
-        <a {% if request.path|is_uc_photos %}class="layui-this"{% else %}class=""{% endif %}
-           href="#">栏目管理</a>
-    </li>
 </ul>
+</div>
