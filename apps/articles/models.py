@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
+# 自带不支持中文
 # from django.utils.text import slugify
+# awesome-slugify 支持中文
 from slugify import slugify
 from django.urls import reverse
 from mdeditor.fields import MDTextField

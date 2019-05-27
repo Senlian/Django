@@ -161,3 +161,12 @@ def markdown(body=None):
     except Exception as e:
         raise e
     return body
+
+
+@register.filter(name='include')
+def include(iterator, item):
+    if item and iterator and (item==iterator.first().focus or iterator.filter(fans=item)):
+        print(True)
+        return True
+    else:
+        return False

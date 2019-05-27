@@ -123,6 +123,10 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 
 [markdown开源官网](<https://pandao.github.io/editor.md//>)
 
+[python markdown文档](<https://python-markdown.github.io/extensions/>)
+
+[python markdown2](<https://github.com/trentm/python-markdown2/>)
+
 ## 知识点 ##
 - sphinx 自动生成项目文档
     - pip install sphinx
@@ -130,7 +134,7 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
     - cd docs
     - sphinx-quickstart
         > 生成sphinx工程目录
-    - sphinx-autogen         
+    - sphinx-autogen          
     - sphinx-apidoc 
     
         `usage: sphinx-apidoc [OPTIONS] -o <OUTPUT_PATH> <MODULE_PATH> [EXCLUDE_PATTERN, ...]`
@@ -155,6 +159,12 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
                                                            
 - 导入安装模块                                                   
     > pip install -r requirements.txt   
+
+- 项目主要模块
+- pip install awesome-slugify
+- pip install Pillow  
+- pip install django-mdeditor
+- pip install markdown
     
            
 ## 项目进度 ##

@@ -12,10 +12,11 @@
         <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
         <link href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet">
+        <link rel="stylesheet" href="{% static 'mdeditor/css/editormd.css' %}" media="all">
     {% endblock %}
     {% block base_css_extend %}{% endblock %}
 </head>
-<body {% block base_body_style %}style="width: auto;height: auto;" {% endblock %}>
+<body {% block base_body_style %}style="width: auto;height: auto;margin-bottom: 60px;" {% endblock %}>
 {% block base_js_top %}{% endblock %}
 <header>
     {% block header %}
@@ -65,10 +66,11 @@
 </footer>
 
 {% block base_js_footer %}
-    <script src="{% static 'common/js/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'common/js/popper.min.js' %}"></script>
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'layui/layui.all.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common/js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'common/js/popper.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'layui/layui.all.js' %}"></script>
+    <script type="text/javascript" src="{% static 'mdeditor/js/editormd.min.js' %}"></script>
 {% endblock %}
 {% block base_js_extend %}{#这里写入js代码#}{% endblock %}
 {% block base_code %}{#这里写入js代码#}

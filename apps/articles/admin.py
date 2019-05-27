@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db import models
+
+from mdeditor.fields import MDEditorWidget
 from articles.models import Articles, ArticleColumns, ArticleTags, ArticleComments
 
 
@@ -34,6 +37,9 @@ class ArticlesAdmin(admin.ModelAdmin):
             'fields': ('tags', ('likes', 'favorites'),),
             # 'description': '用户的基本资料'
         }))
+    formfield_overrides = {
+        models.TextField: {'widget': MDEditorWidget}
+    }
 
 
 @admin.register(ArticleColumns)

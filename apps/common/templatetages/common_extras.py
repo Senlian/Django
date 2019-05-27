@@ -4,7 +4,9 @@
 from django import template
 from django.conf import settings
 from django.shortcuts import resolve_url
-
+from django.utils.safestring import SafeData, mark_safe
+from django.template.defaultfilters import stringfilter
+from mdeditor.widgets import MDEditorWidget
 
 register = template.Library()
 
@@ -73,20 +75,10 @@ def set_var(parser, token):
         raise template.TemplateSyntaxError(msg)
 
 
-@register.filter(name='markdown')
-def markdown(body=None):
-    try:
-        import markdown
-        body = markdown.markdown(body, extensions=[
-            'markdown.extensions.extra',
-            'markdown.extensions.fenced_code',
-            'markdown.extensions.fontnotes',
-            'markdown.extensions.headerid',
-            'markdown.extensions.legacy_aatrs',
-            'markdown.extensions.codehilite',
-            'markdown.extensions.toc',
-        ])
-    except Exception as e:
-        print(e)
-    print(body)
-    return body
+
+@register.filter(name='include')
+def include(iterator, item):
+    if item and iterator:
+        return True if item in iterator else False
+    else:
+        return False

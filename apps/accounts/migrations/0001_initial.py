@@ -52,18 +52,5 @@ class Migration(migrations.Migration):
             managers=[
                 ('objects', django.contrib.auth.models.UserManager()),
             ],
-        ),
-        migrations.CreateModel(
-            name='UserRelation',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('fans', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='fans', to=settings.AUTH_USER_MODEL, verbose_name='粉丝')),
-                ('focus', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='focus', to=settings.AUTH_USER_MODEL, verbose_name='关注')),
-            ],
-            options={
-                'verbose_name': '用户关系',
-                'verbose_name_plural': '用户关系',
-                'db_table': 'userrelation',
-            },
-        ),
+        )
     ]

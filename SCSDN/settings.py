@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mdeditor',
+    'django_markdown2',
     'common',
     'accounts',
     'articles',
