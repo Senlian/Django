@@ -47,9 +47,9 @@
             </span>
             <span class="author">{{ article.author.nick_name | default_if_none:article.author.username }}</span>
         </a>
-        {% if article.author == user %}
+        {% if user and user == article.author %}
             <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
-        {% elif article.author.fans.all|include:user %}
+        {% elif user and article.author.fans.all|include:user %}
             <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="cancle">取消关注</span>
         {% else %}
             <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus">关注</span>

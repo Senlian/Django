@@ -42,6 +42,7 @@ class ArticleShowView(auth_views.TemplateView):
     extra_context = {'site_title': 'SCSDN博客'}
 
     def get(self, request, *args, **kwargs):
-        article = (get_object_or_404(Articles, id=kwargs['id'], slug=kwargs['slug']))
+        article = get_object_or_404(Articles, id=kwargs['id'], slug=kwargs['slug'])
         self.extra_context.update({"title": article.title, 'article': article})
         return super().get(request, *args, **kwargs)
+
