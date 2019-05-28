@@ -1,6 +1,7 @@
 {% extends 'accounts/base/user_center_base.html' %}
 {% load staticfiles %}
 {% load accounts %}
+{% load common_extras %}
 {% block left_slider_subbox %}
     <div class="col col-md-2 col-lg-2">
         <a href="#" onclick='layer_open("{% url 'accounts:uc_edit_protrait' %}")'>

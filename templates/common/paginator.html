@@ -1,0 +1,40 @@
+{% load staticfiles %}
+{% load common_extras %}
+{% if num_pages > 1 %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <li class="page-item {% if not page.has_previous %}disabled{% endif %}">
+                <a class="page-link" tabindex="-1" href="javascript:;"
+                   onclick="onclicked(
+                           {% if page.has_previous %}{{ page.previous_page_number }}{% else %}{{ page.number }}{% endif %})">
+                    上一页
+                </a>
+            </li>
+            {% for number in pages %}
+                <li class="page-item {% if page.number == number %}active{% endif %}">
+                    <a class="page-link" href="javascript:;" onclick="onclicked({{ number }})">
+                        {{ number }}
+                        {% if page.number == number %}<span class="sr-only">(current)</span>{% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+            <li class="page-item {% if not page.has_next %}disabled{% endif %}">
+                <a class="page-link" href="javascript:;"
+                   onclick="onclicked(
+                           {% if page.has_next %}{{ page.next_page_number }}{% else %}{{ page.number }}{% endif %})">
+                    下一页
+                </a>
+            </li>
+        </ul>
+    </nav>
+{% endif %}
+<script>
+    function onclicked(number) {
+        // 锚点处理
+        var anchor = location.hash;
+        var search = "?page=" + number.toString();
+        var href = location.href;
+        var host = href.substring(0, href.indexOf(location.search));
+        location.href = host + search + anchor;
+    }
+</script>

@@ -75,10 +75,34 @@ def set_var(parser, token):
         raise template.TemplateSyntaxError(msg)
 
 
-
 @register.filter(name='include')
 def include(iterator, item):
     if item and iterator:
         return True if item in iterator else False
     else:
         return False
+
+@register.filter(name='dirname')
+def dirname(path):
+    import os
+    return os.path.dirname(path)
+
+@register.filter(name='is_protrait')
+def is_protrait(protrait=None):
+    if not protrait:
+        return settings.STATIC_URL + 'common/imgs/avatar.png'
+    return protrait
+
+
+@register.filter(name='markdown1')
+def markdown(body=None):
+    try:
+        import markdown
+        body = markdown.markdown(body, extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+            'markdown.extensions.toc',
+        ])
+    except Exception as e:
+        raise e
+    return body

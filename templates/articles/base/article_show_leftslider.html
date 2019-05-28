@@ -1,5 +1,5 @@
 {% load staticfiles %}
-{% load accounts %}
+{% load common_extras %}
 
 <style>
     .block_box {
@@ -23,7 +23,7 @@
         font-weight: 700;
     }
 
-    dt {
+    dt, dt > a {
         color: rgba(0, 0, 0, .5);
         margin-bottom: 10px;
         margin-left: -5px;
@@ -31,7 +31,7 @@
         font-family: 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
     }
 
-    dd {
+    dd, dd > a {
         font-weight: 700;
         margin-left: -5px;
         padding-right: 5px;
@@ -39,46 +39,89 @@
     }
 </style>
 <div style="box-shadow: 0 2px 4px 0 rgba(0,0,0,0.05);">
-    <div class="block_box">
-        <a href="#" style="text-decoration: none;">
-            <span>
-                <img class="img-thumbnail rounded-circle" width="48px" height="48px"
-                     src="{{ article.author.photo|is_protrait }}">
-            </span>
-            <span class="author">{{ article.author.nick_name | default_if_none:article.author.username }}</span>
-        </a>
-        {% if user and user == article.author %}
-            <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
-        {% elif user and article.author.fans.all|include:user %}
-            <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="cancle">取消关注</span>
-        {% else %}
-            <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus">关注</span>
-            {{ article.author.fans.count }}
-        {% endif %}
-    </div>
-    <div class="d-flex block_box">
-        <dl class="text-center" title="9" style="width: 100%;">
-            <dt><a href="#" style="text-decoration: none;">原创</a></dt>
-            <dd>
-                <a href="#" style="text-decoration: none;">
-                    <span class="count">{{ article.author.articles.count }}</span>
-                </a>
-            </dd>
-        </dl>
-        <dl class="text-center" id="fanBox" title="2" style="width: 100%;color: inherit;">
-            <dt>粉丝</dt>
-            <dd>
+    {% if article %}
+        <div class="block_box">
+            <a href="{% url 'articles:list'  article.author.username %}" style="text-decoration: none;">
+                <span>
+                    <img class="img-thumbnail rounded-circle" width="48px" height="48px"
+                         src="{{ article.author.photo|is_protrait }}">
+                </span>
+                <span class="author">{{ article.author.nick_name | default_if_none:article.author.username }}</span>
+            </a>
+            {% if user and user == article.author %}
+                <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
+            {% elif user and article.author.fans.all|include:user %}
+                <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="cancle">取消关注</span>
+            {% else %}
+                <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus">关注</span>
+            {% endif %}
+        </div>
+        <div class="d-flex block_box">
+            <dl class="text-center" style="width: 100%;">
+                <dt><a href="#" style="text-decoration: none;">原创</a></dt>
+                <dd>
+                    <a href="#" style="text-decoration: none;">
+                        <span class="count">{{ article.author.articles.count }}</span>
+                    </a>
+                </dd>
+            </dl>
+            <dl class="text-center" id="fanBox" style="width: 100%;color: inherit;">
+                <dt>粉丝</dt>
+                <dd>
                 <span class="count" id="fans">{{ article.author.fans.count|default:'0' }}
                 </span>
-            </dd>
-        </dl>
-        <dl class="text-center" title="1" style="width: 100%;color: inherit;">
-            <dt>喜欢</dt>
-            <dd><span class="count">{{ article.author.focus.count|default:'0' }}</span></dd>
-        </dl>
-        <dl class="text-center" title="0" style="width: 100%;color: inherit;">
-            <dt>评论</dt>
-            <dd><span class="count">{{ article.author.comments.count|default:'0' }}</span></dd>
-        </dl>
-    </div>
+                </dd>
+            </dl>
+            <dl class="text-center" style="width: 100%;color: inherit;">
+                <dt>喜欢</dt>
+                <dd><span class="count">{{ article.author.focus.count|default:'0' }}</span></dd>
+            </dl>
+            <dl class="text-center" style="width: 100%;color: inherit;">
+                <dt>评论</dt>
+                <dd><span class="count">{{ article.author.comments.count|default:'0' }}</span></dd>
+            </dl>
+        </div>
+    {% elif author %}
+        <div class="block_box">
+            <a href="{% url 'articles:list' author.username %}" style="text-decoration: none;">
+            <span>
+                <img class="img-thumbnail rounded-circle" width="48px" height="48px"
+                     src="{{ author.photo|is_protrait }}">
+            </span>
+                <span class="author">{{ author.nick_name | default_if_none:author.username }}</span>
+            </a>
+            {% if user and user == author %}
+                <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
+            {% elif user and author.fans.all|include:user %}
+                <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="cancle">取消关注</span>
+            {% else %}
+                <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus">关注</span>
+            {% endif %}
+        </div>
+        <div class="d-flex block_box">
+            <dl class="text-center" style="width: 100%;">
+                <dt><a href="#" style="text-decoration: none;">原创</a></dt>
+                <dd>
+                    <a href="#" style="text-decoration: none;">
+                        <span class="count">{{ author.articles.count }}</span>
+                    </a>
+                </dd>
+            </dl>
+            <dl class="text-center" id="fanBox" style="width: 100%;color: inherit;">
+                <dt>粉丝</dt>
+                <dd>
+                <span class="count" id="fans">{{ author.fans.count|default:'0' }}
+                </span>
+                </dd>
+            </dl>
+            <dl class="text-center" style="width: 100%;color: inherit;">
+                <dt>喜欢</dt>
+                <dd><span class="count">{{ author.focus.count|default:'0' }}</span></dd>
+            </dl>
+            <dl class="text-center" style="width: 100%;color: inherit;">
+                <dt>评论</dt>
+                <dd><span class="count">{{ author.comments.count|default:'0' }}</span></dd>
+            </dl>
+        </div>
+    {% endif %}
 </div>

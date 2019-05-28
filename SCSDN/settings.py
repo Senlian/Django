@@ -71,7 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
             ],
             'libraries': {
-                'common_extras': 'common.templatetages.common_extras'
+                'common_extras': 'common.templatetags.common_extras'
             }
         },
     },

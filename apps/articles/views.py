@@ -5,36 +5,65 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from accounts.views import LoginRequiredPostMixin
 from articles.models import Articles
+from common.utils.paginator import paginator
+
+UserModel = get_user_model()
 
 
 # Create your views here.
-class ArticleListTitleView(LoginRequiredPostMixin, auth_views.TemplateView):
-    template_name = 'articles/back_stage.html'
+class ArticleBackListView(LoginRequiredPostMixin, auth_views.TemplateView):
+    template_name = 'articles/back_stage_articles.html'
     extra_context = {"title": "博客管理", 'site_title': 'SCSDN博客'}
 
     def get(self, request, *args, **kwargs):
         articles = request.user.articles.all().order_by('-top')
-        publics = articles.filter(status=1)
-        privates = articles.filter(status=2)
-        drafts = articles.filter(status=3)
-        deleteds = articles.filter(status=3)
-
-        context = self.get_context_data(**kwargs)
-        context.update({
-            'articles': articles,
+        publics = articles.filter(status='1')
+        privates = articles.filter(status='2')
+        drafts = articles.filter(status='3')
+        deleteds = articles.filter(status='4')
+        self.extra_context.update(paginator(request, articles))
+        self.extra_context.update({
+            'total': articles.count,
             'publics': publics,
             'privates': privates,
             'drafts': drafts,
             'deleteds': deleteds,
         })
-        return self.render_to_response(context)
+        return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         layid = request.POST.get('layid', '1')
         articles = request.user.articles.all().order_by('-top')
+        response_context = {'layid': layid}
         if str(layid) != '0':
             articles = articles.filter(status=layid)
-        return render(request, 'articles/article_intro_list.html', {'articles': articles, 'layid': layid})
+        response_context.update(paginator(request, articles))
+        return render(request, 'articles/base/article_intro_list.html', response_context)
+
+
+class ArticleListView(auth_views.TemplateView):
+    template_name = 'articles/article_list_author.html'
+    extra_context = {'site_title': 'SCSDN博客'}
+
+    def get(self, request, *args, **kwargs):
+        username = kwargs['username']
+        author = UserModel._default_manager.get(username=username)
+        if username == request.user.username:
+            articles = author.articles.all()
+        else:
+            articles = author.articles.filter(status='1')
+        if articles:
+            self.extra_context.update({
+                'title': '{0}的博客'.format(username),
+                'articles': articles,
+                'article': articles.first()})
+        else:
+            self.extra_context.update({
+                'title': '{0}的博客'.format(username),
+                'articles': articles,
+                'author': author})
+
+        return super().get(request, *args, **kwargs)
 
 
 class ArticleShowView(auth_views.TemplateView):
@@ -45,4 +74,3 @@ class ArticleShowView(auth_views.TemplateView):
         article = get_object_or_404(Articles, id=kwargs['id'], slug=kwargs['slug'])
         self.extra_context.update({"title": article.title, 'article': article})
         return super().get(request, *args, **kwargs)
-
