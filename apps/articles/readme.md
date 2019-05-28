@@ -13,6 +13,7 @@
     - 文章置顶
     - 分页器
         - 锚点处理
+            - [location](<http://www.w3school.com.cn/jsref/dom_obj_location.asp>)
     - 主页文章列表
     - 玩家文章列表
 - 文章展示

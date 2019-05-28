@@ -46,7 +46,8 @@
         function GetFormData(e) {
             /* 获取全部表单数据，包含CSRF_TOKEN */
             var input_tags = e.getElementsByTagName('input');
-            var formData = {};
+            var next_page = window.parent.location.href;
+            var formData = {'next_page': next_page};
             for (var i = 0; i < input_tags.length; i++) {
                 var input_tag = input_tags[i];
                 if (input_tag.type == 'checkbox') {
