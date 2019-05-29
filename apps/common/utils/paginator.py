@@ -4,7 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def paginator(request, articles):
-    paginator = Paginator(articles, 10, 1)
+    paginator = Paginator(articles, 2, 0)
     cur_page_number = int(request.GET.get('page', 1))
     if cur_page_number < 6:
         if paginator.num_pages <= 10:

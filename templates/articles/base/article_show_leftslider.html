@@ -8,6 +8,7 @@
         border-bottom: 1px solid #e3e3e3;
     }
 
+
     .author {
         isplay: inline-block;
         color: #3d3d3d;
@@ -48,13 +49,17 @@
                 </span>
                 <span class="author">{{ article.author.nick_name | default_if_none:article.author.username }}</span>
             </a>
+            <span class="article-action">
             {% if user and user == article.author %}
                 <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
             {% elif user and article.author.fans.all|include:user %}
-                <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="cancle">取消关注</span>
+                <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="unfollow"
+                   data-option="{{ user }}" data-second-option="{{ article.author }}">取消关注</a>
             {% else %}
-                <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus">关注</span>
+                <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus"
+                   data-option="{{ user }}" data-second-option="{{ article.author }}">关注</a>
             {% endif %}
+            </span>
         </div>
         <div class="d-flex block_box">
             <dl class="text-center" style="width: 100%;">
@@ -84,19 +89,23 @@
     {% elif author %}
         <div class="block_box">
             <a href="{% url 'articles:list' author.username %}" style="text-decoration: none;">
-            <span>
-                <img class="img-thumbnail rounded-circle" width="48px" height="48px"
-                     src="{{ author.photo|is_protrait }}">
-            </span>
+                <span>
+                    <img class="img-thumbnail rounded-circle" width="48px" height="48px"
+                         src="{{ author.photo|is_protrait }}">
+                </span>
                 <span class="author">{{ author.nick_name | default_if_none:author.username }}</span>
             </a>
+            <span class="article-action">
             {% if user and user == author %}
                 <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
             {% elif user and author.fans.all|include:user %}
-                <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="cancle">取消关注</span>
+                <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="unfollow"
+                   data-option="{{ user }}" data-second-option="{{ author }}">取消关注</a>
             {% else %}
-                <span class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus">关注</span>
+                <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus"
+                   data-option="{{ user }}" data-second-option="{{ author }}">关注</a>
             {% endif %}
+            </span>
         </div>
         <div class="d-flex block_box">
             <dl class="text-center" style="width: 100%;">

@@ -1,5 +1,7 @@
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.contrib.auth import get_user_model, views as auth_views
+from django.views import generic
+
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
@@ -52,17 +54,16 @@ class ArticleListView(auth_views.TemplateView):
             articles = author.articles.all()
         else:
             articles = author.articles.filter(status='1')
+
         if articles:
             self.extra_context.update({
                 'title': '{0}的博客'.format(username),
-                'articles': articles,
                 'article': articles.first()})
         else:
             self.extra_context.update({
                 'title': '{0}的博客'.format(username),
-                'articles': articles,
                 'author': author})
-
+        self.extra_context.update(paginator(request, articles))
         return super().get(request, *args, **kwargs)
 
 
@@ -74,3 +75,7 @@ class ArticleShowView(auth_views.TemplateView):
         article = get_object_or_404(Articles, id=kwargs['id'], slug=kwargs['slug'])
         self.extra_context.update({"title": article.title, 'article': article})
         return super().get(request, *args, **kwargs)
+
+
+class ArticleActionsView(generic.View):
+    pass

@@ -1,4 +1,5 @@
 {% extends 'articles/base/back_stage_base.html' %}
+{% load staticfiles %}
 {% block center_body %}
     <div class="layui-tab layui-tab-brief" lay-filter="list">
         <ul class="layui-tab-title">
@@ -13,36 +14,57 @@
         </div>
     </div>
 {% endblock %}
-
 {% block base_code_extend %}
     <script>
-        layui.use('element', function () {
+        layui.use(['element'], function () {
+            loadActionsJs();
             var element = layui.element;
             //监听地址hash值，根据传入id切换到指定tab
             var layid = location.hash.replace(/^#list=/, '') | '0';
-
+            //GET方式访问页面处理
             element.tabChange('list', layid);
-            element.on('tab(list)', function () {
+            if (layid != 0) {
+                ajax(layid);
+            }
+            //点击切换处理
+            element.on('tab(list)', function (data) {
                 //取得当前id
                 layid = this.getAttribute('lay-id');
-                //根据切换tab的id变更地址hash值
-
-                location.hash = 'list=' + layid;
-                //ajax动态展示对应tab的内容
-                $.ajax({
-                    type: 'POST',
-                    url: window.location.pathname,
-                    data: {'layid': layid},
-                    dataType: 'html',
-                    success: function (content) {
-                        $('[lay-filter=list] div:first').html(content);
-                    },
-                    error: function () {
-                        console.log('error');
-                    }
-                });
+                toggle(layid);
             });
         })
 
+        function toggle(layid) {
+            //根据切换tab的id变更地址hash值
+            location.hash = 'list=' + layid;
+            //ajax动态展示对应tab的内容
+            $.ajax({
+                type: 'POST',
+                url: window.location.pathname,
+                data: {'layid': layid},
+                dataType: 'html',
+                async: true,
+                success: function (content) {
+                    $('[lay-filter=list] div:first').html(content);
+                    loadActionsJs();
+                },
+                error: function () {
+                    console.log('error');
+                }
+            });
+        }
+
+        // 解决主线程JS无法处理异步加载的html的问题
+        function loadActionsJs() {
+            var oldScript = document.getElementById('id-artilce-script-actions');
+            if (oldScript) {
+                oldScript.remove();
+            }
+            var newScript = document.createElement('script');
+            newScript.id = 'id-artilce-script-actions';
+            newScript.src = "{% static 'articles/js/article.actions.js' %}";
+            newScript.type = "text/javascript";
+            document.body.appendChild(newScript);
+        }
     </script>
 {% endblock %}

@@ -53,11 +53,15 @@
                     <span><i class="fa fa-commenting-o ml-3 mr-1"></i>{{ article.comments.count }}</span>
                     <span><i class="fa fa-heart ml-3 mr-1"></i>{{ article.likes.count }}</span>
                 </span>
-                <span class="list-item-info-operate mt-3 mx-2 float-right">
+                <span class="list-item-info-operate mt-3 mx-2 float-right article-action">
                     <a href="{{ article.get_absolute_url }}">查看</a>
-                    <a href="#">{% if article.allowreply %}禁止评论{% else %}允许评论{% endif %}</a>
-                    <a href="#">{% if article.top %}取消置顶{% else %}置顶{% endif %}</a>
-                    <a style="color: #CA0C16;border-right:none;" href="#">删除</a>
+                    <a data-method="setAllowreply" data-option="{{ article }}">
+                        {% if article.allowreply %}禁止评论{% else %}允许评论{% endif %}
+                    </a>
+                    <a data-method="setTop" data-option="{{ article }}">
+                        {% if article.top %}取消置顶{% else %}置顶{% endif %}
+                    </a>
+                    <a style="color: #CA0C16;border-right:none;" data-method="delete" data-option="{{ article }}">删除</a>
                 </span>
             </div>
         </div>
@@ -80,3 +84,6 @@
     {% endfor %}
     {% include 'common/paginator.html' %}
 </div>
+{#<script src="{% static 'common/js/jquery-3.3.1.min.js' %}"></script>#}
+{#<script id="article-script" type="text/javascript" src="{% static 'articles/js/article.actions.js' %}"></script>#}
+

@@ -93,6 +93,14 @@ class Articles(models.Model):
         self.slug = slugify(self.title)
         return super(Articles, self).save(*args, **kwargs)
 
+    def set_top(self):
+        self.top = False if self.top else True
+        return self.save()
+
+    def set_allowreply(self):
+        self.allowreply = False if self.allowreply else True
+        return self.save()
+
     def get_absolute_url(self):
         try:
             return reverse("articles:show", args=[self.id, self.slug])

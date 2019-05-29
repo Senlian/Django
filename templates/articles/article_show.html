@@ -13,11 +13,16 @@
                     <h1>{{ article.title }}</h1>
                 </div>
                 <div class="">
-                <span class="mt-3 mx-2 float-left" style="font-size: 12px;color: #999;">
+                <span class="mt-3 mr-3 float-left" style="font-size: 12px;color: #999;">
                     {% if article.top %}<span class="list-item-tag mr-2">置顶</span>{% endif %}
                     <span><i class="fa fa-clock-o mr-1"></i>{{ article.created }}</span>
-                    <span><a href="#">{{ article.author.nick_name|default:article.author.username }}</a></span>
-                    <span><i class="fa fa-commenting-o ml-3 mr-1"></i>{{ article.comments.count }}</span>
+                    <span>
+                        <a class="ml-3" href="{% url 'articles:list' article.author.username %}"
+                           style="text-decoration-line: none;color: #78a5f1;">
+                            {{ article.author.nick_name|default:article.author.username }}
+                        </a>
+                    </span>
+                    <span class="ml-3">阅读数:<span class="ml-1">{{ article.comments.count }}</span></span>
                 </span>
                 </div>
             </div>

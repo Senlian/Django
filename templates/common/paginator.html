@@ -1,7 +1,7 @@
 {% load staticfiles %}
 {% load common_extras %}
 {% if num_pages > 1 %}
-    <nav aria-label="Page navigation">
+    <nav aria-label="Page navigation" style="position: absolute;bottom: -40px">
         <ul class="pagination">
             <li class="page-item {% if not page.has_previous %}disabled{% endif %}">
                 <a class="page-link" tabindex="-1" href="javascript:;"
