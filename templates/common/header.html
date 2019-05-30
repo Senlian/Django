@@ -91,6 +91,7 @@
 
 <script type="text/javascript">
     function layer_open(url) {
+        var href = url + '?next=' + window.location.pathname
         var index = layer.open({
             title: false,
             skin: 'demo-class',
@@ -102,7 +103,7 @@
             area: ["400px"],
             type: 2,
             offset: '20%',
-            content: [url, 'no'],
+            content: [href, 'no'],
             success: function () {
                 layer.iframeAuto(index);
             },

@@ -64,6 +64,7 @@
 - 登录视图
     - 内置登录
         > `from django.contrib.auth import login`
+        - `next`页跳转，`redirect_authenticated_user=True`
     - 下次自动登录
         > [session机制](<https://www.cnblogs.com/sss4/p/7071334.html>)
     - 验证码
