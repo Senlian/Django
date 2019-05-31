@@ -1,0 +1,101 @@
+{% extends 'common/base.html' %}
+{% load staticfiles %}
+{% block content %}
+    <div class="wmd-wrapper" id="{{ id }}-wmd-wrapper"><textarea {{ final_attrs|safe }}>
+    # articles应用 #
+
+    ## 模型建立 ##
+    - 文章栏目
+    - 文章关键字
+    - 文章信息
+    - 文章评论
+
+    ## 表单管理
+
+    ## 视图管理 ##
+    - 文章列表
+        - 文章置顶
+        - 分页器
+            - 锚点处理
+                - [location](<http://www.w3school.com.cn/jsref/dom_obj_location.asp>)
+        - 主页文章列表
+        - 玩家文章列表
+    - 文章展示
+        - markdown集成
+        - 评论展示/提交
+        - 关注/粉丝
+        - 点赞
+        - 收藏
+        - 阅读记录
+
+    - 文章修改/发布
+
+    - 文章删除
+    </textarea></div>
+{% endblock %}
+{% block base_js_extend %}
+    <script src="{% static 'markdown/mdeditor/js/jquery.min.js' %}"></script>
+    <script src="{% static 'markdown/mdeditor/js/editormd.js' %}"></script>
+    {% if config.language == 'en' %}
+        <script src="{% static 'markdown/mdeditor/languages/en.js' %}"></script>
+    {% endif %}
+{% endblock %}
+{% block base_code_extend %}
+    <script type="text/javascript">
+        var MarkDownEditor;
+
+        $(function () {
+            MarkDownEditor = editormd("{{ id }}-wmd-wrapper", {
+                width: "{{ config.width }}",
+                height: {{ config.height }},
+                // 当有多个mdeditor时，全屏后，其他mdeditor仍然显示，解决此问题。
+                onfullscreen: function () {
+                    this.editor.css("border-radius", 0).css("z-index", 120);
+                },
+                onfullscreenExit: function () {
+                    this.editor.css({
+                        zIndex: 10,
+                        border: "none",
+                        "border-radius": "5px"
+                    })
+                },
+                syncScrolling: "single",
+                path: "{% static  'mdeditor/js/lib/' %}",
+                // theme
+                theme: "{{ config.theme|safe }}",
+                previewTheme: "{{ config.preview_theme|safe }}",
+                editorTheme: "{{ config.editor_theme }}",
+
+                saveHTMLToTextarea: true, // editor.md 有问题没有测试成功
+                toolbarAutoFixed: {{ config.toolbar_autofixed|lower }},
+                searchReplace: {{ config.search_replace|lower }},
+                emoji: {{ config.emoji|lower }},
+                tex: {{ config.tex|lower }},
+                flowChart: {{ config.flow_chart|lower }},
+                sequenceDiagram: {{ config.sequence|lower }},
+
+                // image upload
+                imageUpload: true,
+                imageFormats: {{ config.upload_image_formats|safe }},
+                imageUploadURL: "/mdeditor/uploads/",
+                toolbarIcons: function () {
+                    return {{ config.toolbar|safe }};
+                },
+                onload: function () {
+                    console.log('onload', this);
+                    console.log(this.previewContainer.html());
+
+                    //this.fullscreen();
+                    //this.unwatch();
+                    //this.watch().fullscreen();
+
+                    //this.setMarkdown("#PHP");
+                    //this.width("100%");
+                    //this.height(480);
+                    //this.resize("100%", 640);
+                }
+            });
+
+        });
+    </script>
+{% endblock %}
