@@ -43,4 +43,17 @@ $('.article-action').on('click', function (event) {
             break;
         default:
     }
+    $.ajax({
+        url: '/articles/actions/',
+        data: data,
+        type: 'POST',
+        dataType: 'json',
+        async: false,
+        success: function () {
+            window.location.reload();
+        },
+        error: function () {
+            window.location.reload();
+        }
+    })
 })

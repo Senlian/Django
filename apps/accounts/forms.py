@@ -130,7 +130,7 @@ class AccountsLoginForm(AuthenticationForm):
 
 # TODO：注册表单
 class AccountsRegisterForm(forms.ModelForm):
-    verify = forms.CharField(label='邮箱验证码', required=False, widget=forms.TextInput(
+    verify = forms.CharField(label='邮箱验证码', required=False, widget=widgets.TextInput(
         attrs={
             'type': 'text',
             'class': 'form-control',
@@ -495,3 +495,5 @@ class AccountsUserProfileForm(forms.ModelForm):
         self.instance.school = self.cleaned_data['school']
         self.instance.intro = self.cleaned_data['intro']
         return self.instance.save()
+
+

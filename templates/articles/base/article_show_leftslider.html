@@ -52,12 +52,12 @@
             <span class="article-action">
             {% if user and user == article.author %}
                 <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
-            {% elif user and article.author.fans.all|include:user %}
+            {% elif user and article.author.get_fans|include:user %}
                 <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="unfollow"
-                   data-option="{{ user }}" data-second-option="{{ article.author }}">取消关注</a>
+                   data-option="{{ article.id }}">取消关注</a>
             {% else %}
                 <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus"
-                   data-option="{{ user }}" data-second-option="{{ article.author }}">关注</a>
+                   data-option="{{ article.id }}">关注</a>
             {% endif %}
             </span>
         </div>
@@ -100,10 +100,10 @@
                 <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
             {% elif user and author.fans.all|include:user %}
                 <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="unfollow"
-                   data-option="{{ user }}" data-second-option="{{ author }}">取消关注</a>
+                   data-option="{{ article.id }}">取消关注</a>
             {% else %}
                 <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus"
-                   data-option="{{ user }}" data-second-option="{{ author }}">关注</a>
+                   data-option="{{ article.id }}">关注</a>
             {% endif %}
             </span>
         </div>

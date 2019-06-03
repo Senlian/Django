@@ -4,6 +4,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def paginator(request, articles):
+    if not articles:
+        return {}
     paginator = Paginator(articles, 2, 0)
     cur_page_number = int(request.GET.get('page', 1))
     if cur_page_number < 6:

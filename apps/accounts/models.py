@@ -39,6 +39,22 @@ class UserProfile(AbstractUser):
     def name(self):
         return self.get_full_name()
 
+    def set_fans(self, fans):
+        relationship = UserRelation.objects.get_or_create(focus=self, fans=fans)
+        print(relationship)
+
+    def set_unfollow(self, focus):
+        relationship = UserRelation.objects.get(focus=focus, fans=self)
+        if relationship:
+            relationship.delete()
+        return True
+
+    def get_fans(self):
+        return [relationship.fans for relationship in self.fans.all()]
+
+    def get_focus(self):
+        return [relationship.focus for relationship in self.focus.all()]
+
     age.short_description = '年龄'
     name.short_description = '姓名'
     age = property(age)
@@ -48,7 +64,7 @@ class UserProfile(AbstractUser):
 # TODO: 用户关系表
 class UserRelation(models.Model):
     focus = models.ForeignKey(UserProfile, related_name='fans', on_delete=models.CASCADE, verbose_name='关注')
-    fans = models.ForeignKey(UserProfile, related_name='foces', on_delete=models.CASCADE, verbose_name='粉丝')
+    fans = models.ForeignKey(UserProfile, related_name='focus', on_delete=models.CASCADE, verbose_name='粉丝')
 
     class Meta:
         db_table = 'userrelation'
@@ -57,4 +73,4 @@ class UserRelation(models.Model):
         unique_together = ('focus', 'fans')
 
     def __str__(self):
-        return '关注:{0} 粉丝{1}'.format(self.focus, self.fans)
+        return '关注:{0} 粉丝:{1}'.format(self.focus, self.fans)

@@ -55,13 +55,13 @@
                 </span>
                 <span class="list-item-info-operate mt-3 mx-2 float-right article-action">
                     <a href="{{ article.get_absolute_url }}">查看</a>
-                    <a data-method="setAllowreply" data-option="{{ article }}">
+                    <a data-method="setAllowreply" data-option="{{ article.id }}">
                         {% if article.allowreply %}禁止评论{% else %}允许评论{% endif %}
                     </a>
-                    <a data-method="setTop" data-option="{{ article }}">
+                    <a data-method="setTop" data-option="{{ article.id }}">
                         {% if article.top %}取消置顶{% else %}置顶{% endif %}
                     </a>
-                    <a style="color: #CA0C16;border-right:none;" data-method="delete" data-option="{{ article }}">删除</a>
+                    <a style="color: #CA0C16;border-right:none;" data-method="delete" data-option="{{ article.id }}">删除</a>
                 </span>
             </div>
         </div>

@@ -125,9 +125,9 @@
                     </span>
                     {% if user and user == article.author %}
                         <span class="card-info-link float-right article-action">
-                            <a href="#" data-method="setTop" data-option="{{ article }}">{% if article.top %}取消置顶{% else %}置顶{% endif %}</a>
-                            <a href="#" data-method="edit" data-option="{{ article }}">编辑</a>
-                            <a href="#" data-method="delete" data-option="{{ article }}" style="color: #CA0C16;border-right:none;">删除</a>
+                            <a href="#" data-method="setTop" data-option="{{ article.id }}" data-second-option="{{ article.top }}">{% if article.top %}取消置顶{% else %}置顶{% endif %}</a>
+                            <a href="#" data-method="edit" data-option="{{ article.id }}">编辑</a>
+                            <a href="#" data-method="delete" data-option="{{ article.id }}" style="color: #CA0C16;border-right:none;">删除</a>
                         </span>
                     {% endif %}
                 </div>
