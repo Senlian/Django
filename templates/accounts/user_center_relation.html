@@ -1,0 +1,113 @@
+{% extends 'accounts/base/user_center_base.html' %}
+{% load staticfiles %}
+{% load accounts %}
+{% load common_extras %}
+{% block site_header %}
+    <h3 class="d-inline-block">{{ site_header|default:_("这里输入面板标题") }}</h3>
+    <span class="float-right">共 {% if request.path|is_uc_fans %}{{ fans.count|default:'0' }}
+        {% elif request.path|is_uc_focus %}{{ focus.count|default:'0' }}{% else %}0{% endif %} 人
+    </span>
+{% endblock %}
+{% block left_slider_subbox %}
+    <style>
+        .relations > li {
+            height: 82px;
+            line-height: 82px;
+            overflow: hidden;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .relations > li > a > img {
+            float: left;
+            width: 50px;
+            height: 50px;
+            margin-right: 16px;
+            border-radius: 50%;
+            margin-top: 16px;
+        }
+
+        .relations > li > a {
+            float: left;
+            text-decoration-line: none;
+            font-size: 16px;
+        }
+
+        a.border-danger {
+            font-size: 14px;
+        }
+
+        a.border-danger:hover {
+            background-color: lightcyan;
+        }
+    </style>
+    <ul class="container-fluid relations">
+        {% if request.path|is_uc_fans %}
+            {% for follower in fans %}
+                <li>
+                    <a href="{% url 'articles:list' follower.fans.username %}" target="_blank">
+                        <img src="{{ follower.fans.photo|is_protrait }}">
+                        <span>{{ follower.fans.nick_name|default_if_none:follower.fans.username }}</span>
+                    </a>
+                    <span class="float-right article-action">
+                        {% if user.get_focus|include:follower.fans %}
+                            <a class="btn border-danger text-danger mt-2" data-method="unfollow"
+                               data-option="{{ follower.fans.id }}">取消关注</a>
+                        {% else %}
+                            <a class="btn border-danger text-danger mt-2" data-method="focus"
+                               data-option="{{ follower.fans.id }}">关注</a>
+                        {% endif %}
+                    </span>
+                </li>
+            {% empty %}
+                <div class="d-flex flex-column justify-content-center align-items-center"
+                     style="margin-top:100px;padding-bottom:100px;opacity:0.5;">
+                    <img src="{% static 'common/imgs/empty.svg' %}" width="120px" height="73px">
+                    <h4 class="text-center"
+                        style="font-size: 16px;color: #6B6B6B;font-weight: bold;letter-spacing: 2px;padding: 15px;">
+                        空空如也
+                    </h4>
+                </div>
+            {% endfor %}
+        {% elif request.path|is_uc_focus %}
+            {% for followed in focus %}
+                <li>
+                    <a href="{% url 'articles:list' followed.focus.username %}" target="_blank">
+                        <img src="{{ followed.focus.photo|is_protrait }}">
+                        <span>{{ followed.focus.nick_name|default_if_none:followed.focus.username }}</span>
+                    </a>
+                    <span class="float-right article-action">
+                        {% if user.get_focus|include:followed.focus %}
+                            <a class="btn border-danger text-danger mt-2" data-method="unfollow"
+                               data-option="{{ followed.focus.id }}">取消关注</a>
+                        {% else %}
+                            <a class="btn border-danger text-danger mt-2" data-method="focus"
+                               data-option="{{ followed.focus.id }}">关注</a>
+                        {% endif %}
+                    </span>
+                </li>
+            {% empty %}
+                <div class="d-flex flex-column justify-content-center align-items-center"
+                     style="margin-top:100px;padding-bottom:100px;opacity:0.5;">
+                    <img src="{% static 'common/imgs/empty.svg' %}" width="120px" height="73px">
+                    <h4 class="text-center"
+                        style="font-size: 16px;color: #6B6B6B;font-weight: bold;letter-spacing: 2px;padding: 15px;">
+                        空空如也
+                    </h4>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="d-flex flex-column justify-content-center align-items-center"
+                 style="margin-top:100px;padding-bottom:100px;opacity:0.5;">
+                <img src="{% static 'common/imgs/empty.svg' %}" width="120px" height="73px">
+                <h4 class="text-center"
+                    style="font-size: 16px;color: #6B6B6B;font-weight: bold;letter-spacing: 2px;padding: 15px;">
+                    空空如也
+                </h4>
+            </div>
+        {% endif %}
+    </ul>
+{% endblock %}
+{% block right_slider_subbox %}{% endblock %}
+{% block base_js_extend %}
+    <script type="text/javascript" src="{% static 'articles/js/article.actions.js' %}"></script>
+{% endblock %}

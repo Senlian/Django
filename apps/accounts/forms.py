@@ -439,7 +439,7 @@ class AccountsUserProfileForm(forms.ModelForm):
 
             'birth': widgets.DateInput(
                 attrs={
-                    'class':'layui-input',
+                    'class': 'layui-input',
                     'placeholder': '选择日期',
                     'autocomplete': 'off'
                 }
@@ -495,5 +495,3 @@ class AccountsUserProfileForm(forms.ModelForm):
         self.instance.school = self.cleaned_data['school']
         self.instance.intro = self.cleaned_data['intro']
         return self.instance.save()
-
-

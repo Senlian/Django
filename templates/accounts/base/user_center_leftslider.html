@@ -20,8 +20,7 @@
         </dl>
     </li>
     <li class="layui-nav-item">
-        <a {% if request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
-           href="{% url 'accounts:uc_blogs' %}">我的博客</a>
+        <a href="{% url 'articles:back' %}"target="_blank">我的博客</a>
     </li>
     <li class="layui-nav-item">
         <a {% if request.path|is_uc_photos %}class="layui-this"{% else %}class=""{% endif %}

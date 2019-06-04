@@ -53,15 +53,6 @@ def isucfans(url=None):
     return False
 
 
-@register.filter(name=('is_uc_blogs'))
-def isucmyblogs(url=None):
-    if not url:
-        return False
-    if url.lower() == resolve_url('accounts:uc_blogs').lower():
-        return True
-    return False
-
-
 @register.filter(name=('is_uc_photos'))
 def isucmyphotos(url=None):
     if not url:
@@ -78,3 +69,43 @@ def isucnews(url=None):
         return True
     return False
 
+@register.filter(name=('is_ac_back'))
+def isacback(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('articles:back').lower():
+        return True
+    return False
+
+@register.filter(name=('is_ac_columns'))
+def isaccolumns(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('articles:columns').lower():
+        return True
+    return False
+
+@register.filter(name=('is_ac_tags'))
+def isactags(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('articles:tags').lower():
+        return True
+    return False
+
+@register.filter(name=('is_ac_comments'))
+def isaccomments(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('articles:comments').lower():
+        return True
+    return False
+
+
+@register.filter(name=('is_am_info'))
+def isaminfo(url=None):
+    if not url:
+        return False
+    if url.lower() == resolve_url('accounts:am_info').lower():
+        return True
+    return False

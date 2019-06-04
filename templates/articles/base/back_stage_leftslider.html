@@ -1,22 +1,22 @@
 {% load staticfiles %}
 {% load accounts %}
 <div class="py-5 mt-3">
-<ul class="layui-nav layui-nav-tree layui-bg-cyan">
-    <li class="layui-nav-item">
-        <a {% if not request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
-           href="#">博客管理</a>
-    </li>
-    <li class="layui-nav-item">
-        <a {% if request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
-           href="#">栏目管理</a>
-    </li>
-    <li class="layui-nav-item">
-        <a {% if request.path|is_uc_blogs %}class="layui-this"{% else %}class=""{% endif %}
-           href="#">标签管理</a>
-    </li>
-    <li class="layui-nav-item">
-        <a {% if request.path|is_uc_photos %}class="layui-this"{% else %}class=""{% endif %}
-           href="#">评论管理</a>
-    </li>
-</ul>
+    <ul class="layui-nav layui-nav-tree layui-bg-cyan">
+        <li class="layui-nav-item">
+            <a {% if request.path|is_ac_back %}class="layui-this"{% else %}class=""{% endif %}
+               href="{% url 'articles:back' %}">博客管理</a>
+        </li>
+        <li class="layui-nav-item">
+            <a {% if request.path|is_ac_columns %}class="layui-this"{% else %}class=""{% endif %}
+               href="{% url 'articles:columns' %}">栏目管理</a>
+        </li>
+        <li class="layui-nav-item">
+            <a {% if request.path|is_ac_tags %}class="layui-this"{% else %}class=""{% endif %}
+               href="{% url 'articles:tags' %}">标签管理</a>
+        </li>
+        <li class="layui-nav-item">
+            <a {% if request.path|is_ac_comments %}class="layui-this"{% else %}class=""{% endif %}
+               href="{% url 'articles:comments' %}">评论管理</a>
+        </li>
+    </ul>
 </div>

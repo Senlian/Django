@@ -17,7 +17,7 @@ urlpatterns = [
     re_path(r'^user-center-collects/$', views.UserCenterCollectsView.as_view(), name='uc_collects'),
     re_path(r'^user-center-focus/$', views.UserCenterFocusView.as_view(), name='uc_focus'),
     re_path(r'^user-center-fans/$', views.UserCenterFansView.as_view(), name='uc_fans'),
-    re_path(r'^user-center-blogs/$', views.UserCenterBlogsView.as_view(), name='uc_blogs'),
+
     re_path(r'^user-center-photos/$', views.UserCenterPhotosView.as_view(), name='uc_photos'),
     re_path(r'^user-center-news/$', views.UserCenterNewsView.as_view(), name='uc_news'),
 

@@ -24,7 +24,7 @@
             //GET方式访问页面处理
             element.tabChange('list', layid);
             if (layid != 0) {
-                ajax(layid);
+                toggle(layid);
             }
             //点击切换处理
             element.on('tab(list)', function (data) {

@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.http import JsonResponse
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth import get_user_model, views as auth_views
 from django.views import generic
 
@@ -11,7 +12,7 @@ from accounts.views import LoginRequiredPostMixin
 from articles.models import Articles
 from common.utils.paginator import paginator
 
-from articles.forms import ArticleSearchForm
+from articles.forms import ArticleSearchForm, ArticlePostForm
 
 UserModel = get_user_model()
 
@@ -55,7 +56,7 @@ class ArticleListView(auth_views.TemplateView):
         username = kwargs['username']
         author = UserModel._default_manager.get(username=username)
         if username == request.user.username:
-            articles = author.articles.all().order_by('-top')
+            articles = author.articles.filter(Q(status__in=['1', '2', '3'])).order_by('-top')
         else:
             articles = author.articles.filter(status='1').order_by('-top')
 
@@ -88,20 +89,34 @@ class ArticleActionsView(generic.View):
 
     def post(self, request, *args, **kwargs):
         method = request.POST.get('method', '')
-        article_id = request.POST.get('option', '')
-        if not (method and article_id):
+        option = request.POST.get('option', '')
+        secondOption = request.POST.get('secondOption', '')
+        if not (method and option):
             return JsonResponse({'status': 'not ok'})
-        article = Articles.objects.get(id=int(article_id))
+
         if method.lower() == 'settop':
+            article = Articles.objects.get(id=int(option))
             article.set_top()
         elif method.lower() == 'setallowreply':
+            article = Articles.objects.get(id=int(option))
             article.set_allowreply()
         elif method.lower() == 'delete':
+            article = Articles.objects.get(id=int(option))
             article.delete()
+        elif method.lower() == 'recycle':
+            article = Articles.objects.get(id=int(option))
+            article.set_status('4')
+        elif method.lower() == 'drafts':
+            article = Articles.objects.get(id=int(option))
+            article.set_status('3')
         elif method.lower() == 'focus':
-            article.author.set_fans(request.user)
+            print(option)
+            followed = UserModel._default_manager.get(id=int(option))
+            followed.set_fans(request.user)
         elif method.lower() == 'unfollow':
-            request.user.set_unfollow(article.author)
+            print(option)
+            follower = UserModel._default_manager.get(id=int(option))
+            request.user.set_unfollow(follower)
         else:
             return JsonResponse({'status': 'not ok'})
 
@@ -119,3 +134,23 @@ class ArticleSearchView(auth_views.TemplateView):
         articles = {} if not form.is_valid() else form.cleaned_data['search']
         self.extra_context.update(paginator(request, articles))
         return super().get(request, *args, **kwargs)
+
+
+class ArticlePostView(auth_views.FormView):
+    template_name = 'articles/article_edit.html'
+    extra_context = {'title': '写博客', 'site_title': 'SCSDN博客'}
+    form_class = ArticlePostForm
+
+    def get(self, request, *args, **kwargs):
+        id = request.GET.get('id', '')
+        article = '' if not id.isdigit() else Articles.objects.get(id=int(id))
+        if article:
+            self.initial = {'title': article.title, 'body': article.body, 'article':article}
+        return super().get(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        new_article = form.save(commit=False)
+        new_article.author = self.request.user
+        new_article.save()
+        self.success_url = reverse('articles:list', kwargs={'username': self.request.user.username})
+        return super().form_valid(form)

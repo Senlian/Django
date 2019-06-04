@@ -1,4 +1,5 @@
 $('.article-action').on('click', function (event) {
+    console.log('onclic');
     //window.event 兼容IE
     var e = event || window.event;
     var target = e.target || e.srcElement;
@@ -7,7 +8,6 @@ $('.article-action').on('click', function (event) {
         if (target.getAttribute('data-method')) {
             break;
         }
-
         target = target.parentNode;
     }
     if (target === this || target.disabled || target.className.indexOf('disabled') > -1) {

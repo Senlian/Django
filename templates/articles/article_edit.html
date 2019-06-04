@@ -1,0 +1,37 @@
+{% extends 'common/base.html' %}
+{% load staticfiles %}
+{% load common_extras %}
+{% load md2 %}
+{% block header %}{% endblock %}
+{% block content %}
+    {{ form.media }}
+    <div class="container-fluid">
+        <form action="{% url 'articles:post' %}" method="post" style="width: 100%;height:100%;">
+            {% csrf_token %}
+            <div class="row" style="height: 8vh">
+                <div class="col col-9">{{ form.title }}</div>
+                <div class="col col-2"><input class="btn btn-danger" type="submit" value="发布文章"></div>
+
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="rounded-circle" width="30px" height="30px" src="{{ user.photo | is_protrait }}"
+                                 title="{{ user.username }}">
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'articles:back' %}">博文管理</a>
+                            <a class="dropdown-item" href="{% url 'articles:list' user.username %}">我的博客</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'accounts:logout' %}">退出登录</a>
+                        </div>
+                    </div>
+            </div>
+
+            <div style="height: 80vh">
+                <input class="sr-only" name="id" value="{{ article.id }}">
+                {{ form.body|safe }}
+            </div>
+
+        </form>
+    </div>
+{% endblock %}

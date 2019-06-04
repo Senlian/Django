@@ -101,6 +101,11 @@ class Articles(models.Model):
         self.allowreply = False if self.allowreply else True
         return self.save()
 
+    def set_status(self, number):
+        if number.isdigit():
+            self.status = str(number)
+        return self.save()
+
     def get_absolute_url(self):
         try:
             return reverse("articles:show", args=[self.id, self.slug])

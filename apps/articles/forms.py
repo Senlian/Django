@@ -28,3 +28,15 @@ class ArticleSearchForm(forms.Form):
             return articles
         else:
             raise forms.ValidationError('搜索结果为空')
+
+
+class ArticlePostForm(forms.ModelForm):
+    class Meta:
+        model = Articles
+        fields = ('title', 'body')
+
+        widgets = {
+            'title': widgets.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '输入文章标题'
+            })}

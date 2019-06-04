@@ -14,7 +14,14 @@
                 </div>
                 <div class="">
                 <span class="mt-3 mr-3 float-left" style="font-size: 12px;color: #999;">
-                    {% if article.top %}<span class="list-item-tag mr-2">置顶</span>{% endif %}
+                    {% if article.status == '4' %}
+                        <span class="list-item-tag text-danger mr-2">已删除</span>
+                    {% elif article.status == '3' %}
+                        <span class="list-item-tag text-primary mr-2">草稿</span>
+                    {% else %}
+                        {% if article.top %}<span class="list-item-tag mr-2">置顶</span>{% endif %}
+                        {% if article.status == '2' %}<span class="list-item-tag mr-2">私密</span>{% endif %}
+                    {% endif %}
                     <span><i class="fa fa-clock-o mr-1"></i>{{ article.created }}</span>
                     <span>
                         <a class="ml-3" href="{% url 'articles:list' article.author.username %}"
