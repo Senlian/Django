@@ -125,12 +125,10 @@ class ArticleSearchView(auth_views.TemplateView):
         search = request.POST.get('search')
         if search:
             self.extra_context.update({'title': search, 'site_title': 'SCSDN搜索'})
-            form = ArticleSearchForm(request.POST)
-            articles = {} if not form.is_valid() else form.cleaned_data['search']
-            if not articles:
-                self.extra_context.update({'empty': '啥也没找到'})
-        else:
-            articles = Articles.objects.filter(Q(status__in=['1', '2'])).order_by('-update')
+        form = ArticleSearchForm(request.POST)
+        articles = {} if not form.is_valid() else form.cleaned_data['search']
+        if not articles:
+            self.extra_context.update({'empty': '啥也没找到'})
         self.extra_context.update(paginator(request, articles))
         return super().get(request, *args, **kwargs)
 
