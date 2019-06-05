@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.http.response import JsonResponse
 from django.contrib.auth import views as auth_views
+from django.db.models import Q
+
 from common.gen_verify import draw_img
 from common.utils.paginator import paginator
 
@@ -19,7 +21,7 @@ class IndexView(auth_views.TemplateView):
     extra_context = {'title': 'SCSDN', 'site_title': '专业IT技术社区'}
 
     def get(self, request, *args, **kwargs):
-        articles = Articles.objects.all().order_by('-update')
+        articles = Articles.objects.filter(Q(status__in=['1', '2'])).order_by('-update')
         self.extra_context.update(paginator(request, articles))
         return super().get(request, *args, **kwargs)
 
@@ -51,5 +53,6 @@ class MarkDownView(auth_views.TemplateView):
         'language': 'zh'  # zh / en
     }
 
-    extra_context = {'config': config,'title': 'MarkDown测试', 'site_title': 'SCSDN'}
-    template_name = 'markdown/markdown_view.html'
+    extra_context = {'config': config, 'title': 'MarkDown测试', 'site_title': 'SCSDN'}
+    # template_name = 'markdown/markdown_view.html'
+    template_name = 'accounts/demo.html'

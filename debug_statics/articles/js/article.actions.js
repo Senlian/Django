@@ -1,5 +1,4 @@
 $('.article-action').on('click', function (event) {
-    console.log('onclic');
     //window.event 兼容IE
     var e = event || window.event;
     var target = e.target || e.srcElement;
@@ -42,13 +41,21 @@ $('.article-action').on('click', function (event) {
             console.log('focus');
             break;
         default:
+            break;
     }
+    var location_href = location.href
     $.ajax({
         url: '/articles/actions/',
-        data: data,
         type: 'POST',
         dataType: 'json',
         async: false,
+        data: data,
+        cache: false,
+        ifModified: true,
+        beforeSend: function (xmlHttp) {
+            xmlHttp.setRequestHeader("If-Modified-Since", "0");
+            xmlHttp.setRequestHeader("Cache-Control", "no-cache");
+        },
         success: function () {
             window.location.reload();
         },

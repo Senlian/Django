@@ -41,7 +41,7 @@ class UserProfile(AbstractUser):
 
     def set_fans(self, fans):
         relationship = UserRelation.objects.get_or_create(focus=self, fans=fans)
-        print(relationship)
+        return relationship
 
     def set_unfollow(self, focus):
         relationship = UserRelation.objects.get(focus=focus, fans=self)
@@ -54,6 +54,10 @@ class UserProfile(AbstractUser):
 
     def get_focus(self):
         return [relationship.focus for relationship in self.focus.all()]
+
+    def get_origin(self):
+        # 原创文章
+        return self.articles.filter(status__in=['1', '2'])
 
     age.short_description = '年龄'
     name.short_description = '姓名'

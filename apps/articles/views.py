@@ -1,12 +1,15 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden, Http404
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import get_user_model, views as auth_views
 from django.views import generic
 
 from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.db.models import Q
+
+import re
 
 from accounts.views import LoginRequiredPostMixin
 from articles.models import Articles
@@ -55,19 +58,15 @@ class ArticleListView(auth_views.TemplateView):
     def get(self, request, *args, **kwargs):
         username = kwargs['username']
         author = UserModel._default_manager.get(username=username)
+
         if username == request.user.username:
-            articles = author.articles.filter(Q(status__in=['1', '2', '3'])).order_by('-top')
+            articles = author.articles.all().order_by('-top')
         else:
             articles = author.articles.filter(status='1').order_by('-top')
+        self.extra_context.update({
+            'title': '{0}的博客'.format(username),
+            'author': author})
 
-        if articles:
-            self.extra_context.update({
-                'title': '{0}的博客'.format(username),
-                'article': articles.first()})
-        else:
-            self.extra_context.update({
-                'title': '{0}的博客'.format(username),
-                'author': author})
         self.extra_context.update(paginator(request, articles))
         return super().get(request, *args, **kwargs)
 
@@ -82,11 +81,7 @@ class ArticleShowView(auth_views.TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class ArticleActionsView(generic.View):
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
+class ArticleActionsView(LoginRequiredPostMixin, generic.View):
     def post(self, request, *args, **kwargs):
         method = request.POST.get('method', '')
         option = request.POST.get('option', '')
@@ -110,11 +105,10 @@ class ArticleActionsView(generic.View):
             article = Articles.objects.get(id=int(option))
             article.set_status('3')
         elif method.lower() == 'focus':
-            print(option)
+            print('focus')
             followed = UserModel._default_manager.get(id=int(option))
             followed.set_fans(request.user)
         elif method.lower() == 'unfollow':
-            print(option)
             follower = UserModel._default_manager.get(id=int(option))
             request.user.set_unfollow(follower)
         else:
@@ -136,7 +130,7 @@ class ArticleSearchView(auth_views.TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class ArticlePostView(auth_views.FormView):
+class ArticlePostView(LoginRequiredPostMixin, auth_views.FormView):
     template_name = 'articles/article_edit.html'
     extra_context = {'title': '写博客', 'site_title': 'SCSDN博客'}
     form_class = ArticlePostForm
@@ -145,12 +139,23 @@ class ArticlePostView(auth_views.FormView):
         id = request.GET.get('id', '')
         article = '' if not id.isdigit() else Articles.objects.get(id=int(id))
         if article:
-            self.initial = {'title': article.title, 'body': article.body, 'article':article}
-        return super().get(request, *args, **kwargs)
+            self.initial = {'title': article.title, 'body': article.body}
+        self.extra_context.update({'article': article})
+        if self.request.user==article.author:
+            return super().get(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
 
     def form_valid(self, form):
-        new_article = form.save(commit=False)
-        new_article.author = self.request.user
-        new_article.save()
+        id = self.request.POST.get('id', self.request.GET.get('id', ''))
+        article = None if not id.isdigit() else Articles.objects.get(id=int(id))
+        if article and self.request.user == article.author:
+            article.title = form.cleaned_data['title']
+            article.body = form.cleaned_data['body']
+            article.save()
+        else:
+            new_article = form.save(commit=False)
+            new_article.author = self.request.user
+            new_article.save()
         self.success_url = reverse('articles:list', kwargs={'username': self.request.user.username})
         return super().form_valid(form)

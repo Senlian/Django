@@ -114,6 +114,18 @@ class Articles(models.Model):
             print(self.id)
             print(self.slug)
 
+    def is_delete(self):
+        return self.status == '4'
+
+    def is_draft(self):
+        return self.status == '3'
+
+    def is_private(self):
+        return self.status == '2'
+
+    def is_public(self):
+        return self.status == '1'
+
 
 # TODO: 文章评论
 class ArticleComments(models.Model):

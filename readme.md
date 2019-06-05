@@ -101,6 +101,8 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 
 [SVG图像入门](<http://www.ruanyifeng.com/blog/2018/08/svg.html>)
 
+[svg 在线制作](<https://www.zhangxinxu.com/sp/svg/>)
+
 [GraphQL](<http://graphql.cn/>)
 
 [Sphinx使用手册](<https://zh-sphinx-doc.readthedocs.io/en/latest/markup/index.html>)
