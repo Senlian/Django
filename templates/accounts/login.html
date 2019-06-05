@@ -58,9 +58,4 @@
         <a class="btn-link float-right" target="_self" href="{% url 'accounts:register' %}">新用户注册</a>
     </div>
 {% endblock %}
-{% block base_code_extend %}
-<script>
-    console.log(location.href);
-    console.log(parent.window.location.href);
-</script>
-{% endblock %}
+{% block base_code_extend %}{% endblock %}

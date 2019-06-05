@@ -11,24 +11,24 @@
             <div class="row" style="height: 8vh">
                 <div class="col col-9">{{ form.title }}</div>
                 <div class="col col-2"><input class="btn btn-danger" type="submit" value="发布文章"></div>
-
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="rounded-circle" width="30px" height="30px" src="{{ user.photo | is_protrait }}"
-                                 title="{{ user.username }}">
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url 'articles:back' %}">博文管理</a>
-                            <a class="dropdown-item" href="{% url 'articles:list' user.username %}">我的博客</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{% url 'accounts:logout' %}">退出登录</a>
-                        </div>
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <img class="rounded-circle" width="30px" height="30px" src="{{ user.photo | is_protrait }}"
+                             title="{{ user.username }}">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'blog:index' %}">返回主页</a>
+                        <a class="dropdown-item" href="{% url 'articles:back' %}">博文管理</a>
+                        <a class="dropdown-item" href="{% url 'articles:list' user.username %}">我的博客</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="{% url 'accounts:logout' %}">退出登录</a>
                     </div>
+                </div>
             </div>
 
             <div style="height: 80vh">
-                <input class="sr-only" name="id" value="{{ article.id }}">
+                <input class="sr-only" name="id" value="{% if user == article.author %}{{ article.id }}{% else %}{% endif %}">
                 {{ form.body|safe }}
             </div>
 

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
     {% load staticfiles %}
     <title>{% block title %}{{ title }}-{{ site_title|default:_("这里输入站点标题") }}{% endblock %}</title>
     {% block base_icon_head %}
@@ -12,7 +13,7 @@
         <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
         <link href="{% static 'font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet">
-{#        <link rel="stylesheet" href="{% static 'mdeditor/css/editormd.css' %}" media="all">#}
+        {#        <link rel="stylesheet" href="{% static 'mdeditor/css/editormd.css' %}" media="all">#}
     {% endblock %}
     {% block base_css_extend %}{% endblock %}
 </head>
@@ -70,7 +71,7 @@
     <script type="text/javascript" src="{% static 'common/js/popper.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'layui/layui.all.js' %}"></script>
-{#    <script type="text/javascript" src="{% static 'mdeditor/js/editormd.min.js' %}"></script>#}
+    {#    <script type="text/javascript" src="{% static 'mdeditor/js/editormd.min.js' %}"></script>#}
 {% endblock %}
 {% block base_js_extend %}{#这里写入js代码#}{% endblock %}
 {% block base_code %}{#这里写入js代码#}

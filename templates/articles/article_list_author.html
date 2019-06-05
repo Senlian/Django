@@ -93,7 +93,29 @@
     </style>
     {% for article in articles %}
         <div class="card text-left">
-            {% if article.top %}
+            {% if article.is_delete %}
+                <svg class="icon settop" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1024 1024">
+                        <path id="svg_3" fill="#7ED321" d="m2.283951,-0.641975l1024,0l0,1024l-1024,-1024z"/>
+                        <text font-style="normal" font-weight="normal"
+                              transform="rotate(45.98050308227539 726.8650512695311,348.45501708984386) matrix(14.474053098298324,0,0,16.384229982690485,-9657.357111346211,-4513.245931331601) "
+                              xml:space="preserve" text-anchor="middle" font-family="Fantasy" font-size="24" id="svg_5"
+                              y="306.245236" x="717.437734" stroke-linecap="null" stroke-linejoin="null"
+                              stroke-dasharray="null" stroke-width="0" fill="#ffffff">删除</text>
+                    </svg>
+                </svg>
+            {% elif article.is_draft %}
+                <svg class="icon settop" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1024 1024">
+                        <path id="svg_3" fill="#7ED321" d="m2.283951,-0.641975l1024,0l0,1024l-1024,-1024z"/>
+                        <text font-style="normal" font-weight="normal"
+                              transform="rotate(45.98050308227539 726.8650512695311,348.45501708984386) matrix(14.474053098298324,0,0,16.384229982690485,-9657.357111346211,-4513.245931331601) "
+                              xml:space="preserve" text-anchor="middle" font-family="Fantasy" font-size="24" id="svg_5"
+                              y="306.245236" x="717.437734" stroke-linecap="null" stroke-linejoin="null"
+                              stroke-dasharray="null" stroke-width="0" fill="#ffffff">草稿</text>
+                    </svg>
+                </svg>
+            {% elif article.top %}
                 <svg class="icon settop" aria-hidden="true">
                     <use xlink:href="#scsdnc-settop">
                         <svg id="scsdnc-settop" viewBox="0 0 1024 1024" width="100%" height="100%">
@@ -109,7 +131,7 @@
                     <a class="card-link" href="{{ article.get_absolute_url }}">{{ article.title }}</a>
                 </h3>
                 <p class="card-text">
-                    <a class="card-link" style="color: #8a8a8a;" href="{{ article.get_absolute_url }}">
+                    <a class="card-link pl-2" style="color: #8a8a8a;" href="{{ article.get_absolute_url }}">
                         {{ article.body|markdown|striptags|truncatewords_html:'10' }}
                     </a>
                 </p>
@@ -125,9 +147,27 @@
                     </span>
                     {% if user and user == article.author %}
                         <span class="card-info-link float-right article-action">
-                            <a href="#" data-method="setTop" data-option="{{ article.id }}" data-second-option="{{ article.top }}">{% if article.top %}取消置顶{% else %}置顶{% endif %}</a>
-                            <a href="#" data-method="edit" data-option="{{ article.id }}">编辑</a>
-                            <a href="#" data-method="recycle" data-option="{{ article.id }}" style="color: #CA0C16;border-right:none;">删除</a>
+                            {% if article.is_delete %}
+                                <a href="{% url 'articles:post' %}?id={{ article.id }}" data-method="edit"
+                                   data-option="{{ article.id }}">编辑</a>
+                                <a href="#" data-method="drafts" data-option="{{ article.id }}">回收至草稿箱</a>
+                                <a href="#" data-method="delete" data-option="{{ article.id }}"
+                                   style="color: #CA0C16;border-right:none;">彻底删除</a>
+                            {% elif article.is_draft %}
+                                <a href="{% url 'articles:post' %}?id={{ article.id }}" data-method="edit"
+                                   data-option="{{ article.id }}">编辑</a>
+                                <a href="#" data-method="recycle" data-option="{{ article.id }}">扔进回收站</a>
+                                <a href="#" data-method="delete" data-option="{{ article.id }}"
+                                   style="color: #CA0C16;border-right:none;">彻底删除</a>
+                            {% else %}
+                                <a href="#" data-method="setTop" data-option="{{ article.id }}"
+                                   data-second-option="{{ article.top }}">{% if article.top %}取消置顶{% else %}
+                                    置顶{% endif %}</a>
+                                <a href="{% url 'articles:post' %}?id={{ article.id }}" data-method="edit"
+                                   data-option="{{ article.id }}">编辑</a>
+                                <a href="#" data-method="recycle" data-option="{{ article.id }}"
+                                   style="color: #CA0C16;border-right:none;">删除</a>
+                            {% endif %}
                         </span>
                     {% endif %}
                 </div>
@@ -135,12 +175,14 @@
         </div>
     {% empty %}
         <div class="no-data d-flex flex-column justify-content-center align-items-center"
-             style="margin-top:100px;padding-bottom:100px;opacity: 0.5;">
-            <img src="{% static 'common/imgs/empty.svg' %}" width="120px" height="73px">
-            <h4 class="text-center"
-                style="font-size: 16px;color: #6B6B6B;font-weight: bold;letter-spacing: 2px;padding: 15px;">
-                空空如也
-            </h4>
+             style="margin-top:100px;padding-bottom:100px;">
+            <div style="opacity: 0.5;">
+                <img src="{% static 'common/imgs/empty.svg' %}" width="120px" height="73px">
+                <h4 class="text-center"
+                    style="font-size: 16px;color: #6B6B6B;font-weight: bold;letter-spacing: 2px;padding: 15px;">
+                    空空如也
+                </h4>
+            </div>
             {% if user and user == article.author or user == author %}
                 <a href="{% url 'articles:post' %}" target="_blank">
                     <button style="width: 300px;height: 40px;background: #CA0C16;border-radius: 4px;font-size: 18px;color: #FFFFFF; margin-top: 15px;"

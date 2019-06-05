@@ -57,11 +57,13 @@
             {% if user and user == article.author %}
                 <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
             {% elif user and article.author.get_fans|include:user %}
-                <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="unfollow"
-                   data-option="{{ article.author.id }}">取消关注</a>
+                <a class="btn btn-sm border-danger text-danger float-right mt-2"
+                   {% if user.is_authenticated %}data-method="unfollow" data-option="{{ article.author.id }}"
+                   {% else %}onclick='layer_open("{% url 'accounts:login' %}")'{% endif %}>取消关注</a>
             {% else %}
-                <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus"
-                   data-option="{{ article.author.id }}">关注</a>
+                <a class="btn btn-sm border-danger text-danger float-right mt-2"
+                   {% if user.is_authenticated %}data-method="focus" data-option="{{ article.author.id }}"
+                   {% else %}onclick='layer_open("{% url 'accounts:login' %}")'{% endif %}>关注</a>
             {% endif %}
             </span>
         </div>
@@ -70,7 +72,7 @@
                 <dt><a href="#" style="text-decoration: none;">原创</a></dt>
                 <dd>
                     <a href="#" style="text-decoration: none;">
-                        <span class="count">{{ article.author.articles.count }}</span>
+                        <span class="count">{{ article.author.get_origin.count }}</span>
                     </a>
                 </dd>
             </dl>
@@ -102,12 +104,14 @@
             <span class="article-action">
             {% if user and user == author %}
                 <a class="btn btn-sm btn-link float-right mt-2" href="{% url 'accounts:uc_info' %}">个人中心</a>
-            {% elif user and author.get_focus.all|include:user %}
-                <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="unfollow"
-                   data-option="{{ author }}">取消关注</a>
+            {% elif user and author.get_fans|include:user %}
+                <a class="btn btn-sm border-danger text-danger float-right mt-2"
+                   {% if user.is_authenticated %}data-method="unfollow" data-option="{{ author.id }}"
+                   {% else %}onclick='layer_open("{% url 'accounts:login' %}")'{% endif %}>取消关注</a>
             {% else %}
-                <a class="btn btn-sm border-danger text-danger float-right mt-2" data-method="focus"
-                   data-option="{{ author }}">关注</a>
+                <a class="btn btn-sm border-danger text-danger float-right mt-2"
+                   {% if user.is_authenticated %}data-method="focus" data-option="{{ author.id }}"
+                   {% else %}onclick='layer_open("{% url 'accounts:login' %}")'{% endif %}>关注</a>
             {% endif %}
             </span>
         </div>
@@ -116,7 +120,7 @@
                 <dt><a href="#" style="text-decoration: none;">原创</a></dt>
                 <dd>
                     <a href="#" style="text-decoration: none;">
-                        <span class="count">{{ author.articles.count }}</span>
+                        <span class="count">{{ author.get_origin.count }}</span>
                     </a>
                 </dd>
             </dl>

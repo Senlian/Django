@@ -46,7 +46,7 @@
         function GetFormData(e) {
             /* 获取全部表单数据，包含CSRF_TOKEN */
             var input_tags = e.getElementsByTagName('input');
-            var next = window.parent.location.search.split('=')[1] || window.parent.location.href;
+            var next = window.location.search.split('=')[1] || window.parent.location.search.split('=')[1] || window.parent.location.href;
             var formData = {'next': next};
             for (var i = 0; i < input_tags.length; i++) {
                 var input_tag = input_tags[i];
