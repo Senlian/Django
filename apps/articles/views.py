@@ -122,7 +122,6 @@ class ArticleActionsView(LoginRequiredPostMixin, generic.View):
 
         return JsonResponse({'status': 'ok'})
 
-
 class ArticleSearchView(auth_views.TemplateView):
     template_name = 'blog/index.html'
     extra_context = {'title': 'SCSDN', 'site_title': '专业IT技术社区'}
