@@ -28,10 +28,9 @@
             </div>
 
             <div style="height: 80vh">
-                <input class="sr-only" name="id" value="{% if user == article.author %}{{ article.id }}{% else %}{% endif %}">
+                <input class="sr-only" name="id" value="{% if article and user == article.author %}{{ article.id }}{% else %}{% endif %}">
                 {{ form.body|safe }}
             </div>
-
         </form>
     </div>
 {% endblock %}

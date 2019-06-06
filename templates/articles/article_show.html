@@ -1,6 +1,6 @@
 {% extends 'articles/base/back_stage_base.html' %}
 {% load staticfiles %}
-{#{% load common_extras %}#}
+{% load common_extras %}
 {% load md2 %}
 {% block left_slider_body %}
     {% include 'articles/base/article_show_leftslider.html' %}
@@ -31,10 +31,18 @@
                     </span>
                     <span class="ml-3">阅读数:<span class="ml-1">{{ article.comments.count }}</span></span>
                 </span>
-                <span class="float-right mr-2">
+                    <span class="float-right mr-2 article-action">
                     {% if article.author == user %}
-                        <a class="btn btn-link"  style="text-decoration-line: none; margin-top: -8px;"
+                        <a class="btn btn-link" style="text-decoration-line: none; margin-top: -8px;"
                            href="{% url 'articles:post' %}?id={{ article.id }}">编辑</a>
+                    {% elif article.favorites.all|include:user %}
+                        <a class="btn btn-link text-primary" style="text-decoration-line: none; margin-top: -8px;"
+                           {% if user.is_authenticated %}data-method="disfavorite" data-option="{{ article.id }}"
+                           {% else %}onclick='layer_open("{% url 'accounts:login' %}")'{% endif %}>取消收藏</a>
+                    {% else %}
+                        <a class="btn btn-link  text-primary" style="text-decoration-line: none; margin-top: -8px;"
+                           {% if user.is_authenticated %}data-method="favorite" data-option="{{ article.id }}"
+                           {% else %}onclick='layer_open("{% url 'accounts:login' %}")'{% endif %}>收藏</a>
                     {% endif %}
                  </span>
                 </div>

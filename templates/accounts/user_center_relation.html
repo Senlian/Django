@@ -1,11 +1,13 @@
 {% extends 'accounts/base/user_center_base.html' %}
 {% load staticfiles %}
 {% load accounts %}
+{% load md2 %}
 {% load common_extras %}
 {% block site_header %}
     <h3 class="d-inline-block">{{ site_header|default:_("这里输入面板标题") }}</h3>
-    <span class="float-right">共 {% if request.path|is_uc_fans %}{{ fans.count|default:'0' }}
-        {% elif request.path|is_uc_focus %}{{ focus.count|default:'0' }}{% else %}0{% endif %} 人
+    <span class="float-right">共 {% if request.path|is_uc_fans %}{{ fans.count|default:'0' }} 人
+        {% elif request.path|is_uc_focus %}{{ focus.count|default:'0' }} 人
+        {% elif request.path|is_uc_collects %}{{ favorites.count|default:'0' }} 篇{% endif %}
     </span>
 {% endblock %}
 {% block left_slider_subbox %}
@@ -24,12 +26,6 @@
             margin-right: 16px;
             border-radius: 50%;
             margin-top: 16px;
-        }
-
-        .relations > li > a {
-            float: left;
-            text-decoration-line: none;
-            font-size: 16px;
         }
 
         a.border-danger {
@@ -85,6 +81,52 @@
                         {% endif %}
                     </span>
                 </li>
+            {% empty %}
+                <div class="d-flex flex-column justify-content-center align-items-center"
+                     style="margin-top:100px;padding-bottom:100px;opacity:0.5;">
+                    <img src="{% static 'common/imgs/empty.svg' %}" width="120px" height="73px">
+                    <h4 class="text-center"
+                        style="font-size: 16px;color: #6B6B6B;font-weight: bold;letter-spacing: 2px;padding: 15px;">
+                        空空如也
+                    </h4>
+                </div>
+            {% endfor %}
+        {% elif request.path|is_uc_collects %}
+            {% for favorite in favorites %}
+                <div>
+                    <div class="card text-left">
+                        <div class="card-body">
+                            <h3 class="card-title">
+                                <a class="card-link" href="{{ favorite.get_absolute_url }}">{{ favorite.title }}</a>
+                            </h3>
+                            <div class="card-info clearfix pt-2">
+                                <span class="card-info-operate">
+                                    <a class="card-link px-2 border-right"
+                                       href="{% url 'articles:list' favorite.author.username %}">
+                                        <img style="margin-top: -5px" class="rounded-circle"
+                                             src="{{ favorite.author.photo|is_protrait }}" width="14px"
+                                             height="14px">
+                                        {{ favorite.author.nick_name|default:favorite.author.username }}
+                                    </a>
+                                    {% if favorite.column %}
+                                        <a class="px-2 border-right"
+                                           href="#">{{ favorite.column | default_if_none:_('') }}</a>
+                                    {% endif %}
+                                    <span class="px-2 border-right">{{ favorite.update }}</span>
+                                    <span>阅读量<a class="card-link px-2 border-right"
+                                                href="#">{{ favorite.likes.count }}</a></span>
+                                    <span>点赞<a class="card-link px-2 border-right"
+                                               href="#">{{ favorite.likes.count }}</a></span>
+                                    <span>评论<a class="card-link px-2" href="#">{{ favorite.comments.count }}</a></span>
+                                    <span class="float-right article-action">
+                                        <a class="text-info mt-2" data-method="disfavorite"
+                                           data-option="{{ favorite.id }}">取消收藏</a>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             {% empty %}
                 <div class="d-flex flex-column justify-content-center align-items-center"
                      style="margin-top:100px;padding-bottom:100px;opacity:0.5;">

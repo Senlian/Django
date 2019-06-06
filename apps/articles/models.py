@@ -93,6 +93,14 @@ class Articles(models.Model):
         self.slug = slugify(self.title)
         return super(Articles, self).save(*args, **kwargs)
 
+    def add_favorite(self, user):
+        self.favorites.add(user)
+        return self.save()
+
+    def del_favorite(self, user):
+        self.favorites.remove(user)
+        return self.save()
+
     def set_top(self):
         self.top = False if self.top else True
         return self.save()

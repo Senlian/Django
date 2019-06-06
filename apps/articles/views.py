@@ -111,6 +111,12 @@ class ArticleActionsView(LoginRequiredPostMixin, generic.View):
         elif method.lower() == 'unfollow':
             follower = UserModel._default_manager.get(id=int(option))
             request.user.set_unfollow(follower)
+        elif method.lower() == 'favorite':
+            article = Articles.objects.get(id=int(option))
+            article.add_favorite(self.request.user)
+        elif method.lower() == 'disfavorite':
+            article = Articles.objects.get(id=int(option))
+            article.del_favorite(self.request.user)
         else:
             return JsonResponse({'status': 'not ok'})
 
@@ -128,7 +134,7 @@ class ArticleSearchView(auth_views.TemplateView):
         form = ArticleSearchForm(request.POST)
         articles = {} if not form.is_valid() else form.cleaned_data['search']
         if not articles:
-            self.extra_context.update({'empty': '啥也没找到'})
+            self.extra_context.update({'message': '没检索到需要搜索的内容！'})
         self.extra_context.update(paginator(request, articles))
         return super().get(request, *args, **kwargs)
 
@@ -144,7 +150,7 @@ class ArticlePostView(LoginRequiredPostMixin, auth_views.FormView):
         if article:
             self.initial = {'title': article.title, 'body': article.body}
         self.extra_context.update({'article': article})
-        if self.request.user==article.author:
+        if not article or self.request.user == article.author:
             return super().get(request, *args, **kwargs)
         else:
             return HttpResponseForbidden()

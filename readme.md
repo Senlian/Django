@@ -129,6 +129,8 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
 
 [python markdown2](<https://github.com/trentm/python-markdown2/>)
 
+[sqlalchemy ORM框架](<https://www.sqlalchemy.org/>)
+
 ## 知识点 ##
 - sphinx 自动生成项目文档
     - pip install sphinx
@@ -179,21 +181,21 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
         - 忘记密码视图 --ok
         - 修改密码视图 --ok
         - 个人中心视图
-            - 个人信息
+            - 个人信息 --ok
                 - 我的资料 --ok
                     - 头像 --ok
                         - 头像修改 --ok
                     - 个人信息 --ok
                         - 信息修改 --ok
-                - 我的收藏
-                - 我的关注
-                - 我的粉丝
-            - 我的博客                    
+                - 我的收藏 --ok
+                - 我的关注 --ok
+                - 我的粉丝 --ok
+            - 我的博客 --ok                    
             - 我的相册                    
                     
     - blog应用
-        - 主页视图
-        - 生成验证码视图        
+        - 主页视图 --ok
+        - 生成验证码视图 --ok        
             
     - articles应用
         - 栏目模型 -ok
@@ -204,12 +206,12 @@ windows7|pycharm|3.7.3|2.2|4.0|2.4.5
             - 分页器 -ok
             - 置顶功能 -ok
             - 评论功能
-            - 编辑功能
+            - 编辑功能 --ok
             - 删除功能 -ok
             - 选项卡 -ok
             - 文章详情 -ok
             - 点赞功能
-            - 收藏功能
+            - 收藏功能 --ok
         - RestfulApi接口
             - 增
             - 删
