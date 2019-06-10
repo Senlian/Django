@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
-from django.http import JsonResponse, HttpResponseForbidden, Http404
+from django.http import JsonResponse, HttpResponseForbidden, Http404, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth import get_user_model, views as auth_views
 from django.views import generic
@@ -15,7 +15,7 @@ from accounts.views import LoginRequiredPostMixin
 from articles.models import Articles
 from common.utils.paginator import paginator
 
-from articles.forms import ArticleSearchForm, ArticlePostForm
+from articles.forms import ArticleSearchForm, ArticlePostForm, ArticleCommentsForm
 
 UserModel = get_user_model()
 
@@ -117,10 +117,17 @@ class ArticleActionsView(LoginRequiredPostMixin, generic.View):
         elif method.lower() == 'disfavorite':
             article = Articles.objects.get(id=int(option))
             article.del_favorite(self.request.user)
+        elif method.lower() == 'like':
+            article = Articles.objects.get(id=int(option))
+            article.add_like(self.request.user)
+        elif method.lower() == 'unlike':
+            article = Articles.objects.get(id=int(option))
+            article.del_like(self.request.user)
         else:
             return JsonResponse({'status': 'not ok'})
 
         return JsonResponse({'status': 'ok'})
+
 
 class ArticleSearchView(auth_views.TemplateView):
     template_name = 'blog/index.html'
@@ -167,3 +174,13 @@ class ArticlePostView(LoginRequiredPostMixin, auth_views.FormView):
             new_article.save()
         self.success_url = reverse('articles:list', kwargs={'username': self.request.user.username})
         return super().form_valid(form)
+
+
+class CommentsPostView(LoginRequiredPostMixin, generic.View):
+    def post(self, request, *args, **kwargs):
+        form = ArticleCommentsForm(request.POST)
+        id = request.POST.get('article')
+        slug = Articles.objects.get(id=int(id)).slug
+        if form.is_valid():
+            form.save()
+        return HttpResponseRedirect(reverse_lazy('articles:show', kwargs={'id': id, 'slug': slug}))

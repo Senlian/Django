@@ -4,7 +4,7 @@
 from django import forms
 from django.db.models import Q
 from django.forms import widgets
-from articles.models import Articles
+from articles.models import Articles, ArticleComments
 
 
 # TODO：搜索表单
@@ -45,3 +45,10 @@ class ArticlePostForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': '输入文章标题'
             })}
+
+
+class ArticleCommentsForm(forms.ModelForm):
+    # 此处注意 author指定的to_field字段为username
+    class Meta:
+        model = ArticleComments
+        fields = ('author', 'article', 'body',)

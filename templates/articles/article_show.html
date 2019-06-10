@@ -55,7 +55,9 @@
         </p>
     </div>
 {% endblock %}
-{% block right_slider_box %}{% endblock %}
+{% block right_slider_box %}
+    {% include 'articles/base/article_show_rightslider.html' %}
+{% endblock %}
 {% block base_js_extend %}
     <script type="text/javascript" src="{% static 'articles/js/article.actions.js' %}"></script>
 {% endblock %}

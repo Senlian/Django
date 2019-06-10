@@ -1,0 +1,111 @@
+{% load staticfiles %}
+{% load common_extras %}
+
+<style>
+    .count {
+        font-weight: 700;
+    }
+
+    dt, dt > a {
+        color: rgba(0, 0, 0, .5);
+        margin-bottom: 10px;
+        margin-left: -5px;
+        padding-right: 5px;
+        font-family: 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
+    }
+
+    dd, dd > a {
+        font-weight: 700;
+        margin-left: -5px;
+        padding-right: 5px;
+        font-family: 'Microsoft YaHei', 'SF Pro Display', Roboto, Noto, Arial, 'PingFang SC', sans-serif;
+    }
+
+    a.border-danger:hover {
+        background-color: lightcyan;
+    }
+</style>
+<div class="col col-md-3 col-lg-3">
+    <div class="d-flex py-2 mb-2 article-action" style="box-shadow: 0 2px 4px 0 rgba(0,0,0,0.05);">
+        <dl class="text-center" style="width: 100%;">
+            <dt>{% if article.likes.all|include:user %}
+                <a href="#" data-method="unlike" data-option="{{ article.id }}" style="text-decoration: none;">
+                    <span class="mr-1">点赞</span><i class="fa fa-thumbs-up"></i></a>
+            {% else %}
+                <a href="#" data-method="like" data-option="{{ article.id }}" style="text-decoration: none;">
+                    <span class="mr-1">点赞</span><i class="fa fa-thumbs-o-up"></i></a>
+            {% endif %}
+            </dt>
+            <dd>
+                <a href="#" style="text-decoration: none;">
+                    <span class="count">{{ article.likes.count }}</span>
+                </a>
+            </dd>
+        </dl>
+        <dl class="text-center" style="width: 100%;color: inherit;">
+            <dt>{% if article.favorites.all|include:user %}
+                <a href="#" data-method="disfavorite" data-option="{{ article.id }}" style="text-decoration: none;">
+                    <span class="mr-1">收藏</span><i class="fa fa-bookmark"></i></a>
+            {% else %}
+                <a href="#" data-method="favorite" data-option="{{ article.id }}" style="text-decoration: none;">
+                    <span class="mr-1">收藏</span><i class="fa fa-bookmark-o"></i></a>
+            {% endif %}
+            </dt>
+            <dd>
+                <span class="count">{{ article.favorites.count|default:'0' }}
+                </span>
+            </dd>
+        </dl>
+        <dl class="text-center" style="width: 100%;color: inherit;">
+            <dt>评论</dt>
+            <dd><span class="count">{{ article.comments.count|default:'0' }}</span></dd>
+        </dl>
+        <dl class="text-center" style="width: 100%;color: inherit;">
+            <dt>访问</dt>
+            <dd><span class="count">{{ article.author.focus.count|default:'0' }}</span></dd>
+        </dl>
+    </div>
+
+    <form class="layui-form border-bottom pb-2" action="{% url 'articles:comments' %}" method="post">
+        {% csrf_token %}
+        <div class="layui-form-item">
+            <input name="author" class="sr-only" value="{{ user.username }}">
+        </div>
+        <div class="layui-form-item">
+            <input name="article" class="sr-only" value="{{ article.id }}">
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <textarea name="body" class="layui-textarea" placeholder="想发表点什么看法"></textarea>
+        </div>
+        <div class="layui-form-item">
+            <a {% if user.is_authenticated %}href="{% url 'articles:list' user.username %}"
+               {% else %}onclick='layer_open("{% url 'accounts:login' %}")'{% endif %}>
+                <img class="rounded-circle" src="{{ user.photo|is_protrait }}" width="32px"
+                     title="{% if user.is_authenticated %}{{ user.nick_name|default:user.username }}{% else %}
+                Anonymous{% endif %}">
+            </a>
+            <button class="layui-btn float-right" type="submit">发表评论</button>
+        </div>
+    </form>
+    <div class="comments mt-3">
+        <ul>
+            {% for comment in article.comments.all %}
+                <li class="clearfix">
+                    <span>
+                        <a class="card-link" href="{% url 'articles:list' comment.author.username %}">
+                        <img class="rounded-circle" src="{{ comment.author.photo|is_protrait }}" width="24px">
+                        <span class="text-primary">{{ comment.author.nick_name|default:comment.author.username }}：</span>
+                        </a>
+                        <p class="layui-inline layui-text text-muted" style="word-break: break-word;">{{ comment.body }}</p>
+                    </span>
+                    <span class="article-action float-right">
+                        <a class="text-primary">查看回复</a>
+                        <a class="text-primary">删除</a>
+                        <a class="text-primary">举报</a>
+                        <a class="text-primary">回复</a>
+                    </span>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

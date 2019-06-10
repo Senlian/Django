@@ -94,11 +94,27 @@ class Articles(models.Model):
         return super(Articles, self).save(*args, **kwargs)
 
     def add_favorite(self, user):
+        if user == self.author:
+            return None
         self.favorites.add(user)
         return self.save()
 
     def del_favorite(self, user):
+        if user == self.author:
+            return None
         self.favorites.remove(user)
+        return self.save()
+
+    def add_like(self, user):
+        if user == self.author:
+            return None
+        self.likes.add(user)
+        return self.save()
+
+    def del_like(self, user):
+        if user == self.author:
+            return None
+        self.likes.remove(user)
         return self.save()
 
     def set_top(self):

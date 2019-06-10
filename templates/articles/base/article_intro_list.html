@@ -51,7 +51,7 @@
                     {% if article.top %}<span class="list-item-tag">置顶</span>{% endif %}
                     {% if article.status == '2' %}<span class="list-item-tag">私密</span>{% endif %}
                 {% endif %}
-                <a class="list-item-title-text" href="{% url 'articles:post' %}?id={{ article.id }}">{{ article.title }}</a>
+                <a class="list-item-title-text" href="{% url 'articles:post' %}?id={{ article.id }}">{% if article.status == '4' %}<del>{{ article.title }}</del>{% else %}{{ article.title }}{% endif %}</a>
             </div>
             <div class="list-item-info">
                 <span class="mt-3 mx-2 float-left" style="font-size: 12px;color: #999;">
