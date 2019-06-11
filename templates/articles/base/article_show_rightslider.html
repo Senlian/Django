@@ -57,7 +57,7 @@
             </dd>
         </dl>
         <dl class="text-center" style="width: 100%;color: inherit;">
-            <dt>评论</dt>
+            <dt><a href="#comment-post">评论</a></dt>
             <dd><span class="count">{{ article.comments.count|default:'0' }}</span></dd>
         </dl>
         <dl class="text-center" style="width: 100%;color: inherit;">
@@ -66,7 +66,7 @@
         </dl>
     </div>
 
-    <form class="layui-form border-bottom pb-2" action="{% url 'articles:comments' %}" method="post">
+    <form id="comment-post" class="layui-form pb-2" action="{% url 'articles:comments' %}" method="post">
         {% csrf_token %}
         <div class="layui-form-item">
             <input name="author" class="sr-only" value="{{ user.username }}">
@@ -84,28 +84,37 @@
                      title="{% if user.is_authenticated %}{{ user.nick_name|default:user.username }}{% else %}
                 Anonymous{% endif %}">
             </a>
-            <button class="layui-btn float-right" type="submit">发表评论</button>
+            <button class="layui-btn float-right" {% if user.is_authenticated %}type="submit"{% else %}type="button"
+                    onclick='layer_open("{% url 'accounts:login' %}")'{% endif %}>发表评论
+            </button>
         </div>
     </form>
-    <div class="comments mt-3">
-        <ul>
-            {% for comment in article.comments.all %}
-                <li class="clearfix">
-                    <span>
-                        <a class="card-link" href="{% url 'articles:list' comment.author.username %}">
-                        <img class="rounded-circle" src="{{ comment.author.photo|is_protrait }}" width="24px">
-                        <span class="text-primary">{{ comment.author.nick_name|default:comment.author.username }}：</span>
-                        </a>
-                        <p class="layui-inline layui-text text-muted" style="word-break: break-word;">{{ comment.body }}</p>
-                    </span>
-                    <span class="article-action float-right">
-                        <a class="text-primary">查看回复</a>
-                        <a class="text-primary">删除</a>
-                        <a class="text-primary">举报</a>
-                        <a class="text-primary">回复</a>
-                    </span>
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% if article.comments.count > 0 %}
+    <fieldset class="layui-elem-field">
+        <legend>评论内容</legend>
+        <div class="layui-field-box">
+            <ul class="list-group">
+                {% for comment in article.comments.all %}
+                    <li class="list-group-item clearfix my-1">
+                        <span>
+                            <a class="card-link" href="{% url 'articles:list' comment.author.username %}">
+                            <img class="rounded-circle" src="{{ comment.author.photo|is_protrait }}" width="24px">
+                            <span class="text-primary">{{ comment.author.nick_name|default:comment.author.username }}：</span>
+                            </a>
+                        </span>
+                        <p class="layui-text text-muted" style="text-indent:2em;word-break: break-word;">
+                            {{ comment.body }}
+                            <span class="article-action float-right">
+                                <a class="text-primary">查看回复</a>
+                                {% if comment.author == user or article.author == user %}<a class="text-primary">删除</a>{% endif %}
+                                <a class="text-primary">举报</a>
+                                <a class="text-primary">回复</a>
+                            </span>
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </fieldset>
+    {% endif %}
 </div>
