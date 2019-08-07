@@ -156,10 +156,22 @@ AUTH_USER_MODEL = 'accounts.UserProfile'
 #  DEBUG 模式 将邮件内容显示在控制台
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# 一般部署
+'''
 EMAIL_HOST = "smtp.qq.com"
 EMAIL_PORT = 25
 EMAIL_TIMER = 30
 EMAIL_USE_TLS = False
-EMAIL_HOST_USER = "from_now_on820@qq.com"
-EMAIL_HOST_PASSWORD = "pmfrgzmkuznabdif"
-DEFAULT_FROM_EMAIL = "from_now_on820@qq.com"
+EMAIL_HOST_USER = "xxx@qq.com"
+EMAIL_HOST_PASSWORD = "xxx"
+DEFAULT_FROM_EMAIL = "xxx@qq.com"
+'''
+
+# 阿里云部署，由于25端口无法访问，改为465端口，必须采取SSL方式
+EMAIL_HOST = "smtp.qq.com"
+EMAIL_PORT = 465
+EMAIL_TIMER = 30
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "xxx@qq.com"
+EMAIL_HOST_PASSWORD = "xxx"
+DEFAULT_FROM_EMAIL = "xxx@qq.com"
